@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    <link rel="icon" href="/public/Icon.png" type="image/x-icon">
+    <link rel="stylesheet" href="/public/style/styles.css">
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <div class="center-content">
+                <img src="/public/Icon.png" alt="Website Icon" class="website-icon">
+                <h1 class="website-title">University-Housing-Review-Platform</h1>
+            </div>
+            <nav class="header-buttons">
+                <% if (typeof username !== 'undefined' && username) { %>
+                    <div class="user-greeting">
+                        <strong>Welcome, <%= username %></strong>
+                    </div>
+                    <div>
+                        <a href="/profile" class="header-link login"><strong>Profile</strong></a>
+                        <a href="/logout" class="header-link register"><strong>Logout</strong></a>
+                    </div>
+                <% } else { %>
+                    <a href="/login" class="header-link login"><strong>Log In</strong></a>
+                    <a href="/register" class="header-link register"><strong>Register</strong></a>
+                <% } %>
+            </nav>
+        </div>
+    </header>
+
+    <main class="sub-content">
+        <%- body %>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <a href="https://github.com/YuqiStevens/University-Housing-Review-Platform" class="start-button" target="_blank">Visit our GitHub</a>
+            <div class="footer-copyright">
+                &copy; 2024 CS 546 University-Housing-Review-Platform. All Rights Reserved.
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

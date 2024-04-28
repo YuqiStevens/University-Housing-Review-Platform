@@ -1,0 +1,35 @@
+{
+  "name": "UniversityHousingReviewPlatform",
+  "version": "1.0.0",
+  "description": "Our initiative aims to address these issues by creating a specialized platform for reviewing apartments and houses around the university, designed with the unique needs of new international students in mind.",
+  "main": "index.js",
+  "scripts": {
+    "start": "node app.js",
+    "test": "jest"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "testRegex": "(/__tests__/.*|(\\.|/)(test|spec))\\.[jt]sx?$"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/YuqiStevens/University-Housing-Review-Platform.git"
+  },
+  "author": "Yuqi Dong, Fan Zhang, Xiong Chen, Zhuo Zhang, ChongYuan Zhang",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/YuqiStevens/University-Housing-Review-Platform/issues"
+  },
+  "homepage": "https://github.com/YuqiStevens/University-Housing-Review-Platform#readme",
+  "dependencies": {
+    "bcrypt": "^5.1.1",
+    "express": "^4.17.1",
+    "express-session": "^1.17.0",
+    "mongodb": "^6.1.0",
+    "express-handlebars": "^7.1.2"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "supertest": "^6.3.3"
+  }
+}
