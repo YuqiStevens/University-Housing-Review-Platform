@@ -13,4 +13,9 @@ const getCollectionFn = (collection) => {
   };
 };
 
-export const usersCollection = getCollectionFn('users');
+module.exports = {
+  user_collection: getCollectionFn("users"),
+  listing_collection:getCollectionFn("listings"),
+  review_collection:getCollectionFn("reviews"),
+  comment_collection:getCollectionFn("comments")
+};
