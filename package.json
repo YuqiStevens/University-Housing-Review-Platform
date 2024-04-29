@@ -22,11 +22,13 @@
   },
   "homepage": "https://github.com/YuqiStevens/University-Housing-Review-Platform#readme",
   "dependencies": {
-    "bcrypt": "^5.1.1",
-    "express": "^4.17.1",
-    "express-session": "^1.17.0",
-    "mongodb": "^6.1.0",
-    "express-handlebars": "^7.1.2"
+    "bcrypt": "^5.1.0",
+    "cookie-parser": "^1.4.6",
+    "express": "^4.18.2",
+    "express-handlebars": "^6.0.6",
+    "express-session": "^1.17.3",
+    "mongodb": "^4.12.1",
+    "xss": "^1.0.14"
   },
   "devDependencies": {
     "jest": "^29.7.0",

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{restroom.location.address}}</title>
+    <link rel="icon" type="image/x-icon" href="/public/Icon.png">
+    <link rel="stylesheet" type="text/css" href="/public/style/styles.css">
+</head>
+<body>
+<h1>{{restroom.location.address}}</h1>
+<p>
+<div class="star-rating">
+    <img src="{{restroom.pathToImage}}" alt="" srcset="" width="500" height="400">
+</div>
+</p>
+<p><strong>City:</strong> {{restroom.location.city}}</p>
+<p><strong>Baby Changing Table:</strong> {{#if restroom.metrics.hasBabyChangingTable}}Yes{{else}}No{{/if}}</p>
+<p><strong>Sanitary Products Available:</strong> {{#if restroom.metrics.providesSanitaryProducts}}Yes{{else}}No{{/if}}</p>
+<p><strong>Customers Only:</strong> {{#if restroom.metrics.customerOnly}}Yes{{else}}No{{/if}}</p>
+<p><strong>Dryer Available:</strong> {{#if restroom.metrics.dryer}}Yes{{else}}No{{/if}}</p>
+
+<p><strong>Overall Rating:</strong>
+<div class="star-rating">
+    {{#times 5}}
+        {{#if (lte @index (subtract restroom.rating 1))}}
+            <span class="star filled">★</span>
+        {{else}}
+            <span class="star">☆</span>
+        {{/if}}
+    {{/times}}
+</div>
+</p>
+
+<p><strong>Cleanliness:</strong>
+<div class="star-rating">
+    {{#times 5}}
+        {{#if (lte @index (subtract restroom.ratingMetrics.cleanliness 1))}}
+            <span class="star filled">★</span>
+        {{else}}
+            <span class="star">☆</span>
+        {{/if}}
+    {{/times}}
+</div>
+</p>
+
