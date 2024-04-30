@@ -1,74 +1,221 @@
-import { usersCollection } from '../config/mongoCollections.js';
-import validation from '../helpers.js';
-import bcrypt from 'bcrypt';
+import { users } from "../config/mongoCollections.js";
+import { ObjectId } from "mongodb";
+import bcrypt from "bcrypt";
+import validator from "validator";
+import validation from "../validation.js"
+import helpers from "../helpers.js";
+import xss from "xss";
 
-const registerUser = async (firstName, lastName, username, password, favoriteQuote, themePreference, role) => {
-    const collection = await usersCollection();
+const getUser = async (id) => {
+  if (!id) throw 'You must provide an id to search for';
+  if (typeof id !== 'string') throw 'Id must be a string';
+  if (id.trim().length === 0)
+    throw 'Id cannot be an empty string or just spaces';
+  id = id.trim();
+  if (!ObjectId.isValid(id)) throw 'invalid object ID';
+  const userCollection = await users();
+  const user = await userCollection.findOne({ _id: new ObjectId(id) });
+  if (user === null) throw 'No user with that id';
+  return user;
+}
 
-    validation.checkOnlyLetters(firstName, 'firstName');
-    validation.checkOnlyLetters(lastName, 'lastName');
-    validation.checkOnlyLetters(username, 'username');
-    validation.validateStringWithLength(firstName, 'firstName', 2, 25);
-    validation.validateStringWithLength(lastName, 'lastName', 2, 25);
-    validation.validateStringWithLength(username, 'username', 5, 10);
-    validation.validatePassword(password);
-    validation.validateStringWithLength(favoriteQuote, 'favoriteQuote', 20, 255);
+const addUser = async (
+  userName,
+  firstName,
+  lastName,
+  email,
+  password,
+  role
+) => {
+  if (!userName) throw "Please provide your user name";
+  if (!firstName) throw "Please provide your first name";
+  if (!lastName) throw "Please provide your last name";
+  if (!email) throw "Please provide your email address";
+  if (!password) throw "Please provide your password";
+  if (!role) throw "Please provide your role";
 
-    const validThemes = ['light', 'dark'];
-    if (!validThemes.includes(themePreference.toLowerCase()))
-        throw `Error: Invalid theme preference, must be either 'light' or 'dark'`;
-    const validRoles = ['admin', 'user'];
-    if (!validRoles.includes(role.toLowerCase()))
-        throw `Error: Invalid role, must be either 'admin' or 'user'`;
+  var regex = /^[a-zA-Z]+$/;
+  userName = userName.trim();
+  if (!regex.test(userName)) throw "User name must only contain letters";
+  if (userName.length < 2 || userName.length > 25) throw "User name should have 2 - 25 characters";
 
-    const normalizedUsername = username.toLowerCase();
-    const existingUser = await collection.findOne({ username: normalizedUsername });
-    if (existingUser)
-        throw `Error: A user with the username ${username} already exists`;
+  firstName = firstName.trim();
+  if (!regex.test(firstName)) throw "First name must only contain letters";
+  if (firstName.length < 2 || firstName.length > 25) throw "First name should have 2 - 25 characters";
 
-    const hashedPassword = await bcrypt.hash(password, 10);
-    const newUser = {
-        firstName,
-        lastName,
-        username: normalizedUsername,
-        password: hashedPassword,
-        favoriteQuote,
-        themePreference: themePreference.toLowerCase(),
-        role: role.toLowerCase()
-    };
+  lastName = lastName.trim();
+  if (!regex.test(lastName)) throw "Last name must only contain letters";
+  if (lastName.length < 2 || lastName.length > 25) throw "Last name should have 2 - 25 characters";
 
-    const insertResult = await collection.insertOne(newUser);
-    if (insertResult.acknowledged)
-        return { signupCompleted: true };
-    else
-        throw `Error: Failed to create new user`;
+  email = email.trim().toLowerCase();
+  if (!validator.isEmail(email)) throw "Email address should be a valid email address format. example@example.com";
+  if (await helpers.checkIfEmailExists(email)) throw "There is already a user with that email address";
 
+  password = password.trim();
+  if (!validation.checkIfPasswordValid(password)) throw "Password must have at least 8 characters, with at least 1 uppercase letter, 1 number, and 1 symbol";
+  password = await bcrypt.hash(password, 10);
 
+  role = role.trim().toLowerCase();
+  if (role !== "admin" && role !== "user") throw "The role should be admin or user";
+
+  let newUser = {
+    "userName": userName,
+    "firstName": firstName,
+    "lastName": lastName,
+    "email": email,
+    "hashPassword": password,
+    "gender": "",
+    "userReviews": [],
+    "userComments": [],
+    "role": role,
+    "ownedStoreId": null,
+    "avatar": "default.jpg",
+  }
+  const userCollection = await users();
+  const insertInfo = await userCollection.insertOne(newUser);
+  if (!insertInfo.acknowledged || !insertInfo.insertedId) throw 'Could not add user';
+  return { 
+    user_id: insertInfo.insertedId.toString(),
+    insertedUser: true };
+}
+
+const loginUser = async (email, password) => {
+  if (!email) throw "Please provide your email address";
+  if (!password) throw "Please provide your password";
+
+  email = email.trim().toLowerCase();
+  if (!validator.isEmail(email)) throw "Email address should be a valid email address format. example@example.com";
+
+  password = password.trim();
+  try {
+    password = validation.checkPassword(password, 'password');
+  } catch (e) {
+    throw e;
+  }
+
+  if (!await helpers.checkIfEmailExists(email)) throw "Either the email address or password is invalid";
+
+  if (await helpers.checkIfPasswordCorrect(email, password)) {
+    return await helpers.getUserInfoByEmail(email);
+  } else {
+    throw "Either the email address or password is invalid";
+  }
 };
 
-const loginUser = async (username, password) => {
-    const collection = await usersCollection();
 
-    validation.validateStringWithLength(username, 'username', 5, 10);
-    validation.checkString(password, 'password');
+const removeUser = async (id) => {
+  const usersCollection = await users();
+  const deletionInfo = await usersCollection.findOneAndDelete({
+    _id: new ObjectId(id),
+  });
+  if (deletionInfo.deletedCount === 0) {
+    throw `Could not delete user with id of ${id}`;
+  }
+  console.log(deletionInfo);
+  return deletionInfo;
+}
 
-    const normalizedUsername = username.toLowerCase();
-    const user = await collection.findOne({ username: normalizedUsername });
-    if (!user)
-        throw "Either the username or password is invalid";
+const updateUser = async (id, updatedUser) => {
+  let userName = xss(updatedUser.userName);
+  let firstName = xss(updatedUser.firstName);
+  let lastName = xss(updatedUser.lastName);
+  let email = xss(updatedUser.email);
+  let gender = (updatedUser.gender);
 
-    const passwordMatch = await bcrypt.compare(password, user.password);
-    if (!passwordMatch)
-        throw "Either the username or password is invalid";
+  if (!userName) throw "Please provide your user name";
+  if (!firstName) throw "Please provide your first name";
+  if (!lastName) throw "Please provide your last name";
+  if (!email) throw "Please provide your email address";
 
-    return {
-        firstName: user.firstName,
-        lastName: user.lastName,
-        username: user.username,
-        favoriteQuote: user.favoriteQuote,
-        themePreference: user.themePreference,
-        role: user.role
-    };
-};
+  var regex = /^[a-zA-Z]+$/;
+  userName = userName.trim();
+  if (!regex.test(userName)) throw "User name must only contain letters";
+  if (userName.length < 2 || userName.length > 25) throw "User name should have 2 - 25 characters";
 
-export {registerUser, loginUser};
+  firstName = firstName.trim();
+  if (!regex.test(firstName)) throw "First name must only contain letters";
+  if (firstName.length < 2 || firstName.length > 25) throw "First name should have 2 - 25 characters";
+
+  lastName = lastName.trim();
+  if (!regex.test(lastName)) throw "Last name must only contain letters";
+  if (lastName.length < 2 || lastName.length > 25) throw "Last name should have 2 - 25 characters";
+
+  email = email.trim().toLowerCase();
+  if (!validator.isEmail(email)) throw "Email address should be a valid email address format. example@example.com";
+  if (await helpers.checkIfEmailExistsExceptMe(email)) throw "There is already a user with that email address";
+
+  gender = gender.trim().toLowerCase();
+  if (gender !== "" && gender !== 'male' && gender !== 'female') throw "The gender should be prefer not to say, male or female";
+
+  const userCollection = await users();
+  const updateInfo = await userCollection.findOneAndUpdate(
+    { _id: new ObjectId(id) },
+    {
+      $set: {
+        userName: userName,
+        firstName: firstName,
+        lastName: lastName,
+        email: email,
+        gender: gender,
+      }
+    },
+    { returnDocument: 'after' });
+  if (!updateInfo) throw 'Could not update user';
+  return { updatedUser: true };
+}
+const getAllUsers = async () => {
+  const usersCollection = await users();
+  const allUsers = await usersCollection.find({}).toArray();
+  return allUsers;
+}
+const updateAvatar = async (id, fileName) => {
+  const userCollection = await users();
+  await userCollection.findOneAndUpdate(
+    { _id: new ObjectId(id) },
+    {
+      $set: {
+        avatar: fileName,
+      }
+    },
+    { returnDocument: 'after' });
+}
+
+const updatePassword = async (id, password) => {
+  const userCollection = await users();
+  if (!validation.checkIfPasswordValid(password)) throw "Password must have at least 8 characters, with at least 1 uppercase letter, 1 number, and 1 symbol";
+  password = await bcrypt.hash(password, 10);
+  await userCollection.findOneAndUpdate(
+    { _id: new ObjectId(id) },
+    {
+      $set: {
+        hashPassword: password,
+      }
+    },
+    { returnDocument: 'after' });
+}
+
+const bindStoreWithUser = async (storeId, adminId) => {
+  if (!storeId || !adminId) throw 'You must provide an id';
+  if (typeof storeId !== 'string' || typeof adminId !== 'string') throw 'Id must be a string';
+  if (storeId.trim().length === 0 || adminId.trim().length === 0)
+    throw 'Id cannot be an empty string or just spaces';
+  storeId = storeId.trim();
+  adminId = adminId.trim();
+  if (!ObjectId.isValid(storeId)) throw 'invalid store ID';
+  if (!ObjectId.isValid(adminId)) throw 'invalid admin ID';
+  const userCollection = await users();
+  const user = await userCollection.findOne({ _id: new ObjectId(adminId) });
+  if (user === null) throw 'No admin with that id';
+  if (user.role !== 'admin') throw 'The user is not an admin'
+  await userCollection.findOneAndUpdate(
+    { _id: new ObjectId(adminId) },
+    {
+      $set: {
+        ownedStoreId: storeId,
+      }
+    },
+    { returnDocument: 'after' });
+  return { insertStore: true };
+}
+
+export { getUser, addUser, loginUser, removeUser, updateUser, getAllUsers, updateAvatar, updatePassword, bindStoreWithUser };

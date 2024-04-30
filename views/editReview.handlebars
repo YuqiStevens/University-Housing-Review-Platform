@@ -1,0 +1,49 @@
+<section aria-labelledby="edit-review-header">
+    <nav>
+        <a href="/housing/{{housing.id}}">Back to Housing</a>
+        <a href="/housing/{{housing.id}}/review/{{review.id}}">Back to Review</a>
+    </nav>
+    <h1 id="edit-review-header">Edit Review</h1>
+
+    <form action="/housing/{{housing.id}}/review/{{review.id}}/update" method="post" enctype="multipart/form-data">
+        <div class="form-group">
+            <label for="rating">Rating:</label>
+            <select id="rating" name="rating" required>
+                <option value="1" {{#if (eq review.rating 1)}}selected{{/if}}>1 - Poor</option>
+                <option value="2" {{#if (eq review.rating 2)}}selected{{/if}}>2 - Fair</option>
+                <option value="3" {{#if (eq review.rating 3)}}selected{{/if}}>3 - Good</option>
+                <option value="4" {{#if (eq review.rating 4)}}selected{{/if}}>4 - Very Good</option>
+                <option value="5" {{#if (eq review.rating 5)}}selected{{/if}}>5 - Excellent</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="content">Review Content:</label>
+            <textarea id="content" name="content" required>{{review.content}}</textarea>
+        </div>
+
+        <div class="form-group">
+            <label for="images">Update Images:</label>
+            {{#if review.images}}
+                <div class="current-images">
+                    {{#each review.images}}
+                        <div class="image-wrapper">
+                            <img src="{{this}}" alt="Uploaded image" class="review-image">
+                            <button type="button" onclick="deleteImage('{{this}}')">Remove</button>
+                        </div>
+                    {{/each}}
+                </div>
+            {{/if}}
+            <input type="file" id="images" name="images" multiple>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Update Review</button>
+    </form>
+</section>
+
+<script>
+    function deleteImage(imageUrl) {
+        // Implement function to handle image removal
+        // This will likely require some server-side handling to remove the image from the database
+    }
+</script>

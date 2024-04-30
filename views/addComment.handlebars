@@ -1,0 +1,16 @@
+<section aria-labelledby="add-comment-header">
+    <nav>
+        <a href="/landing">Home</a>
+        <a href="/housing/{{housingId}}">Back to Housing</a>
+    </nav>
+    <h1 id="add-comment-header">Add a Comment</h1>
+    <p>Add your comment to the review.</p>
+
+    <form action="/housing/{{housingId}}/reviews/{{reviewId}}/comments/add" method="post" class="add-comment-form">
+        <div class="form-group">
+            <label for="comment-content">Comment:</label>
+            <textarea id="comment-content" name="content" required placeholder="Type your comment here..."></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Post Comment</button>
+    </form>
+</section>

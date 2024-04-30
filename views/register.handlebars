@@ -1,11 +1,25 @@
 <section aria-labelledby="register-header">
+    <nav>
+        <a href="/landing">Home</a>
+        <a href="/login">Login</a>
+    </nav>
     <h1 id="register-header">Create an Account</h1>
     <p>Register to start reviewing and finding your ideal housing today.</p>
 
-    <form action="/register" method="post" class="register-form">
+    <form action="/register" method="post" class="register-form" id="registration-form">
         <div class="form-group">
-            <label for="username">Username:</label>
-            <input type="text" id="username" name="username" placeholder="Choose a username" required>
+            <label for="userName">Username:</label>
+            <input type="text" id="userName" name="userName" placeholder="Choose a username" required>
+        </div>
+
+        <div class="form-group">
+            <label for="firstName">First Name:</label>
+            <input type="text" id="firstName" name="firstName" placeholder="Enter your first name" required>
+        </div>
+
+        <div class="form-group">
+            <label for="lastName">Last Name:</label>
+            <input type="text" id="lastName" name="lastName" placeholder="Enter your last name" required>
         </div>
 
         <div class="form-group">
@@ -19,14 +33,33 @@
         </div>
 
         <div class="form-group">
-            <label for="confirm-password">Confirm Password:</label>
-            <input type="password" id="confirm-password" name="confirmPassword" placeholder="Confirm your password" required>
+            <label for="confirmPassword">Confirm Password:</label>
+            <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirm your password" required>
+        </div>
+
+        <div class="form-group">
+            <label for="role">Role:</label>
+            <select id="role" name="role" required>
+                <option value="" disabled selected>Select a role</option>
+                <option value="admin">Admin</option>
+                <option value="user">User</option>
+            </select>
         </div>
 
         <button type="submit" class="btn btn-primary">Register</button>
     </form>
 
+    <ul class="errorContainer" id="errorContainer">
+        {{#if hasErrors}}
+            {{#each errors}}
+                <li>{{this}}</li>
+            {{/each}}
+        {{/if}}
+    </ul>
+
     <div class="register-links">
         <p>Already have an account? <a href="/login">Log in here</a></p>
     </div>
 </section>
+
+<script src="/public/js/front_end_validation.js"></script>

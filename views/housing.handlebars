@@ -1,4 +1,7 @@
 <section aria-labelledby="housing-header">
+    <nav>
+        <a href="/landing">Home</a>
+    </nav>
     <h1 id="housing-header">{{housing.name}}</h1>
     <img src="{{housing.imageUrl}}" alt="Image of {{housing.name}}" class="housing-main-image">
 
@@ -8,6 +11,9 @@
     <p class="housing-type"><strong>Type:</strong> {{housing.type}}</p>
     <p class="housing-pet-policy"><strong>Pet Policy:</strong> {{housing.petPolicy}}</p>
     <p class="housing-rating"><strong>Rating:</strong> {{housing.rating}} / 5</p>
+    {{#if isAdmin}}
+        <a href="/housing/edit/{{housing.id}}" class="btn btn-secondary">Edit Housing</a>
+    {{/if}}
 
     <h2>Amenities</h2>
     <ul class="amenities-list">
@@ -17,27 +23,71 @@
     </ul>
 
     <h2>Reviews</h2>
-    {{#if (gt housing.reviews.length 0)}}
+    {{#if housing.reviews.length}}
         <div class="reviews-container">
             {{#each housing.reviews}}
                 <div class="review">
-                    <p class="reviewer-name"><strong>Reviewed by:</strong> {{username}}</p>
-                    <p class="review-date"><strong>Date:</strong> {{date}}</p>
-                    <p class="review-content">{{content}}</p>
-                    {{#if (and images (gt images.length 0))}}
+                    <h3>Review by {{this.user.username}}</h3>
+                    <p><strong>Date:</strong> {{dateFormat this.date}}</p>
+                    <p>{{this.content}}</p>
+                    {{#if this.images}}
                         <div class="review-images">
-                            {{#each images}}
-                                <img src="{{url}}" alt="Uploaded image by {{../username}}" class="review-image">
+                            {{#each this.images}}
+                                <img src="{{this}}" alt="Review Image" class="review-image">
                             {{/each}}
                         </div>
                     {{/if}}
-                    <p class="review-rating"><strong>Rating:</strong> {{rating}} / 5</p>
+                    <p><strong>Rating:</strong> {{this.rating}} / 5</p>
+
+                    <!-- "Helpful" button feature -->
+                    <div class="helpful-section">
+                        <button onclick="markReviewHelpful('{{this.id}}')" class="helpful-btn">
+                            <i class="fas fa-thumbs-up"></i> Helpful ({{this.helpfulCount}})
+                        </button>
+                        {{#if this.helpfulUsers}}
+                            <div class="helpful-users">
+                                <strong>Found helpful by:</strong> {{#each this.helpfulUsers}} {{this}}, {{/each}}
+                            </div>
+                        {{/if}}
+                    </div>
+
+                    <button onclick="location.href='/add-comment/{{this.id}}'" class="btn btn-secondary">Add Comment</button>
+
+                    <h4>Comments</h4>
+                    {{#if this.comments}}
+                        <ul class="comments-list">
+                            {{#each this.comments}}
+                                <li>
+                                    <strong>{{this.user.username}}:</strong> {{this.content}}
+                                </li>
+                            {{/each}}
+                        </ul>
+                    {{else}}
+                        <p>No comments yet. Be the first to comment!</p>
+                    {{/if}}
                 </div>
             {{/each}}
         </div>
     {{else}}
         <p>No reviews yet. Be the first to write a review!</p>
     {{/if}}
-
     <a href="/add-review/{{housing.id}}" class="btn btn-primary">Add Review</a>
 </section>
+
+<script>
+    function markReviewHelpful(reviewId) {
+        // AJAX call to backend to increment the helpful count and update the list of users who found the review helpful
+        $.ajax({
+            url: '/review/' + reviewId + '/helpful',
+            type: 'POST',
+            success: function(response) {
+                // Update the count on the button and possibly the list of usernames
+                // This requires handling in the server-side route to return updated data
+                location.reload(); // Or update the DOM directly without reloading
+            },
+            error: function(error) {
+                console.error('Error updating helpful count:', error);
+            }
+        });
+    }
+</script>

@@ -1,4 +1,20 @@
 <section aria-labelledby="landing-header">
+    <nav>
+        <a href="/landing">Home</a>
+        <a href="/about">Learn More About Us</a>
+        <div class="dropdown">
+            <button class="dropbtn">Personal Center</button>
+            <div class="dropdown-content">
+                <a href="/profile">Profile</a>
+                <a href="/password/change">Password Change</a>
+                <a href="/logout">Logout</a>
+            </div>
+        </div>
+        {{#if isAdmin}}
+            <a href="/admin/dashboard">Admin Dashboard</a>
+        {{/if}}
+    </nav>
+
     <h1 id="landing-header">Welcome to the University Housing Review Platform</h1>
     <p>This platform is dedicated to assisting new international students in finding the perfect housing around our university by providing honest, comprehensive reviews and detailed listings.</p>
 
@@ -7,8 +23,32 @@
         <button type="submit" class="search-button">Search</button>
     </form>
 
-    <h2>How It Works</h2>
-    <p>Start your housing search using a specific ZIP code or a general location such as "Hoboken, NJ". You can apply various filters like price, beds/baths, type, and more to narrow down your choices to what suits you best.</p>
+    <div class="searchContainer">
+        <h2>Advanced Search Options</h2>
+        <form id="search-form" action="/search/results" method="POST">
+            <div class="search-container">
+                <div class="search-input">
+                    <input type="text" id="searchTerm" name="searchTerm" placeholder="Hoboken, NJ; Jersey City, NJ" required>
+                    <button type="submit">Search</button>
+                </div>
+                <div class="search-filters">
+                    <select id="homeType" name="homeType">
+                        <option value="Apartment">Apartment</option>
+                        <option value="Townhome">Townhome</option>
+                    </select>
+                    <input type="number" id="price" name="price" placeholder="Max Price">
+                    <input type="number" id="beds" name="beds" placeholder="Beds">
+                    <input type="number" id="baths" name="baths" placeholder="Baths">
+                    <select id="petPolicy" name="petPolicy">
+                        <option value="Pet Friendly">Pet Friendly</option>
+                        <option value="No Pets">No Pets</option>
+                    </select>
+                </div>
+            </div>
+            <div id="errorContainer" class="error-messages"></div>
+        </form>
+    </div>
 
-    <a href="/about" class="start-button">Learn More About Us</a>
+    <h2>How It Works</h2>
+    <p>Start your housing search using a specific ZIP code or a general location. Apply filters like price, beds/baths, home type, pet policy, and more to find what suits you best.</p>
 </section>

@@ -1,273 +1,168 @@
-/*body {*/
-/*  background-color: #e1e1e1;*/
-/*  margin: 0;*/
-/*  padding: 0;*/
-/*  padding-bottom: 100px;*/
-/*}*/
+/* Basic Reset */
+body, h1, h2, h3, p, form, ul, li, nav, section {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
 
-/*header {*/
-/*  background-color: #907676;*/
-/*  text-align: center;*/
-/*  padding: 20px 0;*/
-/*  position: fixed;*/
-/*  width: 100%;*/
-/*  z-index: 1;*/
-/*}*/
+body {
+    font-family: 'Arial', sans-serif;
+    line-height: 1.6;
+    color: #333;
+    background-color: #f4f4f4;
+    padding: 20px;
+}
 
-/*.header-content {*/
-/*  display: flex;*/
-/*  align-items: center;*/
-/*  justify-content: space-between;*/
-/*  width: 100%;*/
-/*  !* max-width: 1200px; *!*/
-/*  !* margin: auto; *!*/
-/*}*/
+/* Navigation Styles */
+nav {
+    background-color: #00457c;
+    color: #fff;
+    padding: 10px 20px;
+    text-align: center;
+}
 
-/*footer {*/
-/*  background-color: #907676;*/
-/*  text-align: center;*/
-/*  padding: 20px 0;*/
-/*  position: fixed;*/
-/*  bottom: 0;*/
-/*  width: 100%;*/
-/*}*/
+nav a {
+    color: white;
+    text-decoration: none;
+    margin: 0 10px;
+}
 
-/*.footer-content {*/
-/*  display: flex;*/
-/*  flex-direction: column;*/
-/*  align-items: center;*/
-/*  justify-content: center;*/
-/*}*/
+nav .dropdown {
+    display: inline-block;
+}
 
-/*.footer-copyright {*/
-/*  margin-top: 10px; !* Adds some space above the CS555 Project link *!*/
-/*}*/
+nav .dropbtn {
+    background-color: #00457c;
+    color: white;
+    padding: 10px;
+    border: none;
+    cursor: pointer;
+}
 
-/*.website-icon {*/
-/*  margin-right: 10px;*/
-/*  width: 100px;*/
-/*  height: 100px;*/
-/*}*/
+nav .dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+}
 
-/*.website-title {*/
-/*  margin: 0;*/
-/*  color: rgb(44, 33, 33);*/
-/*}*/
+nav .dropdown-content a {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+    text-align: left;
+}
 
-/*.sub-content {*/
-/*  margin: 0px;*/
-/*  padding: 160px 40px 60px;*/
-/*}*/
+nav .dropdown:hover .dropdown-content {
+    display: block;
+}
 
-/*.start-button {*/
-/*  display: block;*/
-/*  margin: 10px auto;*/
-/*  padding: 10px 20px;*/
-/*  font-size: 16px;*/
-/*  font-weight: bold;*/
-/*  color: #fff;*/
-/*  background-color: #2c3e50;*/
-/*  border: none;*/
-/*  border-radius: 5px;*/
-/*  text-align: center;*/
-/*  text-decoration: none;*/
-/*  cursor: pointer;*/
-/*  width: 200px;*/
-/*  transition: background-color 0.3s;*/
-/*}*/
+/* General Styles */
+.container {
+    width: 80%;
+    margin: auto;
+    overflow: hidden;
+}
 
-/*.start-button:hover {*/
-/*  background-color: #34495e;*/
-/*}*/
+ul {
+    list-style: none;
+}
 
-/*.header-link {*/
-/*  text-decoration: none;*/
-/*  color: white;*/
-/*  margin-bottom: 5px;*/
-/*  flex-direction: column;*/
-/*  align-items: flex-end;*/
-/*  */
-/*}*/
+img {
+    max-width: 100%;
+}
 
-/*.login,*/
-/*.register {*/
-/*  padding: 10px;*/
-/*  display: inline-block; */
-/*  text-align: center; */
-/*  text-decoration: none;*/
-/*  color: #fff;*/
-/*}*/
+/* Form Styles */
+form {
+    background: #fff;
+    padding: 20px;
+    box-shadow: 0 0 10px #ccc;
+    margin-top: 20px;
+}
 
-/*.login {*/
-/*  background: #907676;*/
-/*}*/
+.form-group {
+    margin-bottom: 15px;
+}
 
-/*.register {*/
-/*  !* background: #fff;*/
-/*  color: rgb(44, 33, 33); *!*/
-/*  margin-right: 10px; */
-/*  display: inline-block; */
-/*  padding: 8px 15px; */
-/*  text-align: center; */
-/*  text-decoration: none; */
-/*  border: 1px solid #ccc; */
-/*  border-radius: 3px; */
-/*  font-size: 14px;*/
-/*  font-weight: bold;*/
-/*  color: #fff;*/
-/*  background-color: #2c3e50;*/
-/*  border: none;*/
-/*  border-radius: 3px;*/
-/*  text-decoration: none;*/
-/*  cursor: pointer;*/
-/*  transition: background-color 0.3s;*/
-/*}*/
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+}
 
-/*.restroom-link {*/
-/*  color: inherit;*/
-/*  text-decoration: none; */
+.form-group input[type="text"],
+.form-group input[type="email"],
+.form-group input[type="password"],
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+}
 
-/*}*/
+.btn {
+    display: inline-block;
+    background: #007bff;
+    color: #fff;
+    padding: 10px 20px;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+}
 
-/*.register-button {*/
-/*  display: inline-block; */
-/*  padding: 8px 15px; */
-/*  text-align: center; */
-/*  text-decoration: none; */
-/*  border: 1px solid #ccc; */
-/*  border-radius: 3px; */
-/*  font-size: 14px;*/
-/*  font-weight: bold;*/
-/*  color: #fff;*/
-/*  background-color: #2c3e50;*/
-/*  border: none;*/
-/*  border-radius: 3px;*/
-/*  text-decoration: none;*/
-/*  cursor: pointer;*/
-/*  transition: background-color 0.3s;*/
-/*}*/
+.btn:hover {
+    background: #0056b3;
+}
 
-/*.register-button:hover {*/
-/*  background-color: #34495e;*/
-/*}*/
+/* Reviews and Comments Styles */
+.reviews-container, .comments-list {
+    margin-top: 20px;
+}
 
-/*.register-button p {*/
-/*  margin: 0; !* Remove default paragraph margin *!*/
-/*}*/
+.review, .comments-list li {
+    background: #fff;
+    padding: 10px;
+    margin-top: 10px;
+    box-shadow: 0 0 5px #ccc;
+}
 
-/*.index {*/
-/*  margin: auto;*/
-/*  width: max-content;*/
-/*}*/
+.helpful-btn {
+    background: none;
+    border: none;
+    color: #007bff;
+    cursor: pointer;
+}
 
-/*.welcome-content {*/
-/*  display: flex;*/
-/*  gap: 1rem;*/
-/*  color: rgb(44, 33, 33);*/
-/*  !*margin-bottom: 10px; *!*/
-/*  font-size: 14px;*/
-/*  margin-left: 10px;*/
-/*  !* justify-content: flex-end;*/
-/*  padding-right: 20px; *!*/
-/*}*/
+.helpful-btn:hover {
+    color: #0056b3;
+}
 
-/*!* .login {*/
-/*  background: #907676;*/
-/*  color: #fff;*/
-/*  padding: 20%;*/
-/*}*/
-/*.register {*/
-/*  background: #fff;*/
-/*  color: #907676;*/
-/*  padding: 20%;*/
-/*} *!*/
+.review-images img {
+    width: 100px;
+    height: auto;
+    margin-right: 5px;
+}
 
-/*.center-content {*/
-/*  display: flex;*/
-/*  align-items: center;*/
-/*  justify-content: center;*/
-/*  !* margin: auto; *!*/
-/*}*/
+.image-wrapper {
+    display: inline-block;
+    position: relative;
+}
 
-/*.restroom-list {*/
-/*  list-style: none;*/
-/*  padding: 0;*/
-/*  display: flex;*/
-/*  flex-wrap: wrap;*/
-/*  justify-content: space-between;*/
-/*}*/
+.image-wrapper button {
+    position: absolute;
+    top: 0;
+    right: 0;
+    background: red;
+    color: white;
+    border: none;
+}
 
-/*.restroom-item {*/
-/*  border: 1px solid #ccc;*/
-/*  padding: 10px;*/
-/*  !*margin: 10px; *!*/
-/*  border-radius: 5px;*/
-/*  background-color: #fff;*/
-/*  width: calc(33.333% - 20px);*/
-/*  box-sizing: border-box;*/
-/*}*/
-
-/*.restroom-image {*/
-/*  width: 100%;*/
-/*  height: 200px;*/
-/*  object-fit: cover;*/
-/*  border-bottom: 1px solid #ccc;*/
-/*  margin-bottom: 10px;*/
-/*}*/
-
-/*.restroom-info {*/
-/*  text-align: left;*/
-/*}*/
-
-/*.star-rating {*/
-/*  font-size: 20px;*/
-/*}*/
-
-/*.star {*/
-/*  display: inline-block;*/
-/*  color: #ccc; !* Default color for empty stars *!*/
-/*}*/
-
-/*.filled {*/
-/*  color: #f5c518; !* Color for filled stars *!*/
-/*}*/
-
-/*.profile-content {*/
-/*  text-align: center;*/
-/*  margin: auto;*/
-/*  width: 50%;*/
-/*}*/
-
-/*.form-container {*/
-/*  position: absolute;*/
-/*  top:250px;*/
-/*  right: 0;*/
-/*  width: 33%;*/
-/*}*/
-
-/*.reviews {*/
-/*    border: 1px solid #ddd;*/
-/*    padding: 15px;*/
-/*    margin-top: 20px;*/
-/*    background-color: #f9f9f9;*/
-/*}*/
-
-/*.review {*/
-/*    border-bottom: 1px solid #ccc;*/
-/*    padding: 10px;*/
-/*    margin-bottom: 10px;*/
-/*}*/
-
-/*.review:last-child {*/
-/*    border-bottom: none;*/
-/*}*/
-
-/*.review-rating {*/
-/*    font-size: 16px;*/
-/*    color: #333;*/
-/*    margin-bottom: 5px;*/
-/*}*/
-
-/*.review-text {*/
-/*    font-size: 14px;*/
-/*}*/
+/* Adjustments for mobile responsiveness */
+@media (max-width: 768px) {
+    .container, nav {
+        width: 100%;
+        padding: 0;
+    }
+}
