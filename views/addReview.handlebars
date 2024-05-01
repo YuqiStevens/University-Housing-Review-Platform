@@ -2,9 +2,14 @@
     <nav>
         <a href="/housing/{{housing.id}}">Back to Housing</a>
     </nav>
-    <h1 id="add-review-header">Add a Review for {{housing.name}}</h1>
+    <h1 id="add-review-header">Add a Review for {{housing.address}}</h1>
 
-    <form action="/housing/{{housing.id}}/reviews/add" method="post" enctype="multipart/form-data">
+    <form action="/housing/{{housing.id}}/reviews/add" method="post">
+        <div class="form-group">
+            <label for="title">Review Title:</label>
+            <input type="text" id="title" name="title" placeholder="Enter review title" required>
+        </div>
+
         <div class="form-group">
             <label for="rating">Rating:</label>
             <select id="rating" name="rating" required>
@@ -18,13 +23,13 @@
         </div>
 
         <div class="form-group">
-            <label for="content">Review Content:</label>
-            <textarea id="content" name="content" placeholder="Write your review here..." required></textarea>
+            <label for="body">Review Content:</label>
+            <textarea id="body" name="body" placeholder="Write your review here..." required></textarea>
         </div>
 
         <div class="form-group">
-            <label for="images">Upload Images:</label>
-            <input type="file" id="images" name="images" multiple>
+            <label for="images">Image URLs (comma-separated):</label>
+            <input type="text" id="images" name="images" placeholder="Enter image URLs, separated by commas">
         </div>
 
         <button type="submit" class="btn btn-primary">Submit Review</button>

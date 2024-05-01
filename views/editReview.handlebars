@@ -3,9 +3,14 @@
         <a href="/housing/{{housing.id}}">Back to Housing</a>
         <a href="/housing/{{housing.id}}/review/{{review.id}}">Back to Review</a>
     </nav>
-    <h1 id="edit-review-header">Edit Review</h1>
+    <h1 id="edit-review-header">Edit Review: {{review.title}}</h1>
 
-    <form action="/housing/{{housing.id}}/review/{{review.id}}/update" method="post" enctype="multipart/form-data">
+    <form action="/housing/{{housing.id}}/review/{{review.id}}/update" method="post">
+        <div class="form-group">
+            <label for="title">Review Title:</label>
+            <input type="text" id="title" name="title" value="{{review.title}}" required>
+        </div>
+
         <div class="form-group">
             <label for="rating">Rating:</label>
             <select id="rating" name="rating" required>
@@ -18,32 +23,15 @@
         </div>
 
         <div class="form-group">
-            <label for="content">Review Content:</label>
-            <textarea id="content" name="content" required>{{review.content}}</textarea>
+            <label for="body">Review Content:</label>
+            <textarea id="body" name="body" required>{{review.body}}</textarea>
         </div>
 
         <div class="form-group">
-            <label for="images">Update Images:</label>
-            {{#if review.images}}
-                <div class="current-images">
-                    {{#each review.images}}
-                        <div class="image-wrapper">
-                            <img src="{{this}}" alt="Uploaded image" class="review-image">
-                            <button type="button" onclick="deleteImage('{{this}}')">Remove</button>
-                        </div>
-                    {{/each}}
-                </div>
-            {{/if}}
-            <input type="file" id="images" name="images" multiple>
+            <label for="images">Image URLs (comma-separated):</label>
+            <input type="text" id="images" name="images" value="{{review.images | join ', '}}" placeholder="Enter image URLs, separated by commas">
         </div>
 
         <button type="submit" class="btn btn-primary">Update Review</button>
     </form>
 </section>
-
-<script>
-    function deleteImage(imageUrl) {
-        // Implement function to handle image removal
-        // This will likely require some server-side handling to remove the image from the database
-    }
-</script>

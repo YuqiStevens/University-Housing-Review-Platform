@@ -14,22 +14,22 @@
 
 **Details:**
 
-| Name          | Type      | Description                                        |
-|---------------|-----------|----------------------------------------------------|
-| userId        | ObjectId  | Unique identifier for each user.                   |
-| email         | String    | The user's email address, used as the account identifier. |
-| passwordHash  | String    | A hashed version of the user's password for security. |
-| firstName     | String    | The user's first name.                             |
-| lastName      | String    | The user's last name.                              |
-| city          | String    | The city the user resides in.                      |
-| state         | String    | The state the user resides in.                     |
-| country       | String    | The country the user resides in.                   |
-| age           | Number    | The user's age.                                    |
-| diploma       | String    | The highest diploma the user has achieved.         |
-| discipline    | String    | The field of study or discipline.                  |
-| reviewIds     | [ObjectId]| An array of ObjectIds linking to the reviews written by the user. |
-| createdAt     | Date      | Timestamp of account creation.                     |
-| updatedAt     | Date      | Timestamp of the last update to the profile.       |
+| Name          | Type     | Description                                                       |
+|---------------|----------|-------------------------------------------------------------------|
+| userId        | ObjectId | Unique identifier for each user.                                  |
+| email         | String   | The user's email address, used as the account identifier.         |
+| passwordHash  | String   | A hashed version of the user's password for security.             |
+| firstName     | String   | The user's first name.                                            |
+| lastName      | String   | The user's last name.                                             |
+| city          | String   | The city the user resides in.                                     |
+| state         | String   | The state the user resides in.                                    |
+| country       | String   | The country the user resides in.                                  |
+| age           | Number   | The user's age.                                                   |
+| diploma       | String   | The highest diploma the user has achieved.                        |
+| discipline    | String   | The field of study or discipline.                                 |
+| reviewIds     | ObjectId | An array of ObjectIds linking to the reviews written by the user. |
+| createdAt     | Date     | Timestamp of account creation.                                    |
+| updatedAt     | Date     | Timestamp of the last update to the profile.                      |
 
 **Example:**
 
@@ -52,30 +52,34 @@
 }
 ```
 
-## Listings Collection
+## Housings Collection
 
 **Description:** Stores information about the housing on the platform.
 
 **Details:**
 
-| Name       | Type        | Description                                 |
-|------------|-------------|---------------------------------------------|
-| listingId  | ObjectId    | Unique identifier for each listing.         |
-| address    | String      | The address of the housing option.          |
-| zipCode    | String      | Zip code for the location.                  |
-| city       | String      | City where the housing is located.          |
-| state      | String      | State where the housing is located.         |
-| homeType   | String      | Type of home (apartment, townhome, etc.).   |
-| amenities  | [String]    | List of amenities offered.                  |
-| rentalCost | Number      | Monthly rental cost.                        |
-| beds       | Number      | Number of bedrooms.                         |
-| baths      | Number      | Number of bathrooms.                        |
-| petPolicy  | String      | Information on pet policies.                |
-| garage     | Boolean     | Indicates if a garage is available.         |
-| images     | [String]    | URLs to images of the housing.              |
-| location   | Object      | Contains latitude and longitude for map representation. |
-| reviewIds  | [ObjectId]  | An array of ObjectIds linking to reviews of the listing. |
-| rating     | Number      | Overall rating based on user reviews.       |
+| Name          | Type     | Description                                              |
+|---------------|----------|----------------------------------------------------------|
+| housingId     | ObjectId | Unique identifier for each listing.                      |
+| address       | String   | The address of the housing option.                       |
+| zipCode       | String   | Zip code for the location.                               |
+| city          | String   | City where the housing is located.                       |
+| state         | String   | State where the housing is located.                      |
+| homeType      | String   | Type of home (apartment, townhome, etc.).                |
+| amenities     | String   | List of amenities offered.                               |
+| rentalCostMin | Number   | Monthly min rental cost.                                 |
+| rentalCostMax | Number   | Monthly max rental cost.                                 |
+| studios       | Number   | Number of studios.                                       |
+| 1beds         | Number   | Number of 1bed.                                          |
+| 2beds         | Number   | Number of 2beds.                                         |
+| 3beds         | Number   | Number of 3beds.                                         |
+| 4beds         | Number   | Number of 4beds.                                         |
+| petPolicy     | String   | Information on pet policies.                             |
+| garage        | Boolean  | Indicates if a garage is available.                      |
+| images        | String   | URLs to images of the housing.                           |
+| location      | Object   | Contains latitude and longitude for map representation.  |
+| reviewIds     | ObjectId | An array of ObjectIds linking to reviews of the listing. |
+| rating        | Number   | Overall rating based on user reviews.                    |
 
 **Example:**
 
@@ -88,9 +92,13 @@
   "state": "NJ",
   "homeType": "Apartment",
   "amenities": ["Pool", "Gym", "Pet Friendly"],
-  "rentalCost": 2000,
-  "beds": 2,
-  "baths": 1.5,
+  "rentalCostMin": 2000,
+  "rentalCostMax": 6000,
+  "studios": 4,
+  "1beds": 5,
+  "2beds": 10,
+  "3beds": 12,
+  "4beds": 8,
   "petPolicy": "Pets allowed",
   "garage": true,
   "images": ["http://example.com/image1.jpg", "http://example.com/image2.jpg"],
@@ -109,19 +117,19 @@
 
 **Details:**
 
-| Name          | Type       | Description                                       |
-|---------------|------------|---------------------------------------------------|
-| reviewId      | ObjectId   | Unique identifier for the review.                 |
-| listingId     | ObjectId   | ObjectId of the listing being reviewed.           |
-| userId        | ObjectId   | ObjectId of the user who wrote the review.        |
-| rating        | Number     | The rating given by the user.                     |
-| title         | String     | The title of the review.                          |
-| body          | String     | The main content of the review.                   |
-| images        | [String]   | URLs to images included in the review.            |
-| helpfulCounts | Number     | Number of times the review was marked as helpful. |
-| comments      | [Object]   | Array of comments on the review.                  |
-| createdAt     | Date       | Timestamp when the review was created.            |
-| updatedAt     | Date       | Timestamp for the last update made to the review. |
+| Name          | Type     | Description                                       |
+|---------------|----------|---------------------------------------------------|
+| reviewId      | ObjectId | Unique identifier for the review.                 |
+| listingId     | ObjectId | ObjectId of the listing being reviewed.           |
+| userId        | ObjectId | ObjectId of the user who wrote the review.        |
+| rating        | Number   | The rating given by the user.                     |
+| title         | String   | The title of the review.                          |
+| body          | String   | The main content of the review.                   |
+| images        | String   | URLs to images included in the review.            |
+| helpfulCounts | Number   | Number of times the review was marked as helpful. |
+| comments      | Object   | Array of comments on the review.                  |
+| createdAt     | Date     | Timestamp when the review was created.            |
+| updatedAt     | Date     | Timestamp for the last update made to the review. |
 
 **Example:**
 

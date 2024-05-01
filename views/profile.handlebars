@@ -7,22 +7,40 @@
 
     <div class="profile-details">
         <h2>Personal Information</h2>
-        <p><strong>Username:</strong> {{user.username}}</p>
-        <p><strong>Email:</strong> {{user.email}}</p>
-        <a href="/edit-profile" class="btn btn-secondary">Edit Profile</a>
+        <form id="edit-profile-form" action="/profile/edit" method="post">
+            <label for="firstName">First Name:</label>
+            <input type="text" id="firstName" name="firstName" value="{{user.firstName}}" required>
+            <label for="lastName">Last Name:</label>
+            <input type="text" id="lastName" name="lastName" value="{{user.lastName}}" required>
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" value="{{user.email}}" required>
+            <label for="city">City:</label>
+            <input type="text" id="city" name="city" value="{{user.city}}" required>
+            <label for="state">State:</label>
+            <input type="text" id="state" name="state" value="{{user.state}}" required>
+            <label for="country">Country:</label>
+            <input type="text" id="country" name="country" value="{{user.country}}" required>
+            <label for="age">Age:</label>
+            <input type="number" id="age" name="age" value="{{user.age}}" required>
+            <label for="diploma">Highest Diploma:</label>
+            <input type="text" id="diploma" name="diploma" value="{{user.diploma}}" required>
+            <label for="discipline">Field of Study:</label>
+            <input type="text" id="discipline" name="discipline" value="{{user.discipline}}" required>
+            <button type="submit" class="btn btn-primary">Save Changes</button>
+        </form>
     </div>
 
     <div class="review-history">
         <h2>Your Reviews</h2>
-        {{#if user.reviews}}
+        {{#if user.reviewIds}}
             <ul class="reviews-list">
-                {{#each user.reviews}}
+                {{#each user.reviewIds as |reviewId|}}
+                {{!-- Assuming you have a helper to fetch review details by ID --}}
                     <li class="review-item">
-                        <h3>{{this.housingName}}</h3>
-                        <p>{{this.content}}</p>
+                        {{> reviewPartial reviewId=reviewId}}
                         <div class="review-actions">
-                            <a href="/reviews/edit/{{this.id}}" class="btn btn-secondary">Edit</a>
-                            <a href="/reviews/delete/{{this.id}}" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this review?');">Delete</a>
+                            <a href="/reviews/edit/{{reviewId}}" class="btn btn-secondary">Edit</a>
+                            <a href="/reviews/delete/{{reviewId}}" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this review?');">Delete</a>
                         </div>
                     </li>
                 {{/each}}

@@ -2,17 +2,23 @@
     <nav>
         <a href="/landing">Home</a>
     </nav>
-    <h1 id="housing-header">{{housing.name}}</h1>
-    <img src="{{housing.imageUrl}}" alt="Image of {{housing.name}}" class="housing-main-image">
+    <h1 id="housing-header">{{housing.address}}</h1>
+    <div class="housing-images">
+        {{#each housing.images}}
+            <img src="{{this}}" alt="Image of the housing" class="housing-main-image">
+        {{/each}}
+    </div>
 
     <h2>Overview</h2>
-    <p class="housing-location"><strong>Location:</strong> {{housing.address}}, {{housing.city}}</p>
-    <p class="housing-price"><strong>Price:</strong> {{housing.price}}</p>
-    <p class="housing-type"><strong>Type:</strong> {{housing.type}}</p>
+    <p class="housing-location"><strong>Location:</strong> {{housing.address}}, {{housing.city}}, {{housing.state}}, Zip: {{housing.zipCode}}</p>
+    <p class="housing-type"><strong>Type:</strong> {{housing.homeType}}</p>
+    <p class="housing-price"><strong>Rental Cost:</strong> ${{housing.rentalCost}} per month</p>
     <p class="housing-pet-policy"><strong>Pet Policy:</strong> {{housing.petPolicy}}</p>
+    <p class="housing-garage"><strong>Garage:</strong> {{#if housing.garage}}Available{{else}}Not Available{{/if}}</p>
     <p class="housing-rating"><strong>Rating:</strong> {{housing.rating}} / 5</p>
+
     {{#if isAdmin}}
-        <a href="/housing/edit/{{housing.id}}" class="btn btn-secondary">Edit Housing</a>
+        <a href="/housing/edit/{{housing._id}}" class="btn btn-secondary">Edit Housing</a>
     {{/if}}
 
     <h2>Amenities</h2>
@@ -23,55 +29,16 @@
     </ul>
 
     <h2>Reviews</h2>
-    {{#if housing.reviews.length}}
+    {{#if housing.reviewIds.length}}
         <div class="reviews-container">
-            {{#each housing.reviews}}
-                <div class="review">
-                    <h3>Review by {{this.user.username}}</h3>
-                    <p><strong>Date:</strong> {{dateFormat this.date}}</p>
-                    <p>{{this.content}}</p>
-                    {{#if this.images}}
-                        <div class="review-images">
-                            {{#each this.images}}
-                                <img src="{{this}}" alt="Review Image" class="review-image">
-                            {{/each}}
-                        </div>
-                    {{/if}}
-                    <p><strong>Rating:</strong> {{this.rating}} / 5</p>
-
-                    <!-- "Helpful" button feature -->
-                    <div class="helpful-section">
-                        <button onclick="markReviewHelpful('{{this.id}}')" class="helpful-btn">
-                            <i class="fas fa-thumbs-up"></i> Helpful ({{this.helpfulCount}})
-                        </button>
-                        {{#if this.helpfulUsers}}
-                            <div class="helpful-users">
-                                <strong>Found helpful by:</strong> {{#each this.helpfulUsers}} {{this}}, {{/each}}
-                            </div>
-                        {{/if}}
-                    </div>
-
-                    <button onclick="location.href='/add-comment/{{this.id}}'" class="btn btn-secondary">Add Comment</button>
-
-                    <h4>Comments</h4>
-                    {{#if this.comments}}
-                        <ul class="comments-list">
-                            {{#each this.comments}}
-                                <li>
-                                    <strong>{{this.user.username}}:</strong> {{this.content}}
-                                </li>
-                            {{/each}}
-                        </ul>
-                    {{else}}
-                        <p>No comments yet. Be the first to comment!</p>
-                    {{/if}}
-                </div>
+            {{#each housing.reviewIds as |reviewId|}}
+                {{> reviewPartial reviewId=reviewId}}
             {{/each}}
         </div>
     {{else}}
         <p>No reviews yet. Be the first to write a review!</p>
     {{/if}}
-    <a href="/add-review/{{housing.id}}" class="btn btn-primary">Add Review</a>
+    <a href="/add-review/{{housing._id}}" class="btn btn-primary">Add Review</a>
 </section>
 
 <script>

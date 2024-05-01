@@ -28,17 +28,33 @@
         <form id="search-form" action="/search/results" method="POST">
             <div class="search-container">
                 <div class="search-input">
-                    <input type="text" id="searchTerm" name="searchTerm" placeholder="Hoboken, NJ; Jersey City, NJ" required>
+                    <input type="text" id="searchTerm" name="searchTerm" placeholder="Enter address, city, or ZIP" required>
                     <button type="submit">Search</button>
                 </div>
                 <div class="search-filters">
+                    <label for="homeType">Type of Home:</label>
                     <select id="homeType" name="homeType">
                         <option value="Apartment">Apartment</option>
+                        <option value="House">House</option>
                         <option value="Townhome">Townhome</option>
                     </select>
-                    <input type="number" id="price" name="price" placeholder="Max Price">
-                    <input type="number" id="beds" name="beds" placeholder="Beds">
-                    <input type="number" id="baths" name="baths" placeholder="Baths">
+
+                    <label for="rentalCostMin">Min Rental Cost:</label>
+                    <input type="number" id="rentalCostMin" name="rentalCostMin" placeholder="Min Price ($)">
+
+                    <label for="rentalCostMax">Max Rental Cost:</label>
+                    <input type="number" id="rentalCostMax" name="rentalCostMax" placeholder="Max Price ($)">
+
+                    <label for="amenities">Amenities (comma-separated):</label>
+                    <input type="text" id="amenities" name="amenities" placeholder="e.g., Pool, Gym">
+
+                    <label for="garage">Garage:</label>
+                    <select id="garage" name="garage">
+                        <option value="true">Available</option>
+                        <option value="false">Not Available</option>
+                    </select>
+
+                    <label for="petPolicy">Pet Policy:</label>
                     <select id="petPolicy" name="petPolicy">
                         <option value="Pet Friendly">Pet Friendly</option>
                         <option value="No Pets">No Pets</option>

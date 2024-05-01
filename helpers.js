@@ -40,70 +40,95 @@ const exportedMethods = {
         };
     },
 
-    checkId(id) {
-        if (!id) throw "No id provided";
-        if (typeof id !== "string" || id.trim() === "") throw "Invalid id provided";
+    checkId(id, varName) {
+        if (!id) throw `Error: You must provide a ${varName}`;
+        if (typeof id !== "string") throw `Error: ${varName} must be a string`;
         id = id.trim();
-        if (!ObjectId.isValid(id)) throw "Not a valid ObjectId";
+        if (id.length === 0)
+            throw `Error: ${varName} cannot be an empty string or just spaces`;
+        if (!ObjectId.isValid(id)) throw `Error: Invalid object ID for ${varName}`;
         return id;
     },
 
-    checkString(string, varName) {
-        if (!string) throw `You must provide a ${varName}`;
-        if (typeof string !== "string") throw `Error: ${varName} must be a string`;
-        string = string.trim();
-        if (string.length === 0) throw `${varName} cannot be an empty string or just spaces`;
-        return string;
+    checkString(strVal, varName) {
+        if (!strVal) throw `Error: You must supply a ${varName}!`;
+        if (typeof strVal !== "string") throw `Error: ${varName} must be a string!`;
+        strVal = strVal.trim();
+        if (strVal.length === 0)
+            throw `Error: ${varName} cannot be an empty string or just spaces`;
+        return strVal;
     },
 
-    checkUserName(string) {
-        return this.checkNamePattern(string, 'Username', /^[a-zA-Z0-9]+$/, 2, 25);
+    checkIfLocationValid(location) {
+        if (typeof location !== "object") {
+            throw "The location is not an object!";
+        }
+        if (!location.address || !location.city || !location.state || !location.zip) {
+            throw "Location must include address, city, state, and zip";
+        }
+        if (!validator.isPostalCode(location.zip, 'US')) {
+            throw "Invalid US postal code";
+        }
+    },
+
+    // Additional methods integrated here
+    checkUserName(string, varName) {
+        if (!string) throw `You must provide a ${varName}`;
+        if (typeof string !== "string") throw `Error:${varName} must be a string`;
+        string = string.trim();
+        if (string.length === 0)
+            throw `${varName} cannot be an empty string or just spaces`;
+        if (string.length < 2 || string.length > 25)
+            throw `${varName} should be within 2 - 25 characters`;
+        if (!/^[a-zA-Z0-9]+$/.test(string))
+            throw `${varName} must only contain digits and letters`;
+        return string;
     },
 
     checkName(string, varName) {
-        return this.checkNamePattern(string, varName, /^[a-zA-Z]+$/, 2, 25);
-    },
-
-    checkEmail(string) {
-        string = this.checkString(string, 'Email');
-        if (!validator.isEmail(string)) throw "The email address is not in a valid format!";
+        if (!string) throw `You must provide a ${varName}`;
+        if (typeof string !== "string") throw `Error:${varName} must be a string`;
+        string = string.trim();
+        if (string.length === 0)
+            throw `Error: ${varName} cannot be an empty string or just spaces`;
+        if (string.length < 2 || string.length > 25)
+            throw `${varName} should be within 2 - 25 characters`;
+        if (!/^[a-zA-Z]+$/.test(string))
+            throw `${varName} must only contain letters`;
         return string;
     },
 
-    checkPassword(password) {
+    checkEmail(string, varName) {
+        if (!string) throw `You must provide a ${varName}`;
+        if (typeof string !== "string") throw `Error:${varName} must be a string`;
+        string = string.trim();
+        if (string.length === 0)
+            throw `${varName} cannot be an empty string or just spaces`;
+        if (!validator.isEmail(string)) {
+            throw "The email address is not in a valid format!";
+        }
+        return string;
+    },
+
+    checkPassword(password, varName) {
         const passwordRequirements = {
             minLength: 8,
             minLowercase: 1,
             minUppercase: 1,
             minNumbers: 1,
-            minSymbols: 1,
+            minSymbols: 1
         };
-        if (!validator.isStrongPassword(password, passwordRequirements)) {
-            throw "Password does not meet the security requirements.";
+        let isValidPassword = validator.isStrongPassword(password, passwordRequirements);
+        if (password.includes(' '))
+            throw `${password} should not contain any space`;
+        if (!isValidPassword) {
+            throw `${varName} must have ${passwordRequirements.minLength} characters, 
+            with at least ${passwordRequirements.minLowercase} lowercase letters, 
+            ${passwordRequirements.minUppercase} uppercase letters,
+            ${passwordRequirements.minNumbers} numbers,
+            and ${passwordRequirements.minSymbols} symbols`;
         }
         return password;
-    },
-
-    checkNamePattern(string, varName, regex, minLen, maxLen) {
-        string = this.checkString(string, varName);
-        if (string.length < minLen || string.length > maxLen) throw `${varName} should be within ${minLen} - ${maxLen} characters`;
-        if (!regex.test(string)) throw `${varName} must meet the specified pattern`;
-        return string;
-    },
-
-    checkIfPhoneNumberValid(phoneNumber) {
-        if (!/^\d{10}$/.test(phoneNumber)) throw "US phone number must contain 10 digits";
-        return phoneNumber;
-    },
-
-    checkIfStoreNameValid(storeName) {
-        return this.checkNamePattern(storeName, 'Store Name', /^[a-zA-Z0-9\s\-&',.()]{3,25}$/, 3, 25);
-    },
-
-    checkSearchValid(searchTerm) {
-        searchTerm = this.checkString(searchTerm, 'Search term');
-        if (searchTerm.length > 25) throw 'Search term is too long';
-        return searchTerm;
     }
 };
 
