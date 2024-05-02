@@ -153,14 +153,35 @@ const exportedMethods = {
             }
         }
         return false;
-    },    
+    },
 
     checkIfHousingNameValid(housingName) {
         const housingNameRegex = /^[a-zA-Z0-9\s\-&',.()]{3,25}$/;
         if (!housingNameRegex.test(housingName)) {
-          throw "Invalid housing name (the housing name should be 3 to 25 characters)";
+            throw "Invalid housing name (the housing name should be 3 to 25 characters)";
         }
-      }
+    },
+    checkSearchValid(searchTerm) {
+        if (!searchTerm) {
+            throw 'Please enter a serchterm';
+        }
+
+        if (typeof searchTerm !== 'string') {
+            throw 'The type of serachterm must be string';
+        }
+
+        searchTerm = searchTerm.trim();
+
+        if (searchTerm.length === 0) {
+            throw 'A searchterm all with empty space is not valid';
+        }
+
+        if (searchTerm.length > 25) {
+            throw 'Search term is too long';
+        }
+
+        return searchTerm;
+    }
 };
 
 export default exportedMethods;
