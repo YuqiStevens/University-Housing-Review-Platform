@@ -129,7 +129,38 @@ const exportedMethods = {
             and ${passwordRequirements.minSymbols} symbols`;
         }
         return password;
-    }
+    },
+
+    async checkIfHousingNameExists(name) {
+        name = name.replace(/\s/g, "").toLowerCase();
+        const housingCollection = await housings();
+        const housingList = await housingCollection.find().toArray();
+        for (let house of housingList) {
+            if (house.name.replace(/\s/g, "").toLowerCase() === name) {
+                return true;
+            }
+        }
+        return false;
+    },
+
+    async checkIfHousingNameExistsForOtherId(name, id) {
+        name = name.replace(/\s/g, "").toLowerCase();
+        const housingCollection = await housings();
+        const housingList = await housingCollection.find().toArray();
+        for (let house of housingList) {
+            if (house._id.toString() !== id.toString() && house.name.replace(/\s/g, "").toLowerCase() === name) {
+                return true;
+            }
+        }
+        return false;
+    },    
+
+    checkIfHousingNameValid(housingName) {
+        const housingNameRegex = /^[a-zA-Z0-9\s\-&',.()]{3,25}$/;
+        if (!housingNameRegex.test(housingName)) {
+          throw "Invalid housing name (the housing name should be 3 to 25 characters)";
+        }
+      }
 };
 
 export default exportedMethods;
