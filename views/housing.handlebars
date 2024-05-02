@@ -12,7 +12,8 @@
     <h2>Overview</h2>
     <p class="housing-location"><strong>Location:</strong> {{housing.address}}, {{housing.city}}, {{housing.state}}, Zip: {{housing.zipCode}}</p>
     <p class="housing-type"><strong>Type:</strong> {{housing.homeType}}</p>
-    <p class="housing-price"><strong>Rental Cost:</strong> ${{housing.rentalCost}} per month</p>
+    <p class="housing-price-min"><strong>Rental Cost:</strong> ${{housing.rentalCostMin}} per month</p>
+    <p class="housing-price-max"><strong>Rental Cost:</strong> ${{housing.rentalCostMax}} per month</p>
     <p class="housing-pet-policy"><strong>Pet Policy:</strong> {{housing.petPolicy}}</p>
     <p class="housing-garage"><strong>Garage:</strong> {{#if housing.garage}}Available{{else}}Not Available{{/if}}</p>
     <p class="housing-rating"><strong>Rating:</strong> {{housing.rating}} / 5</p>
