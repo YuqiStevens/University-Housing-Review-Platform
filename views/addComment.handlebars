@@ -1,13 +1,12 @@
 <section aria-labelledby="add-comment-header">
     <nav>
-        <a href="/landing">Home</a>
         <a href="/housing/{{housingId}}">Back to Housing</a>
-        <a href="/housing/{{housingId}}/review/{{reviewId}}">Back to Review</a>
+        <a href="/review/{{reviewId}}">Back to Review</a>
     </nav>
     <h1 id="add-comment-header">Add a Comment to the Review</h1>
     <p>Add your comment to the review below.</p>
 
-    <form action="/housing/{{housingId}}/reviews/{{reviewId}}/comments/add" method="post" class="add-comment-form">
+    <form action="/comments/add/{{reviewId}}" method="post" class="add-comment-form">
         <div class="form-group">
             <label for="comment">Comment:</label>
             <textarea id="comment" name="comment" required placeholder="Type your comment here..."></textarea>
