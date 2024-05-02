@@ -86,7 +86,7 @@
 
 ```json
 {
-  "listingId": "5fc92b2e8b3d48bcbf889c23",
+  "housingId": "5fc92b2e8b3d48bcbf889c23",
   "address": "123 University Ave",
   "zipCode": "07030",
   "city": "Hoboken",
@@ -121,7 +121,7 @@
 | Name          | Type     | Description                                       |
 |---------------|----------|---------------------------------------------------|
 | reviewId      | ObjectId | Unique identifier for the review.                 |
-| listingId     | ObjectId | ObjectId of the listing being reviewed.           |
+| housingId     | ObjectId | ObjectId of the listing being reviewed.           |
 | userId        | ObjectId | ObjectId of the user who wrote the review.        |
 | rating        | Number   | The rating given by the user.                     |
 | title         | String   | The title of the review.                          |
@@ -137,7 +137,7 @@
 ```json
 {
   "reviewId": "5fd12c2c9b3d48bcbf889d67",
-  "listingId": "5fc92b2e8b3d48bcbf889c23",
+  "housingId": "5fc92b2e8b3d48bcbf889c23",
   "userId": "5f8d3fse4b8d3c7e9f72d3e8",
   "rating": 5,
   "title": "Great Place to Live!",
