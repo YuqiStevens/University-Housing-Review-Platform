@@ -27,8 +27,10 @@ const constructorMethod = (app) => {
   app.use('/login', loginRoutes);
   app.use('/register', registerRoutes);
   app.use('/home', homeRoutes);
+
   app.use('/store', storeRoutes);
   app.use('/addStore', addStoreRoutes);
+
   app.use('/profile', profileRoutes);
   app.use('/upload', uploadRoutes);
   app.use('/logout', logoutRoutes);
