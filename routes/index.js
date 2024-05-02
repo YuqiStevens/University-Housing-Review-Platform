@@ -24,27 +24,31 @@ import sendPromotionRoutes from './share.js'
 
 
 const constructorMethod = (app) => {
-  app.use('/login', loginRoutes);
-  app.use('/register', registerRoutes);
   app.use('/home', homeRoutes);
+
+  app.use('/login', loginRoutes);
+  app.use('/apiForLogin', apiForLoginRoutes);
+  app.use('/register', registerRoutes);
+  app.use('/profile', profileRoutes);
+  app.use('/password', passwordRoutes);
+  app.use('/logout', logoutRoutes);
+  app.use('/error', errorRoutes);
+  app.use('/upload', uploadRoutes);
 
   app.use('/store', storeRoutes);
   app.use('/addStore', addStoreRoutes);
-
-  app.use('/profile', profileRoutes);
-  app.use('/upload', uploadRoutes);
-  app.use('/logout', logoutRoutes);
-  app.use('/error', errorRoutes);
-  app.use('/password', passwordRoutes);
   app.use('/editstore', editRoutes);
+  app.use('/storeComments',storeCommentsRoutes);
+  app.use('/commentsDetail',commentDetailRoutes);
+
   app.use('/share', shareRoutes);
   app.use('/send-promotion', sendPromotionRoutes);
   app.use('/addProduct', addProductRoutes);
   app.use('/products', productsRoutes);
   app.use('/editProduct', editProductRoutes);
-  app.use('/storeComments',storeCommentsRoutes);
-  app.use('/commentsDetail',commentDetailRoutes);
-  app.use('/apiForLogin', apiForLoginRoutes);
+
+
+
 
   app.use('*', (req, res) => {
     res.status(404).render('error', { title: "404 NOT FOUND", error: "404 NOT FOUND" });

@@ -11,25 +11,21 @@
             </div>
         </div>
         {{#if isAdmin}}
-            <a href="/admin/dashboard">Admin Dashboard</a>
+            <a href="/addHousing">Add Housing</a>
         {{/if}}
+        <a href="/listing">All Housings in Database</a>
     </nav>
 
     <h1 id="home-header">Welcome to the University Housing Review Platform</h1>
     <p>This platform is dedicated to assisting new international students in finding the perfect housing around our university by providing honest, comprehensive reviews and detailed listings.</p>
 
-    <form action="/search" method="get" class="search-form">
-        <input type="text" name="query" placeholder="Enter ZIP code or Location" aria-label="Search by ZIP or Location">
-        <button type="submit" class="search-button">Search</button>
-    </form>
-
     <div class="searchContainer">
-        <h2>Advanced Search Options</h2>
-        <form id="search-form" action="/search/results" method="POST">
+        <h2>Search Housing Options</h2>
+        <form id="search-form" action="/home/search" method="POST">
             <div class="search-container">
                 <div class="search-input">
                     <input type="text" id="searchTerm" name="searchTerm" placeholder="Enter address, city, or ZIP" required>
-                    <button type="submit">Search</button>
+                    <button type="submit" class="search-button">Search</button>
                 </div>
                 <div class="search-filters">
                     <label for="homeType">Type of Home:</label>
@@ -65,6 +61,25 @@
         </form>
     </div>
 
+    {{!-- Results rendering section --}}
+    {{#if searchResults}}
+        <div class="search-results">
+            <h3>Searched Results for "{{searchTerm}}":</h3>
+            {{#each searchResults}}
+                <div class="search-result-item">
+                    <div class="housing-info">
+                        <h4>{{this.name}}</h4>
+                        <p>{{this.description}}</p>
+                        <p>Type: {{this.type}}, Price Range: ${{this.rentalCostMin}} - ${{this.rentalCostMax}}</p>
+                    </div>
+                </div>
+            {{/each}}
+        </div>
+    {{else}}
+        <div class="no-results-message">
+            <p>No results found for "{{searchTerm}}". Please try different search criteria.</p>
+        </div>
+    {{/if}}
     <h2>How It Works</h2>
     <p>Start your housing search using a specific ZIP code or a general location. Apply filters like price, beds/baths, home type, pet policy, and more to find what suits you best.</p>
 </section>
