@@ -18,22 +18,23 @@
 
 **Details:**
 
-| Name          | Type     | Description                                                       |
-|---------------|----------|-------------------------------------------------------------------|
-| userId        | ObjectId | Unique identifier for each user.                                  |
-| email         | String   | The user's email address, used as the account identifier.         |
-| passwordHash  | String   | A hashed version of the user's password for security.             |
-| firstName     | String   | The user's first name.                                            |
-| lastName      | String   | The user's last name.                                             |
-| city          | String   | The city the user resides in.                                     |
-| state         | String   | The state the user resides in.                                    |
-| country       | String   | The country the user resides in.                                  |
-| age           | Number   | The user's age.                                                   |
-| diploma       | String   | The highest diploma the user has achieved.                        |
-| discipline    | String   | The field of study or discipline.                                 |
-| reviewIds     | ObjectId | An array of ObjectIds linking to the reviews written by the user. |
-| createdAt     | Date     | Timestamp of account creation.                                    |
-| updatedAt     | Date     | Timestamp of the last update to the profile.                      |
+| Name         | Type     | Description                                                       |
+|--------------|----------|-------------------------------------------------------------------|
+| userId       | ObjectId | Unique identifier for each user.                                  |
+| email        | String   | The user's email address, used as the account identifier.         |
+| passwordHash | String   | A hashed version of the user's password for security.             |
+| firstName    | String   | The user's first name.                                            |
+| lastName     | String   | The user's last name.                                             |
+| role         | String   | The user's role.                                                  |
+| city         | String   | The city the user resides in.                                     |
+| state        | String   | The state the user resides in.                                    |
+| country      | String   | The country the user resides in.                                  |
+| age          | Number   | The user's age.                                                   |
+| diploma      | String   | The highest diploma the user has achieved.                        |
+| discipline   | String   | The field of study or discipline.                                 |
+| reviewIds    | ObjectId | An array of ObjectIds linking to the reviews written by the user. |
+| createdAt    | Date     | Timestamp of account creation.                                    |
+| updatedAt    | Date     | Timestamp of the last update to the profile.                      |
 
 **Example:**
 
