@@ -1,7 +1,7 @@
 import * as commentsFunctions from './comments.js';
 import * as productsFunctions from './products.js';
-import * as reviewsforproductsFunctions from './reviewsforproducts.js';
-import * as reviewsforstoresFunctions from './reviewsforstores.js';
+import * as reviewsforproductsFunctions from './commentsforreviews.js';
+import * as reviewsforstoresFunctions from './reviewsforhousing.js';
 import * as storesFunctions from './stores.js';
 import * as usersFunctions from './users.js';
 import * as commentsforstoresFunctions from './commentsforstores.js';
