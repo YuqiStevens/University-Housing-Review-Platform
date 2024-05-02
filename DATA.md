@@ -8,6 +8,10 @@
 - Zhuo Zhang
 - Chongyuan Zhang
 
+
+
+
+
 ## Users Collection
 
 **Description:** Stores information about registered users on the platform.
@@ -52,6 +56,11 @@
   "updatedAt": "2023-10-01T12:00:00Z"
 }
 ```
+
+
+
+
+
 
 ## Housings Collection
 
@@ -112,6 +121,12 @@
 }
 ```
 
+
+
+
+
+
+
 ## Reviews Collection
 
 **Description:** Holds reviews written by users for different listings
@@ -160,6 +175,11 @@
   "updatedAt": "2023-11-20T12:00:00Z"
 }
 ```
+
+
+
+
+
 
 ## Comments Collection
 
