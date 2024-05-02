@@ -168,17 +168,6 @@ const getAllUsers = async () => {
   const allUsers = await usersCollection.find({}).toArray();
   return allUsers;
 }
-const updateAvatar = async (id, fileName) => {
-  const userCollection = await users();
-  await userCollection.findOneAndUpdate(
-    { _id: new ObjectId(id) },
-    {
-      $set: {
-        avatar: fileName,
-      }
-    },
-    { returnDocument: 'after' });
-}
 
 const updatePassword = async (id, password) => {
   const userCollection = await users();
@@ -194,28 +183,4 @@ const updatePassword = async (id, password) => {
     { returnDocument: 'after' });
 }
 
-const bindStoreWithUser = async (storeId, adminId) => {
-  if (!storeId || !adminId) throw 'You must provide an id';
-  if (typeof storeId !== 'string' || typeof adminId !== 'string') throw 'Id must be a string';
-  if (storeId.trim().length === 0 || adminId.trim().length === 0)
-    throw 'Id cannot be an empty string or just spaces';
-  storeId = storeId.trim();
-  adminId = adminId.trim();
-  if (!ObjectId.isValid(storeId)) throw 'invalid store ID';
-  if (!ObjectId.isValid(adminId)) throw 'invalid admin ID';
-  const userCollection = await users();
-  const user = await userCollection.findOne({ _id: new ObjectId(adminId) });
-  if (user === null) throw 'No admin with that id';
-  if (user.role !== 'admin') throw 'The user is not an admin'
-  await userCollection.findOneAndUpdate(
-    { _id: new ObjectId(adminId) },
-    {
-      $set: {
-        ownedStoreId: storeId,
-      }
-    },
-    { returnDocument: 'after' });
-  return { insertStore: true };
-}
-
-export { getUser, addUser, loginUser, removeUser, updateUser, getAllUsers, updateAvatar, updatePassword, bindStoreWithUser };
+export { getUser, addUser, loginUser, removeUser, updateUser, getAllUsers, updatePassword};
