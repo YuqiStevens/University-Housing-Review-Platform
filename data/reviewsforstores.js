@@ -1,12 +1,16 @@
 import { reviewsforstores } from "../config/mongoCollections.js";
-import validation from "../validation.js";
+import validation from "../helpers.js";
 import { ObjectId } from "mongodb";
+
+
 
 const getAllReviews = async () => {
   const reviewsCollection = await reviewsforstores();
   const reviews = await reviewsCollection.find({}).toArray();
   return reviews;
 };
+
+
 const getReviewById = async (id) => {
   validation.checkId(id);
   const reviewsCollection = await reviewsforstores();
@@ -14,12 +18,16 @@ const getReviewById = async (id) => {
   if (!review) throw "Review not found";
   return review;
 };
+
+
 const addReview = async (review) => {
   const reviewsCollection = await reviewsforstores();
   const newInsertInformation = await reviewsCollection.insertOne(review);
   const newId = newInsertInformation.insertedId;
   return await getReviewById(newId.toString());
 };
+
+
 const removeReview = async (id) => {
   const reviewsCollection = await reviewsforstores();
   const deletionInfo = await reviewsCollection.findOneAndDelete({
@@ -31,9 +39,12 @@ const removeReview = async (id) => {
   console.log(deletionInfo);
   return deletionInfo;
 };
+
+
 const updateReview = async (id, updatedReview) => {
   const reviewsCollection = await reviewsforstores();
   const updatedReviewData = {};
+
   if (updatedReview.user_id) {
     updatedReviewData.user_id = updatedReview.user_id;
   }
@@ -55,6 +66,11 @@ const updateReview = async (id, updatedReview) => {
   await reviewsCollection.updateOne(query, updateCommand);
   return await getReviewById(id.toString());
 };
+
+
+
+
+
 export  {
   getAllReviews,
   getReviewById,
