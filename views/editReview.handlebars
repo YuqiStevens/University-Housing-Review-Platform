@@ -1,11 +1,11 @@
 <section aria-labelledby="edit-review-header">
     <nav>
         <a href="/housing/{{housing.id}}">Back to Housing</a>
-        <a href="/housing/{{housing.id}}/review/{{review.id}}">Back to Review</a>
+        <a href="/review/{{review.id}}">Back to Review</a>
     </nav>
     <h1 id="edit-review-header">Edit Review: {{review.title}}</h1>
 
-    <form action="/housing/{{housing.id}}/review/{{review.id}}/update" method="post">
+    <form action="/review/edit/{{review.id}}" method="post">
         <div class="form-group">
             <label for="title">Review Title:</label>
             <input type="text" id="title" name="title" value="{{review.title}}" required>
