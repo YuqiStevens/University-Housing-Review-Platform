@@ -3,6 +3,7 @@ import bcrypt from 'bcrypt';
 import { ObjectId } from "mongodb";
 import validator from "validator";
 
+
 const exportedMethods = {
     async toHashPassword(password) {
         return await bcrypt.hash(password, 10);
@@ -40,6 +41,7 @@ const exportedMethods = {
         };
     },
 
+
     checkId(id, varName) {
         if (!id) throw `Error: You must provide a ${varName}`;
         if (typeof id !== "string") throw `Error: ${varName} must be a string`;
@@ -50,6 +52,7 @@ const exportedMethods = {
         return id;
     },
 
+
     checkString(strVal, varName) {
         if (!strVal) throw `Error: You must supply a ${varName}!`;
         if (typeof strVal !== "string") throw `Error: ${varName} must be a string!`;
@@ -58,6 +61,7 @@ const exportedMethods = {
             throw `Error: ${varName} cannot be an empty string or just spaces`;
         return strVal;
     },
+
 
     checkIfLocationValid(location) {
         if (typeof location !== "object") {
@@ -70,6 +74,7 @@ const exportedMethods = {
             throw "Invalid US postal code";
         }
     },
+
 
     // Additional methods integrated here
     checkUserName(string, varName) {
@@ -85,6 +90,7 @@ const exportedMethods = {
         return string;
     },
 
+
     checkName(string, varName) {
         if (!string) throw `You must provide a ${varName}`;
         if (typeof string !== "string") throw `Error:${varName} must be a string`;
@@ -98,6 +104,7 @@ const exportedMethods = {
         return string;
     },
 
+
     checkEmail(string, varName) {
         if (!string) throw `You must provide a ${varName}`;
         if (typeof string !== "string") throw `Error:${varName} must be a string`;
@@ -110,6 +117,7 @@ const exportedMethods = {
         return string;
     },
 
+    
     checkPassword(password, varName) {
         const passwordRequirements = {
             minLength: 8,
