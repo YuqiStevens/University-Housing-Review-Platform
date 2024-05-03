@@ -1,23 +1,31 @@
 import { comments } from "../config/mongoCollections.js";
 import { ObjectId } from "mongodb";
 
+
 const getAllComments = async () => {
   const commentsCollection = await comments();
   const allComments = await commentsCollection.find({}).toArray();
   return allComments;
 };
+
+
 const getCommentById = async (id) => {
   const commentsCollection = await comments();
   const comment = await commentsCollection.findOne({ _id: new ObjectId(id) });
   if (!comment) throw "Comment not found";
   return comment;
 };
+
+
 const addComment = async (comment) => {
   const commentsCollection = await comments();
   const newInsertInformation = await commentsCollection.insertOne(comment);
   const newId = newInsertInformation.insertedId;
   return await getCommentById(newId.toString());
 };
+
+
+
 const removeComment = async (id) => {
   const commentsCollection = await comments();
   const deletionInfo = await commentsCollection.findOneAndDelete({
@@ -29,6 +37,8 @@ const removeComment = async (id) => {
   console.log(deletionInfo);
   return deletionInfo;
 };
+
+
 const updateComment = async (id, updatedComment) => {
   const commentsCollection = await comments();
   const updatedCommentData = {};
@@ -55,9 +65,12 @@ const updateComment = async (id, updatedComment) => {
   const query = {
     _id: new ObjectId(id),
   };
+  
   await commentsCollection.updateOne(query, updateCommand);
   return await getCommentById(id.toString());
 };
+
+
 
 export {
   getAllComments,

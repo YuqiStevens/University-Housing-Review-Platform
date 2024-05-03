@@ -4,6 +4,8 @@ import { ObjectId } from "mongodb";
 import xss from "xss";
 import { storesData } from "./index.js";
 
+
+
 const getAllComments = async (storeId) => {
   let storeid = xss(storeId).trim();
   try{
@@ -15,6 +17,8 @@ const getAllComments = async (storeId) => {
   const comments = await commentsCollection.find({store_id: storeid}).project({_id:1, comment:1, Answer: 1}).toArray();
   return comments;
 };
+
+
 
 const getCommentById = async (Id) => {
 
@@ -29,6 +33,8 @@ const getCommentById = async (Id) => {
   if (!storecomment) throw "comment cannot found";
   return storecomment;
 };
+
+
 
 
 const addComment = async (storeComment) => {
@@ -63,6 +69,7 @@ const addComment = async (storeComment) => {
 };
  
 
+
 const addAnswer = async(Id,  Answer) => {
   let id = xss(Id).trim();
   let answer = xss(Answer).trim();
@@ -95,6 +102,8 @@ const addAnswer = async(Id,  Answer) => {
 };
 
 
+
+
 const getAnswerById = async(Id) => {
   let id = xss(Id).trim();
   try{
@@ -107,6 +116,8 @@ const getAnswerById = async(Id) => {
   if (!commentAnswer) throw "no answer from owner for now";
   return commentAnswer;
 }
+
+
 
 const deleteAnswer = async(Id) =>{
   let id = xss(Id).trim();
@@ -129,6 +140,8 @@ const deleteAnswer = async(Id) =>{
   if(!updateInfo.acknowledged) throw 'Could not delete this answer!';
   return await getCommentById(id);
 }
+
+
 //   
 const removeComment= async (Id) => {
   let id = xss(Id).trim();
@@ -148,6 +161,10 @@ const removeComment= async (Id) => {
   console.log(deletionInfo);
   return deletionInfo;
 };
+
+
+
+
 
 export  {
   getAllComments,
