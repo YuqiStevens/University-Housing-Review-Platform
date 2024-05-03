@@ -1,10 +1,10 @@
-import { housings } from "../config/mongoCollections.js"
+import { housing_collection } from "../config/mongoCollections.js"
 import helpers from "../helpers.js";
 
 export async function getHousingSearchResults(searchTerm) {
     searchTerm = helpers.checkSearchValid(searchTerm);
 
-    const housingsCollection = await housings();
+    const housingsCollection = await housing_collection();
 
     const matchedHousings = await housingsCollection
         .find({ name: { $regex: searchTerm, $options: 'i' } })

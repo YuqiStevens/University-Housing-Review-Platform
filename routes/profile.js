@@ -1,7 +1,8 @@
 import express from 'express';
+
 const router = express.Router();
-import { getUser, updateUser } from '../data/users.js'
-import { getAllReviewByUserId } from '../data/reviewsforproducts.js';
+import {getUserById, updateUser} from '../data/users.js'
+import {getAllReviewByUserId} from '../data/reviewsforproducts.js';
 import helper from '../helpers.js';
 import xss from 'xss';
 
@@ -10,7 +11,7 @@ router.route('/')
     .get(async (req, res) => {
         const title = "Profile";
         const id = req.session.user.id;
-        let user = await getUser(id);
+        let user = await getUserById(id);
         let hasReviews = false;
         let hasNoReviews = true;
         let allReviews = await getAllReviewByUserId(id);
@@ -48,12 +49,10 @@ router.route('/')
     })
 
 
-
-
     .post(async (req, res) => {
         const title = "Profile";
         const id = req.session.user.id;
-        let user = await getUser(id);
+        let user = await getUserById(id);
         let hasReviews = false;
         let hasNoReviews = true;
 
@@ -189,7 +188,7 @@ router.route('/')
 
 
         if (!updatedUser) {
-            return res.status(500).render('error', { title: "Internal Server Error", error: "Internal Server Error" });
+            return res.status(500).render('error', {title: "Internal Server Error", error: "Internal Server Error"});
         }
 
 

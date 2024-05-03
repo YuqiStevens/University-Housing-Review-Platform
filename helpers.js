@@ -1,6 +1,6 @@
-import { users, housings } from "./config/mongoCollections.js";
+import {users, housings} from "./config/mongoCollections.js";
 import bcrypt from 'bcrypt';
-import { ObjectId } from "mongodb";
+import {ObjectId} from "mongodb";
 import validator from "validator";
 
 
@@ -11,26 +11,26 @@ const exportedMethods = {
 
     async checkIfEmailExists(email) {
         const userCollection = await users();
-        const user = await userCollection.findOne({ email });
+        const user = await userCollection.findOne({email});
         return user !== null;
     },
 
     async checkIfEmailExistsExceptMe(emailNow, email) {
         const userCollection = await users();
-        const userList = await userCollection.find({ email: { $ne: emailNow } }).toArray();
+        const userList = await userCollection.find({email: {$ne: emailNow}}).toArray();
         return userList.some(user => user.email === email);
     },
 
     async checkIfPasswordCorrect(email, password) {
         const userCollection = await users();
-        const user = await userCollection.findOne({ email });
+        const user = await userCollection.findOne({email});
         if (!user) return false;
         return await bcrypt.compare(password, user.hashPassword);
     },
 
     async getUserInfoByEmail(email) {
         const userCollection = await users();
-        const user = await userCollection.findOne({ email });
+        const user = await userCollection.findOne({email});
         if (!user) return null;
         return {
             id: user._id,
@@ -117,7 +117,7 @@ const exportedMethods = {
         return string;
     },
 
-    
+
     checkPassword(password, varName) {
         const passwordRequirements = {
             minLength: 8,

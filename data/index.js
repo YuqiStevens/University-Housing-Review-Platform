@@ -1,10 +1,10 @@
 
-import * as reviewsforhousingFunctions from './reviewsforstores.js';
-import * as housingFunctions from './stores.js';
+import * as reviewsForHousingFunctions from './reviewsForHousing.js';
+import * as housingFunctions from './housing.js';
 import * as usersFunctions from './users.js';
-import * as commentsforreviewsFunctions from './commentsforstores.js';
+import * as commentsForReviewsFunctions from './commentsForReviews';
 
-export const reviewsforhousingData = reviewsforhousingFunctions;
+export const reviewsForHousingData = reviewsForHousingFunctions;
 export const housingData = housingFunctions;
 export const usersData = usersFunctions;
-export const commentsforreviewsData = commentsforreviewsFunctions;
+export const commentsForReviewsData = commentsForReviewsFunctions;
