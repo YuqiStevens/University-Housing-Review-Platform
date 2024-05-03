@@ -107,7 +107,7 @@ router.get('/:id', async (req, res) => {
     }
 });
 
-router.post('/update/:id', upload.array('images'), async (req, res) => {
+router.post('/edit/:id', upload.array('images'), async (req, res) => {
     const housingId = req.params.id;
     if (!ObjectId.isValid(housingId)) {
         return res.status(400).send('Invalid Housing ID');

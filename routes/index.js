@@ -21,7 +21,7 @@ const constructorMethod = (app) => {
     app.use('/logout', logoutRoutes);
     app.use('/error', errorRoutes);
 
-    app.use('/housing', housingRoutes);
+    app.use('/housings', housingRoutes);
     app.use('/reviews', reviewsRoutes);
     app.use('/comments', commentsRoutes);
 
