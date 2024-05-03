@@ -1,15 +1,13 @@
 import express from 'express';
-import { addComment, getCommentById } from '../data/comments.js';  
+import {addComment, getCommentById} from '../data/commentsForReviews.js';
+
 const router = express.Router();
 import helpers from '../helpers.js';
 import xss from 'xss';
 
-
-
 router.post('/add/:reviewId', async (req, res) => {
-    const reviewId = req.params.reviewId;  
-    const comment = xss(req.body.comment);  
-
+    const reviewId = req.params.reviewId;
+    const comment = xss(req.body.comment);
 
     if (!helpers.checkId(reviewId, 'Review ID')) {
         return res.status(400).send('Invalid Review ID');
@@ -23,12 +21,12 @@ router.post('/add/:reviewId', async (req, res) => {
         const newComment = {
             reviewId: reviewId,
             text: comment,
-            userId: req.session.user.id,  
-            createdAt: new Date()  
+            userId: req.session.user.id,
+            createdAt: new Date()
         };
 
         await addComment(newComment);
-        res.redirect(`/review/${reviewId}`);  
+        res.redirect(`/review/${reviewId}`);
     } catch (error) {
         console.error('Error adding comment:', error);
         res.status(500).send('Failed to add comment due to server error.');
@@ -36,12 +34,9 @@ router.post('/add/:reviewId', async (req, res) => {
 });
 
 
-
-
-
 // 这里需要找到对应的评论模板来显示评论详情，不知道具体在哪里
 router.get('/:commentId', async (req, res) => {
-    const commentId = req.params.commentId;  
+    const commentId = req.params.commentId;
 
     if (!helpers.checkId(commentId, 'Comment ID')) {
         return res.status(400).send('Invalid Comment ID');
@@ -55,13 +50,13 @@ router.get('/:commentId', async (req, res) => {
 
         const cleanComment = {
             ...comment,
-            text: xss(comment.text)  
+            text: xss(comment.text)
         };
 
         // 假设你有一个对应的模板来显示评论详情
         // 如果你需要显示评论回复或相关信息，确保模板和数据适配这一需求
         res.render('commentDetail', {
-            title: `Comment by ${comment.userId}`,  
+            title: `Comment by ${comment.userId}`,
             comment: cleanComment
         });
     } catch (error) {
@@ -69,8 +64,6 @@ router.get('/:commentId', async (req, res) => {
         res.status(500).send('Server error occurred while fetching the comment.');
     }
 });
-
-
 
 
 export default router;

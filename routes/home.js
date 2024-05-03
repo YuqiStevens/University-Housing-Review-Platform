@@ -1,13 +1,11 @@
 import express from 'express';
-import { ObjectId } from "mongodb";
-import { getUser } from '../data/users.js';
+import { ObjectId } from'mongodb';
+import { getUserById } from '../data/users.js';
 import { getAllHouses, getHouseSearchResults } from '../data/house.js'; 
 import validation from '../helpers.js';
 import xss from 'xss';
 
-
 const router = express.Router();
-
 
 router.route('/')
     .get(async (req, res) => {
@@ -15,7 +13,7 @@ router.route('/')
         const id = req.session.user.userId;
         const isAdmin = req.session.user.role === 'admin';
         
-        const user = await getUser(id);
+        const user = await getUserById(id);
         const houses = await getAllHouses();
 
         if (!houses) {
@@ -36,14 +34,11 @@ router.route('/')
         });
     });
 
-    
-
-
 router.route('/search').post(async (req, res) => {
     const title = "Home Page";
     const isAdmin = req.session.user.role === 'admin';
     const id = req.session.user.userId;
-    const user = await getUser(id);
+    const user = await getUserById(id);
 
     let searchType = xss(req.body.homeType);
     let searchTerm = xss(req.body.searchTerm);
@@ -80,8 +75,5 @@ router.route('/search').post(async (req, res) => {
         isAdmin: isAdmin,
     });
 });
-
-
-
 
 export default router;
