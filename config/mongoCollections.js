@@ -13,9 +13,7 @@ const getCollectionFn = (collection) => {
     };
 };
 
-module.exports = {
-    user_collection: getCollectionFn("users"),
-    housing_collection: getCollectionFn("housings"),
-    review_collection: getCollectionFn("reviews"),
-    comment_collection: getCollectionFn("comments")
-};
+export const user_collection = getCollectionFn("users");
+export const housing_collection = getCollectionFn("housings");
+export const review_collection = getCollectionFn("reviews");
+export const comment_collection = getCollectionFn("comments");

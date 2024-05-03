@@ -1,4 +1,4 @@
-import {users, housings} from "./config/mongoCollections.js";
+import {user_collection, housing_collection} from "./config/mongoCollections.js";
 import bcrypt from 'bcrypt';
 import {ObjectId} from "mongodb";
 import validator from "validator";
@@ -10,26 +10,26 @@ const exportedMethods = {
     },
 
     async checkIfEmailExists(email) {
-        const userCollection = await users();
+        const userCollection = await user_collection();
         const user = await userCollection.findOne({email});
         return user !== null;
     },
 
     async checkIfEmailExistsExceptMe(emailNow, email) {
-        const userCollection = await users();
+        const userCollection = await user_collection();
         const userList = await userCollection.find({email: {$ne: emailNow}}).toArray();
         return userList.some(user => user.email === email);
     },
 
     async checkIfPasswordCorrect(email, password) {
-        const userCollection = await users();
+        const userCollection = await user_collection();
         const user = await userCollection.findOne({email});
         if (!user) return false;
         return await bcrypt.compare(password, user.hashPassword);
     },
 
     async getUserInfoByEmail(email) {
-        const userCollection = await users();
+        const userCollection = await user_collection();
         const user = await userCollection.findOne({email});
         if (!user) return null;
         return {
@@ -141,7 +141,7 @@ const exportedMethods = {
 
     async checkIfHousingNameExists(name) {
         name = name.replace(/\s/g, "").toLowerCase();
-        const housingCollection = await housings();
+        const housingCollection = await housing_collection();
         const housingList = await housingCollection.find().toArray();
         for (let house of housingList) {
             if (house.name.replace(/\s/g, "").toLowerCase() === name) {
@@ -153,7 +153,7 @@ const exportedMethods = {
 
     async checkIfHousingNameExistsForOtherId(name, id) {
         name = name.replace(/\s/g, "").toLowerCase();
-        const housingCollection = await housings();
+        const housingCollection = await housing_collection();
         const housingList = await housingCollection.find().toArray();
         for (let house of housingList) {
             if (house._id.toString() !== id.toString() && house.name.replace(/\s/g, "").toLowerCase() === name) {

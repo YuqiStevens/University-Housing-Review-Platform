@@ -1,4 +1,4 @@
-import {users} from "../config/mongoCollections.js";
+import {user_collection} from "../config/mongoCollections.js";
 import {ObjectId} from "mongodb";
 import bcrypt from "bcrypt";
 import validator from "validator";
@@ -13,7 +13,7 @@ const getUserById = async (id) => {
         throw 'Id cannot be an empty string or just spaces';
     id = id.trim();
     if (!ObjectId.isValid(id)) throw 'invalid object ID';
-    const userCollection = await users();
+    const userCollection = await user_collection();
     const user = await userCollection.findOne({_id: new ObjectId(id)});
     if (user === null) throw 'No user with that id';
     return user;
@@ -71,7 +71,7 @@ const addUser = async (
         "ownedStoreId": null,
         "avatar": "default.jpg",
     }
-    const userCollection = await users();
+    const userCollection = await user_collection();
     const insertInfo = await userCollection.insertOne(newUser);
     if (!insertInfo.acknowledged || !insertInfo.insertedId) throw 'Could not add user';
     return {
@@ -105,7 +105,7 @@ const loginUser = async (email, password) => {
 
 
 const removeUser = async (id) => {
-    const usersCollection = await users();
+    const usersCollection = await user_collection();
     const deletionInfo = await usersCollection.findOneAndDelete({
         _id: new ObjectId(id),
     });
@@ -148,7 +148,7 @@ const updateUser = async (id, updatedUser) => {
     gender = gender.trim().toLowerCase();
     if (gender !== "" && gender !== 'male' && gender !== 'female') throw "The gender should be prefer not to say, male or female";
 
-    const userCollection = await users();
+    const userCollection = await user_collection();
     const updateInfo = await userCollection.findOneAndUpdate(
         {_id: new ObjectId(id)},
         {
@@ -165,13 +165,13 @@ const updateUser = async (id, updatedUser) => {
     return {updatedUser: true};
 }
 const getAllUsers = async () => {
-    const usersCollection = await users();
+    const usersCollection = await user_collection();
     const allUsers = await usersCollection.find({}).toArray();
     return allUsers;
 }
 
 const updatePassword = async (id, password) => {
-    const userCollection = await users();
+    const userCollection = await user_collection();
     if (!validation.checkIfPasswordCorrect(password)) throw "Password must have at least 8 characters, with at least 1 uppercase letter, 1 number, and 1 symbol";
     password = await bcrypt.hash(password, 10);
     await userCollection.findOneAndUpdate(

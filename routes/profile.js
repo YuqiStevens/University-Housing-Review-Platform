@@ -2,7 +2,7 @@ import express from 'express';
 
 const router = express.Router();
 import {getUserById, updateUser} from '../data/users.js'
-import {getAllReviewByUserId} from '../data/reviewsforproducts.js';
+import {getAllReviewByUserId} from '../data/reviewsForHousing.js';
 import helper from '../helpers.js';
 import xss from 'xss';
 

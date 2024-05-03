@@ -1,5 +1,5 @@
 import express from 'express';
-import {addReview, updateReview, getReviewByReviewId, removeReview} from '../data/reviews.js';
+import {addReview, updateReview, getReviewByReviewId, removeReview} from '../data/reviewsForHousing.js';
 
 const router = express.Router();
 import helpers from '../helpers.js';
