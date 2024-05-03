@@ -1,11 +1,13 @@
 // Import necessary modules and set up Express app
 import express from 'express';
+
 const app = express();
 import session from 'express-session';
 import configRoutes from './routes/index.js';
-import { fileURLToPath } from 'url';
-import { dirname } from 'path';
+import {fileURLToPath} from 'url';
+import {dirname} from 'path';
 import exphbs from 'express-handlebars';
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
@@ -13,10 +15,10 @@ const staticDir = express.static(__dirname + '/public');
 
 app.use('/public', staticDir);
 app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.urlencoded({extended: true}));
 
 // Set up Handlebars as the view engine
-app.engine('handlebars', exphbs.engine({ defaultLayout: 'main' }));
+app.engine('handlebars', exphbs.engine({defaultLayout: 'main'}));
 app.set('view engine', 'handlebars');
 
 // Set up session configuration
@@ -26,7 +28,7 @@ app.use(
         secret: "YourSecretHere", // Update with a real secret in production
         saveUninitialized: true,
         resave: false,
-        cookie: { maxAge: 600000 } // Session expires after 10 minutes of inactivity
+        cookie: {maxAge: 600000} // Session expires after 10 minutes of inactivity
     })
 );
 
@@ -64,7 +66,7 @@ app.use('/profile', (req, res, next) => {
     }
 });
 
-app.use('/addHousing', (req, res, next) => {
+app.use('/housings/add', (req, res, next) => {
     if (req.session.user && req.session.user.role === 'admin') {
         next();
     } else {
@@ -72,7 +74,7 @@ app.use('/addHousing', (req, res, next) => {
     }
 });
 
-app.use('/editHousing', (req, res, next) => {
+app.use('/housings/edit', (req, res, next) => {
     if (req.session.user && req.session.user.role === 'admin') {
         next();
     } else {
@@ -80,7 +82,7 @@ app.use('/editHousing', (req, res, next) => {
     }
 });
 
-app.use('/addReview', (req, res, next) => {
+app.use('/reviews', (req, res, next) => {
     if (req.session.user) {
         next();
     } else {

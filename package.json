@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "Our initiative aims to address these issues by creating a specialized platform for reviewing apartments and houses around the university, designed with the unique needs of new international students in mind.",
   "main": "app.js",
+  "type": "module",
   "scripts": {
     "seed": "node  ./test/seed.js",
     "start": "node app.js",

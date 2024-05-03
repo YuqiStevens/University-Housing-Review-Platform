@@ -2,11 +2,12 @@ import express from 'express';
 import multer from 'multer';
 import path from 'path';
 import { ObjectId } from 'mongodb';
-import { addHousing, getHousingById, updateHousing } from '../data/housing.js'; 
+import { addHousing } from '../data/housing.js';
+import { getHousingById } from '../data/housing.js';
+import { updateHousing } from '../data/housing.js';
 import helpers from '../helpers.js';
+import validator from "validator";
 import xss from 'xss';
-
-
 
 const router = express.Router();
 
@@ -21,11 +22,7 @@ const storage = multer.diskStorage({
     }
 });
 
-
-
 const upload = multer({ storage: storage });
-
-
 
 router.post('/add', upload.array('images'), async (req, res) => {
     try {
@@ -48,8 +45,8 @@ router.post('/add', upload.array('images'), async (req, res) => {
         helpers.checkString(state, 'State');
         helpers.checkString(homeType, 'Home Type');
 
-        // helpers.checkNumber(rentalCostMin, 'Minimum Rental Cost');
-        // helpers.checkNumber(rentalCostMax, 'Maximum Rental Cost');
+        validator.isInt(rentalCostMin);
+        validator.isInt(rentalCostMax);
 
         if (!address || !city || !state) {
             res.status(400).send('Missing required fields');
@@ -79,9 +76,6 @@ router.post('/add', upload.array('images'), async (req, res) => {
         res.status(500).send('Internal Server Error');
     }
 });
-
-
-
 
 router.get('/:id', async (req, res) => {
     try {
@@ -113,10 +107,6 @@ router.get('/:id', async (req, res) => {
     }
 });
 
-
-
-
-
 router.post('/edit/:id', upload.array('images'), async (req, res) => {
     const housingId = req.params.id;
     if (!ObjectId.isValid(housingId)) {
@@ -129,8 +119,8 @@ router.post('/edit/:id', upload.array('images'), async (req, res) => {
         const city = xss(helpers.checkString(req.body.city, 'City'));
         const state = xss(helpers.checkString(req.body.state, 'State'));
         const homeType = xss(helpers.checkString(req.body.homeType, 'Home Type'));
-        //const rentalCostMin = xss(helpers.checkNumber(req.body.rentalCostMin, 'Minimum Rental Cost'));
-        //const rentalCostMax = xss(helpers.checkNumber(req.body.rentalCostMax, 'Maximum Rental Cost'));
+        const rentalCostMin = xss(validator.isInt(req.body.rentalCostMin));
+        const rentalCostMax = xss(validator.isInt(req.body.rentalCostMax));
         const amenities = xss(req.body.amenities);
         const petPolicy = xss(req.body.petPolicy);
         const garage = xss(req.body.garage) === 'on';
@@ -153,7 +143,6 @@ router.post('/edit/:id', upload.array('images'), async (req, res) => {
             images
         };
 
-
         await updateHousing(housingId, updateData);
         res.redirect(`/housing/${housingId}`); 
     } catch (error) {
@@ -161,7 +150,5 @@ router.post('/edit/:id', upload.array('images'), async (req, res) => {
         res.status(500).send('Failed to update housing');
     }
 });
-
-
 
 export default router;

@@ -1,5 +1,6 @@
-import { comments } from '../config/mongoCollections.js';
+import { comment_collection } from '../config/mongoCollections.js';
 import * as usersFunctions from './users.js';
+import * as reviewsFunctions from './reviewsForHousing.js';
 import { ObjectId } from 'mongodb';
 import xss from 'xss';
 import helpers from '../helpers.js';
@@ -36,7 +37,7 @@ const addComment = async (user_id, review_id, commentText) => {
     review_id = helpers.checkId(review_id, 'review_id');
     commentText = helpers.checkString(commentText, 'commentText');
 
-    const commentsCollection = await comments();
+    const commentsCollection = await comment_collection();
 
     // Ensure the user exists (assuming a getUserById function)
     const user = await usersFunctions.getUserById(user_id);
@@ -68,7 +69,7 @@ const addComment = async (user_id, review_id, commentText) => {
 
 const removeComment = async (comment_id) => {
     comment_id = helpers.checkId(comment_id, 'comment_id'); // Validate the comment ID
-    const commentsCollection = await comments(); // Assuming comments() returns the comments collection
+    const commentsCollection = await comment_collection(); // Assuming comments() returns the comments collection
 
     const deleteResult = await commentsCollection.deleteOne({ _id: new ObjectId(comment_id) });
     if (deleteResult.deletedCount === 0) {
@@ -82,7 +83,7 @@ const updateComment = async (comment_id, content) => {
     comment_id = helpers.checkId(comment_id, 'comment_id'); // Validate comment ID
     content = helpers.checkString(content, 'content'); // Validate content
 
-    const commentsCollection = await comments(); // Assuming comments() returns the comments collection
+    const commentsCollection = await comment_collection(); // Assuming comments() returns the comments collection
 
     // Update the comment in the database
     const updateResult = await commentsCollection.updateOne(
@@ -97,10 +98,10 @@ const updateComment = async (comment_id, content) => {
     return { success: true, message: 'Comment successfully updated.' };
 };
 
-const getCommentByCommentId = async (comment_id) => {
+const getCommentById = async (comment_id) => {
     comment_id = helpers.checkId(comment_id, 'comment_id'); // Validate the comment ID
 
-    const commentsCollection = await comments(); // Assuming comments() returns the comments collection
+    const commentsCollection = await comment_collection(); // Assuming comments() returns the comments collection
 
     // Fetch the comment from the database
     const comment = await commentsCollection.findOne({ _id: new ObjectId(comment_id) });
@@ -118,5 +119,5 @@ export {
     addComment,
     removeComment,
     updateComment,
-    getCommentByCommentId
+    getCommentById
 };

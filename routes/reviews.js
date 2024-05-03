@@ -1,10 +1,9 @@
 import express from 'express';
-import { addReview, updateReview, getReviewById, removeReviewById } from '../data/reviewsforhousing.js';  
+import {addReview, updateReview, getReviewByReviewId, removeReview} from '../data/reviews.js';
+
 const router = express.Router();
 import helpers from '../helpers.js';
 import xss from 'xss';
-
-
 
 router.get('/edit/:reviewId', async (req, res) => {
     try {
@@ -27,7 +26,7 @@ router.get('/edit/:reviewId', async (req, res) => {
 
         res.render('editReview', {
             review: cleanReview,
-            housing: { id: review.housingId } 
+            housing: {id: review.housingId}
         });
     } catch (error) {
         console.error('Error fetching review:', error);
@@ -35,12 +34,8 @@ router.get('/edit/:reviewId', async (req, res) => {
     }
 });
 
-
-
-
-
 router.post('/add/:housingId', async (req, res) => {
-    const housingId = req.params.housingId;  
+    const housingId = req.params.housingId;
 
     if (!helpers.checkId(housingId, 'Housing ID')) {
         return res.status(400).send('Invalid Housing ID');
@@ -72,7 +67,7 @@ router.post('/add/:housingId', async (req, res) => {
 
     try {
         await addReview(review);
-        res.redirect(`/housing/${housingId}`);  
+        res.redirect(`/housing/${housingId}`);
     } catch (error) {
         console.error('Error adding review:', error);
         res.status(500).send('Failed to add review due to server error.');
@@ -80,12 +75,8 @@ router.post('/add/:housingId', async (req, res) => {
 });
 
 
-
-
-
 router.post('/edit/:reviewId', async (req, res) => {
     const reviewId = req.params.reviewId;
-
 
     if (!helpers.checkId(reviewId, 'Review ID')) {
         return res.status(400).send('Invalid Review ID');
@@ -116,16 +107,12 @@ router.post('/edit/:reviewId', async (req, res) => {
         };
 
         await updateReview(reviewId, updatedReview);
-        res.redirect(`/review/${reviewId}`);  
+        res.redirect(`/review/${reviewId}`);
     } catch (error) {
         console.error('Failed to update review:', error);
         res.status(500).send('Failed to update review due to server error.');
     }
 });
-
-
-
-
 
 router.post('/delete/:reviewId', async (req, res) => {
     const reviewId = req.params.reviewId;
@@ -140,14 +127,11 @@ router.post('/delete/:reviewId', async (req, res) => {
             return res.status(404).send("No review found with that ID.");
         }
 
-        res.redirect('/reviews/user/' + req.session.user.id);  
+        res.redirect('/reviews/user/' + req.session.user.id);
     } catch (error) {
         console.error('Error deleting review:', error);
         res.status(500).send('Server error occurred while deleting the review.');
     }
 });
-
-
-
 
 export default router;
