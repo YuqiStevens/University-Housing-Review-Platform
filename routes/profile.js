@@ -2,7 +2,7 @@ import express from 'express';
 
 const router = express.Router();
 import {getUserById, updateUser} from '../data/users.js'
-import {getAllReviewByUserId} from '../data/reviewsForHousing.js';
+import {getAllReviewsByUserId} from '../data/reviewsForHousing.js';
 import helper from '../helpers.js';
 import xss from 'xss';
 
@@ -14,7 +14,7 @@ router.route('/')
         let user = await getUserById(id);
         let hasReviews = false;
         let hasNoReviews = true;
-        let allReviews = await getAllReviewByUserId(id);
+        let allReviews = await getAllReviewsByUserId(id);
 
         if (allReviews.length > 0) {
             hasReviews = true;
@@ -56,7 +56,7 @@ router.route('/')
         let hasReviews = false;
         let hasNoReviews = true;
 
-        let allReviews = await getAllReviewByUserId(id);
+        let allReviews = await getAllReviewsByUserId(id);
 
         if (allReviews.length > 0) {
             hasReviews = true;
