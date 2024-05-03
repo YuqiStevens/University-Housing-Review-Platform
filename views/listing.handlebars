@@ -14,9 +14,9 @@
     <h1 id="listings-header">Housing Listings</h1>
     <p>Explore housing options near the university. Click on any listing to view more details, including reviews and ratings.</p>
 
-    {{#if listings.length}}
+    {{#if housings.length}}
         <ul class="housing-list">
-            {{#each listings}}
+            {{#each housings}}
                 <li class="housing-item">
                     <a href="/housing/{{this.id}}" class="housing-link">
                         <img src="{{this.imageUrl}}" alt="Image of {{this.name}}" class="housing-image">

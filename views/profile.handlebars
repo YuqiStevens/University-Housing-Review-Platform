@@ -1,6 +1,6 @@
 <section aria-labelledby="profile-header">
     <nav>
-        <a href="/landing">Home</a>
+        <a href="/home">Home</a>
     </nav>
     <h1 id="profile-header">Your Profile</h1>
     <p>Manage your account details and review your contributions.</p>
@@ -8,24 +8,12 @@
     <div class="profile-details">
         <h2>Personal Information</h2>
         <form id="edit-profile-form" action="/profile/edit" method="post">
+            <!-- Profile editing form fields -->
             <label for="firstName">First Name:</label>
             <input type="text" id="firstName" name="firstName" value="{{user.firstName}}" required>
             <label for="lastName">Last Name:</label>
             <input type="text" id="lastName" name="lastName" value="{{user.lastName}}" required>
-            <label for="email">Email:</label>
-            <input type="email" id="email" name="email" value="{{user.email}}" required>
-            <label for="city">City:</label>
-            <input type="text" id="city" name="city" value="{{user.city}}" required>
-            <label for="state">State:</label>
-            <input type="text" id="state" name="state" value="{{user.state}}" required>
-            <label for="country">Country:</label>
-            <input type="text" id="country" name="country" value="{{user.country}}" required>
-            <label for="age">Age:</label>
-            <input type="number" id="age" name="age" value="{{user.age}}" required>
-            <label for="diploma">Highest Diploma:</label>
-            <input type="text" id="diploma" name="diploma" value="{{user.diploma}}" required>
-            <label for="discipline">Field of Study:</label>
-            <input type="text" id="discipline" name="discipline" value="{{user.discipline}}" required>
+            <!-- Additional fields -->
             <button type="submit" class="btn btn-primary">Save Changes</button>
         </form>
     </div>
@@ -35,12 +23,16 @@
         {{#if user.reviewIds}}
             <ul class="reviews-list">
                 {{#each user.reviewIds as |reviewId|}}
-                {{!-- Assuming you have a helper to fetch review details by ID --}}
                     <li class="review-item">
                         {{> reviewPartial reviewId=reviewId}}
                         <div class="review-actions">
-                            <a href="/reviews/edit/{{reviewId}}" class="btn btn-secondary">Edit</a>
-                            <a href="/reviews/delete/{{reviewId}}" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this review?');">Delete</a>
+                            <form id="update-review-form" action="/reviews/edit/{{reviewId}}" method="post">
+                                <!-- Assume the form in the partials for editing -->
+                                <button type="submit" class="btn btn-secondary">Edit</button>
+                            </form>
+                            <form id="delete-review-form" action="/reviews/delete/{{reviewId}}" method="post" onsubmit="return confirm('Are you sure you want to delete this review?');">
+                                <button type="submit" class="btn btn-danger">Delete</button>
+                            </form>
                         </div>
                     </li>
                 {{/each}}
@@ -49,4 +41,12 @@
             <p>You have not written any reviews yet.</p>
         {{/if}}
     </div>
+
+    <!-- Error container for displaying messages -->
+    <div id="errorContainer" style="display: none;"></div>
 </section>
+
+<!-- Include jQuery and Bootstrap JavaScript libraries -->
+<script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+<script src="/public/js/update_review_ajax.js"></script>
