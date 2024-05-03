@@ -1,6 +1,6 @@
 import express from 'express';
 import validator from 'validator';
-import validation from '../validation.js';
+import validation from '../helpers.js';
 import { loginUser } from '../data/users.js';
 import xss from 'xss';
 const router = express.Router();
