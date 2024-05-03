@@ -16,6 +16,25 @@ const getAllReviewsByHouseId = async (house_id) => {
     return reviews;  // Return the list of reviews
 };
 
+const getAllReviewsByUserId = async (user_id) => {
+  // Validate user ID
+  user_id = validation.checkId(user_id, 'user_id');
+
+  // Assuming reviews() returns the reviews collection
+  const reviewsCollection = await reviews();
+
+  // Find reviews where the userId matches the provided user_id
+  const reviews = await reviewsCollection.find({userId: new ObjectId(user_id)}).toArray();
+
+  // Check if any reviews are found
+  if (reviews.length === 0) {
+      throw new Error(`No reviews found for user with id ${user_id}`);
+  }
+
+  // Return the list of reviews
+  return reviews;
+};
+
 const getReviewById = async (review_id) => {
     review_id = validation.checkId(review_id, 'review_id');  // Validate review ID
 
@@ -105,6 +124,7 @@ const updateReview = async (review_id, updates) => {
 };
 
 export {
+    getAllReviewsByUserId,
     getAllReviewsByHouseId,
     getReviewById,
     addReview,
