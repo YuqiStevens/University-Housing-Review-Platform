@@ -136,7 +136,11 @@
 | Name          | Type     | Description                                       |
 |---------------|----------|---------------------------------------------------|
 | reviewId      | ObjectId | Unique identifier for the review.                 |
+<<<<<<< HEAD
+| houseId       | ObjectId | ObjectId of the house being reviewed.             |
+=======
 | housingId     | ObjectId | ObjectId of the listing being reviewed.           |
+>>>>>>> main
 | userId        | ObjectId | ObjectId of the user who wrote the review.        |
 | rating        | Number   | The rating given by the user.                     |
 | title         | String   | The title of the review.                          |
