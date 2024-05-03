@@ -2,8 +2,7 @@ import express from 'express';
 import xss from 'xss';
 //import validation from '../validation.js'
 import helpers from '../helpers.js';
-import { addHouse } from '../data/house.js';
-import { bindStoreWithUser } from '../data/users.js';
+import { addHouse } from '../data/housing.js';
 const router = express.Router();
 
 
@@ -25,8 +24,8 @@ router.route('/')
         let city = xss(req.body.city).trim();
         let state = xss(req.body.state).trim();
         let zipCode = xss(req.body.zipCode).trim();
-        //let phoneNumber = xss(req.body.phoneNumber).trim();
-        //let email = xss(req.body.email).trim();
+        // let phoneNumber = xss(req.body.phoneNumber).trim();
+        // let email = xss(req.body.email).trim();
         let errors = [];
 
         try {
@@ -107,8 +106,8 @@ router.route('/')
                 city: city,
                 state: state,
                 zipCode: zipCode,
-                //phoneNumber: phoneNumber,
-                //email: email,
+                // phoneNumber: phoneNumber,
+                // email: email,
             });
         } catch (e) {
             errors.push(e);

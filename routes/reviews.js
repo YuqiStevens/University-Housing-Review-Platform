@@ -1,5 +1,5 @@
 import express from 'express';
-import { addReview, updateReview, getReviewByReviewId, removeReview } from '../data/reviews.js';  
+import { addReview, updateReview, getReviewById, removeReviewById } from '../data/reviewsforhousing.js';  
 const router = express.Router();
 import helpers from '../helpers.js';
 import xss from 'xss';
@@ -14,7 +14,7 @@ router.get('/edit/:reviewId', async (req, res) => {
             return res.status(400).send('Invalid Review ID');
         }
 
-        const review = await getReviewByReviewId(reviewId);
+        const review = await getReviewById(reviewId);
         if (!review) {
             return res.status(404).send("Review not found.");
         }
@@ -135,7 +135,7 @@ router.post('/delete/:reviewId', async (req, res) => {
     }
 
     try {
-        const result = await removeReview(reviewId);
+        const result = await removeReviewById(reviewId);
         if (result.deletedCount === 0) {
             return res.status(404).send("No review found with that ID.");
         }

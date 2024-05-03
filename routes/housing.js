@@ -2,9 +2,7 @@ import express from 'express';
 import multer from 'multer';
 import path from 'path';
 import { ObjectId } from 'mongodb';
-import { addHousing } from '../data/housingData.js'; 
-import { getHousingById } from '../data/housingData.js'; 
-import { updateHousing } from '../data/housingData.js'; 
+import { addHousing, getHousingById, updateHousing } from '../data/housing.js'; 
 import helpers from '../helpers.js';
 import xss from 'xss';
 
@@ -51,7 +49,7 @@ router.post('/add', upload.array('images'), async (req, res) => {
         helpers.checkString(homeType, 'Home Type');
 
         // helpers.checkNumber(rentalCostMin, 'Minimum Rental Cost');
-        //helpers.checkNumber(rentalCostMax, 'Maximum Rental Cost');
+        // helpers.checkNumber(rentalCostMax, 'Maximum Rental Cost');
 
         if (!address || !city || !state) {
             res.status(400).send('Missing required fields');

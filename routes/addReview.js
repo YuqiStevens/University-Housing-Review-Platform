@@ -24,7 +24,7 @@ router.post('/add', async (req, res) => {
     try {
         userId = helpers.checkId(userId, 'user_id');
         houseId = helpers.checkId(houseId, 'house_id');
-        content = helpers.checkContent(content); // 需要在helpers.js中定义这个方法
+        
         if (isNaN(rating) || rating < 1 || rating > 5) {
             throw "Rating must be an integer between 1 and 5.";
         }
@@ -32,7 +32,7 @@ router.post('/add', async (req, res) => {
         errors.push(e);
     }
 
-    // 如果有错误，返回添加评论页面并显示错误信息
+
     if (errors.length > 0) {
         return res.status(400).render('addReview', {
             title: "Add Review",
@@ -44,7 +44,7 @@ router.post('/add', async (req, res) => {
         });
     }
 
-    // 尝试添加评论
+
     try {
         const newReview = await addReview({
             userId,
