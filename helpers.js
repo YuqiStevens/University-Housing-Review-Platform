@@ -118,7 +118,7 @@ const exportedMethods = {
     },
 
 
-    checkPassword(password, varName) {
+   /* checkPassword(password, varName) {
         const passwordRequirements = {
             minLength: 8,
             minLowercase: 1,
@@ -137,7 +137,39 @@ const exportedMethods = {
             and ${passwordRequirements.minSymbols} symbols`;
         }
         return password;
+    },*/
+
+    checkPassword(password, varName) {
+        const passwordRequirements = {
+            minLength: 8,
+            minLowercase: 1,
+            minUppercase: 1,
+            minNumbers: 1,
+            minSymbols: 1,
+            returnScore: false, // Ensure this is set if using certain versions of validator
+            pointsPerUnique: 0,
+            pointsPerRepeat: 0,
+            pointsForContainingLower: 0,
+            pointsForContainingUpper: 0,
+            pointsForContainingNumber: 0,
+            pointsForContainingSymbol: 0
+        };
+        let isValidPassword = validator.isStrongPassword(password, passwordRequirements);
+        console.log(`Password Validation Result: ${isValidPassword}`); // Debugging line
+    
+        if (password.includes(' ')) {
+            throw `${password} should not contain any space`;
+        }
+        if (!isValidPassword) {
+            throw `${varName} must have ${passwordRequirements.minLength} characters, 
+            with at least ${passwordRequirements.minLowercase} lowercase letters, 
+            ${passwordRequirements.minUppercase} uppercase letters,
+            ${passwordRequirements.minNumbers} numbers,
+            and ${passwordRequirements.minSymbols} symbols`;
+        }
+        return password;
     },
+    
 
     async checkIfHousingNameExists(name) {
         name = name.replace(/\s/g, "").toLowerCase();
