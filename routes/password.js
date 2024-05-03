@@ -3,7 +3,7 @@ import express from 'express';
 const router = express.Router();
 import xss from 'xss';
 import helpers from '../helpers.js';
-import validation from '../validation.js';
+import validation from '../helpers.js';
 import {updatePassword} from '../data/users.js';
 
 

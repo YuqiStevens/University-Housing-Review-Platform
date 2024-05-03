@@ -1,7 +1,8 @@
 import express from 'express';
 import { ObjectId } from'mongodb';
 import { getUserById } from '../data/users.js';
-import { getAllHouses, getHouseSearchResults } from '../data/house.js'; 
+import { getAllHousings} from '../data/housing.js';
+import { getHousingSearchResults } from '../data/home.js';
 import validation from '../helpers.js';
 import xss from 'xss';
 
@@ -14,7 +15,7 @@ router.route('/')
         const isAdmin = req.session.user.role === 'admin';
         
         const user = await getUserById(id);
-        const houses = await getAllHouses();
+        const houses = await getAllHousings();
 
         if (!houses) {
             return res.status(400).render('home', {
@@ -60,7 +61,7 @@ router.route('/search').post(async (req, res) => {
         petPolicy: xss(req.body.petPolicy)
     };
 
-    searchResults = await getHouseSearchResults(searchTerm, filters);
+    searchResults = await getHousingSearchResults(searchTerm, filters);
 
     if (!searchResults || searchResults.length === 0) {
         noResultsMessage = "No housings matched your search.";
