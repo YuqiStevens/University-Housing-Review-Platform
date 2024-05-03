@@ -10,7 +10,7 @@ const getAllHousings = async () => {
 };
 
 const getHousingById = async (id) => {
-    const housingsCollection = await housing_collection();
+    const housingCollection = await housing_collection();
     const housing = await housingCollection.findOne({_id: new ObjectId(id)});
     if (!housing) throw "Store not found";
     return housing;
