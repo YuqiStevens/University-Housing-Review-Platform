@@ -1,13 +1,19 @@
 import express from 'express';
 import { addComment, getCommentById } from '../data/comments.js';  
 const router = express.Router();
+import helpers from '../helpers.js';
+import xss from 'xss';
 
 
 
 router.post('/add/:reviewId', async (req, res) => {
     const reviewId = req.params.reviewId;  
-    const { comment } = req.body; 
+    const comment = xss(req.body.comment);  
 
+
+    if (!helpers.checkId(reviewId, 'Review ID')) {
+        return res.status(400).send('Invalid Review ID');
+    }
 
     if (!comment) {
         return res.status(400).send("Comment field is required.");
@@ -17,7 +23,7 @@ router.post('/add/:reviewId', async (req, res) => {
         const newComment = {
             reviewId: reviewId,
             text: comment,
-            userId: req.session.user.id, 
+            userId: req.session.user.id,  
             createdAt: new Date()  
         };
 
@@ -32,9 +38,14 @@ router.post('/add/:reviewId', async (req, res) => {
 
 
 
+
 // 这里需要找到对应的评论模板来显示评论详情，不知道具体在哪里
 router.get('/:commentId', async (req, res) => {
     const commentId = req.params.commentId;  
+
+    if (!helpers.checkId(commentId, 'Comment ID')) {
+        return res.status(400).send('Invalid Comment ID');
+    }
 
     try {
         const comment = await getCommentById(commentId);
@@ -42,11 +53,16 @@ router.get('/:commentId', async (req, res) => {
             return res.status(404).send("Comment not found.");
         }
 
-        // 这里假设你有一个对应的模板来显示评论详情
+        const cleanComment = {
+            ...comment,
+            text: xss(comment.text)  
+        };
+
+        // 假设你有一个对应的模板来显示评论详情
         // 如果你需要显示评论回复或相关信息，确保模板和数据适配这一需求
         res.render('commentDetail', {
-            title: `Comment by ${comment.userId}`, 
-            comment: comment
+            title: `Comment by ${comment.userId}`,  
+            comment: cleanComment
         });
     } catch (error) {
         console.error('Error fetching comment:', error);

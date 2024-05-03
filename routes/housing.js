@@ -12,7 +12,7 @@ import xss from 'xss';
 
 const router = express.Router();
 
-// 配置 multer 用于文件上传
+// for picture upload
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
         cb(null, path.join(process.cwd(), 'public/images/housing'));
@@ -24,14 +24,34 @@ const storage = multer.diskStorage({
 });
 
 
+
 const upload = multer({ storage: storage });
 
 
-// add house
+
 router.post('/add', upload.array('images'), async (req, res) => {
     try {
-        const { address, zipCode, city, state, homeType, rentalCostMin, rentalCostMax, amenities, petPolicy, garage } = req.body;
-        const images = req.files.map(file => file.filename); 
+        const address = xss(req.body.address);
+        const zipCode = xss(req.body.zipCode);
+        const city = xss(req.body.city);
+        const state = xss(req.body.state);
+        const homeType = xss(req.body.homeType);
+        const rentalCostMin = xss(req.body.rentalCostMin);
+        const rentalCostMax = xss(req.body.rentalCostMax);
+        const amenities = xss(req.body.amenities);
+        const petPolicy = xss(req.body.petPolicy);
+        const garage = xss(req.body.garage);
+
+        const images = req.files.map(file => file.filename);  
+
+        helpers.checkString(address, 'Address');
+        helpers.checkString(zipCode, 'Zip Code');
+        helpers.checkString(city, 'City');
+        helpers.checkString(state, 'State');
+        helpers.checkString(homeType, 'Home Type');
+
+        // helpers.checkNumber(rentalCostMin, 'Minimum Rental Cost');
+        //helpers.checkNumber(rentalCostMax, 'Maximum Rental Cost');
 
         if (!address || !city || !state) {
             res.status(400).send('Missing required fields');
@@ -57,16 +77,18 @@ router.post('/add', upload.array('images'), async (req, res) => {
         const newHousing = await addHousing(housingData);
         res.redirect('/housing/list'); 
     } catch (error) {
-        console.error(error);
+        console.error('Error adding housing:', error);
         res.status(500).send('Internal Server Error');
     }
 });
 
 
-// get house
+
+
 router.get('/:id', async (req, res) => {
     try {
         const housingId = req.params.id;
+        
         if (!ObjectId.isValid(housingId)) {
             res.status(400).send('Invalid housing ID');
             return;
@@ -78,53 +100,64 @@ router.get('/:id', async (req, res) => {
             return;
         }
 
-        // Check if the user is an admin
         const isAdmin = req.session.user && req.session.user.role === 'admin';
 
+        const cleanAddress = xss(housing.address);
+
         res.render('housing', {
-            title: `Details of ${housing.address}`,
+            title: `Details of ${cleanAddress}`,  
             housing: housing,
             isAdmin: isAdmin
         });
     } catch (error) {
-        console.error(error);
+        console.error('Error retrieving housing:', error);
         res.status(500).send('Internal Server Error');
     }
 });
 
 
 
-// edit house
+
+
 router.post('/update/:id', upload.array('images'), async (req, res) => {
     const housingId = req.params.id;
     if (!ObjectId.isValid(housingId)) {
         return res.status(400).send('Invalid Housing ID');
     }
 
-    const { address, zipCode, city, state, homeType, rentalCostMin, rentalCostMax, amenities, petPolicy, garage } = req.body;
-    const images = req.files.map(file => file.filename); // 重新上传的图片
-
-    // 构建更新数据对象
-    const updateData = {
-        address,
-        zipCode,
-        city,
-        state,
-        homeType,
-        rentalCost: {
-            min: parseInt(rentalCostMin, 10),
-            max: parseInt(rentalCostMax, 10)
-        },
-        amenities: amenities ? amenities.split(',').map(item => item.trim()) : [],
-        petPolicy,
-        garage: garage === 'on',
-        images
-    };
-
     try {
-        // 更新数据库中的房源信息
+        const address = xss(helpers.checkString(req.body.address, 'Address'));
+        const zipCode = xss(helpers.checkString(req.body.zipCode, 'Zip Code'));
+        const city = xss(helpers.checkString(req.body.city, 'City'));
+        const state = xss(helpers.checkString(req.body.state, 'State'));
+        const homeType = xss(helpers.checkString(req.body.homeType, 'Home Type'));
+        //const rentalCostMin = xss(helpers.checkNumber(req.body.rentalCostMin, 'Minimum Rental Cost'));
+        //const rentalCostMax = xss(helpers.checkNumber(req.body.rentalCostMax, 'Maximum Rental Cost'));
+        const amenities = xss(req.body.amenities);
+        const petPolicy = xss(req.body.petPolicy);
+        const garage = xss(req.body.garage) === 'on';
+
+        const images = req.files.map(file => file.filename); 
+
+        const updateData = {
+            address,
+            zipCode,
+            city,
+            state,
+            homeType,
+            rentalCost: {
+                min: parseInt(rentalCostMin, 10),
+                max: parseInt(rentalCostMax, 10)
+            },
+            amenities: amenities ? amenities.split(',').map(item => item.trim()) : [],
+            petPolicy,
+            garage,
+            images
+        };
+
+
         await updateHousing(housingId, updateData);
-        res.redirect(`/housing/${housingId}`); // 重定向到房源详情页
+        res.redirect(`/housing/${housingId}`); 
     } catch (error) {
         console.error('Failed to update housing:', error);
         res.status(500).send('Failed to update housing');
