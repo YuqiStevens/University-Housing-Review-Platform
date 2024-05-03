@@ -1,6 +1,6 @@
 <section aria-labelledby="housing-header">
     <nav>
-        <a href="/landing">Home</a>
+        <a href="/home">Home</a>
     </nav>
     <h1 id="housing-header">{{housing.address}}</h1>
     <div class="housing-images">
@@ -34,12 +34,16 @@
         <div class="reviews-container">
             {{#each housing.reviewIds as |reviewId|}}
                 {{> reviewPartial reviewId=reviewId}}
+                <button onclick="markReviewHelpful('{{reviewId}}')" class="helpful-button">
+                    <img src="/public/HelpfulIcon.png" alt="Helpful">
+                    Helpful ({{findReviewById reviewId 'helpfulCounts'}})
+                </button>
             {{/each}}
         </div>
     {{else}}
         <p>No reviews yet. Be the first to write a review!</p>
     {{/if}}
-    <a href="/add-review/{{housing._id}}" class="btn btn-primary">Add Review</a>
+    <a href="/addReview" class="btn btn-primary">Add Review</a>
 </section>
 
 <script>
@@ -49,9 +53,9 @@
             url: '/review/' + reviewId + '/helpful',
             type: 'POST',
             success: function(response) {
-                // Update the count on the button and possibly the list of usernames
-                // This requires handling in the server-side route to return updated data
-                location.reload(); // Or update the DOM directly without reloading
+                // Update the count on the button directly without reloading
+                document.querySelector('button[onclick="markReviewHelpful(\'' + reviewId + '\')"]').innerHTML =
+                        '<img src="/public/Icon.png" alt="Helpful"> Helpful (' + response.helpfulCounts + ')';
             },
             error: function(error) {
                 console.error('Error updating helpful count:', error);
