@@ -66,7 +66,7 @@ app.use('/profile', (req, res, next) => {
     }
 });
 
-app.use('/addHousing', (req, res, next) => {
+app.use('/housings/add', (req, res, next) => {
     if (req.session.user && req.session.user.role === 'admin') {
         next();
     } else {
@@ -74,7 +74,7 @@ app.use('/addHousing', (req, res, next) => {
     }
 });
 
-app.use('/editHousing', (req, res, next) => {
+app.use('/housings/edit', (req, res, next) => {
     if (req.session.user && req.session.user.role === 'admin') {
         next();
     } else {
@@ -82,7 +82,7 @@ app.use('/editHousing', (req, res, next) => {
     }
 });
 
-app.use('/addReview', (req, res, next) => {
+app.use('/reviews', (req, res, next) => {
     if (req.session.user) {
         next();
     } else {
