@@ -110,7 +110,7 @@ form {
     margin: auto; /* Center the form on the page */
 }
 
-.btn {
+.btn, .header-link-home {
     display: inline-block;
     background: #007bff;
     color: #fff;
