@@ -51,49 +51,85 @@ router.get('/add', async (req, res) => {
 
 router.post('/add', upload.array('images'), async (req, res) => {
     try {
+
+        if (!req.session.user || req.session.user.role !== 'admin') {
+            res.status(403).render('error', { title: "Forbidden", error: "You are not authorized to add housing" });
+            return;
+        }
+
+        // Basic details
         const address = xss(req.body.address);
         const zipCode = xss(req.body.zipCode);
         const city = xss(req.body.city);
         const state = xss(req.body.state);
         const homeType = xss(req.body.homeType);
+
+        // Cost details
         const rentalCostMin = xss(req.body.rentalCostMin);
         const rentalCostMax = xss(req.body.rentalCostMax);
+
+        // Unit details
+        const studios = xss(req.body.studios);
+        const oneBed = xss(req.body['1beds']);
+        const twoBed = xss(req.body['2beds']);
+        const threeBed = xss(req.body['3beds']);
+        const fourBed = xss(req.body['4beds']);
+
+        // Additional details
         const amenities = xss(req.body.amenities);
         const petPolicy = xss(req.body.petPolicy);
         const garage = xss(req.body.garage);
+        const latitude = xss(req.body.latitude);
+        const longitude = xss(req.body.longitude);
 
+        // Image handling
         const images = req.files.map(file => file.filename);  
 
+        // Validations
         helpers.checkString(address, 'Address');
         helpers.checkString(zipCode, 'Zip Code');
         helpers.checkString(city, 'City');
         helpers.checkString(state, 'State');
         helpers.checkString(homeType, 'Home Type');
-
         validator.isInt(rentalCostMin);
         validator.isInt(rentalCostMax);
+        validator.isInt(studios);
+        validator.isInt(oneBed);
+        validator.isInt(twoBed);
+        validator.isInt(threeBed);
+        validator.isInt(fourBed);
 
-        if (!address || !city || !state) {
+        // Ensure required fields are provided
+        if (!address || !city || !state || !homeType) {
             res.status(400).send('Missing required fields');
             return;
         }
 
+        // Prepare the housing data object
         const housingData = {
             address,
             zipCode,
             city,
             state,
             homeType,
-            rentalCost: {
-                min: parseInt(rentalCostMin, 10),
-                max: parseInt(rentalCostMax, 10)
-            },
+            rentalCostMin: parseInt(rentalCostMin, 10),
+            rentalCostMax: parseInt(rentalCostMax, 10),
+            studios: parseInt(studios, 10),
+            oneBed: parseInt(oneBed, 10),
+            twoBed: parseInt(twoBed, 10),
+            threeBed: parseInt(threeBed, 10),
+            fourBed: parseInt(fourBed, 10),
             amenities: amenities.split(',').map(item => item.trim()),
             petPolicy,
-            garage: garage === 'on', 
+            garage: garage === 'on',
+            location: {
+                latitude,
+                longitude
+            },
             images
         };
 
+        // Add the new housing entry to the database
         const newHousing = await addHousing(housingData);
         res.redirect('/housing/list'); 
     } catch (error) {
