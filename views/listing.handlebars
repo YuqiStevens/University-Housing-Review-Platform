@@ -13,22 +13,26 @@
     <h1 id="listings-header" class="h1-content">Housing Listings</h1>
     <p class="p-content">Explore housing options near the university. Click on any listing to view more details, including reviews and ratings.</p>
 
-    {{#if housings.length}}
-        <ul class="housing-list">
-            {{#each housings}}
-                <li class="housing-item">
-                    <a href="/housing/{{this.id}}" class="housing-link">
-                        <img src="{{this.imageUrl}}" alt="Image of {{this.name}}" class="housing-image">
-                        <div class="housing-info">
-                            <h2>{{this.name}}</h2>
-                            <p class="housing-location">{{this.location}}</p>
-                            <p class="housing-rating">Rating: {{this.rating}} / 5</p>
-                        </div>
-                    </a>
-                </li>
-            {{/each}}
-        </ul>
+    {{#if housings}}
+        {{#if housings.length}}
+            <ul class="housing-list">
+                {{#each housings}}
+                    <li class="housing-item">
+                        <a href="/housing/{{this.id}}" class="housing-link">
+                            <img src="{{this.imageUrl}}" alt="Image of {{this.name}}" class="housing-image">
+                            <div class="housing-info">
+                                <h2>{{this.name}}</h2>
+                                <p class="housing-location">{{this.location}}</p>
+                                <p class="housing-rating">Rating: {{this.rating}} / 5</p>
+                            </div>
+                        </a>
+                    </li>
+                {{/each}}
+            </ul>
+        {{else}}
+            <p class="p-content">No listings found. Try broadening your search criteria or check back later for new listings.</p>
+        {{/if}}
     {{else}}
-        <p>No listings found. Try broadening your search criteria.</p>
+        <p class="p-content">No listings found. Try broadening your search criteria or check back later for new listings.</p>
     {{/if}}
 </section>
