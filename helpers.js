@@ -34,6 +34,7 @@ const exportedMethods = {
         if (!user) return null;
         return {
             id: user._id,
+            userName: user.userName,
             firstName: user.firstName,
             lastName: user.lastName,
             email: user.email,

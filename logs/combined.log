@@ -403,3 +403,35 @@
 {"level":"info","message":"GET /public/style/styles.css 304 - - 0.932 ms","timestamp":"2024-05-04T18:12:55.584Z"}
 {"level":"info","message":"GET /public/Icon.png 304 - - 1.798 ms","timestamp":"2024-05-04T18:12:55.588Z"}
 {"level":"info","message":"POST /apiForLogin 200 14 - 84.155 ms","timestamp":"2024-05-04T18:12:55.648Z"}
+{"level":"info","message":"GET /about 304 - - 7.569 ms","timestamp":"2024-05-04T18:14:10.405Z"}
+{"level":"info","message":"GET /public/style/styles.css 304 - - 9.616 ms","timestamp":"2024-05-04T18:14:10.432Z"}
+{"level":"info","message":"GET /public/Icon.png 304 - - 5.990 ms","timestamp":"2024-05-04T18:14:10.434Z"}
+{"level":"info","message":"GET /public/style/styles.css 304 - - 0.491 ms","timestamp":"2024-05-04T18:14:31.482Z"}
+{"level":"info","message":"GET /login 302 54 - 1.938 ms","timestamp":"2024-05-04T18:15:55.221Z"}
+{"level":"info","message":"GET /home 304 - - 20.428 ms","timestamp":"2024-05-04T18:15:55.244Z"}
+{"level":"info","message":"GET /public/style/styles.css 304 - - 0.759 ms","timestamp":"2024-05-04T18:15:55.253Z"}
+{"level":"info","message":"GET /public/Icon.png 304 - - 1.039 ms","timestamp":"2024-05-04T18:15:55.254Z"}
+{"level":"info","message":"GET /public/style/styles.css 304 - - 1.045 ms","timestamp":"2024-05-04T18:20:11.326Z"}
+{"level":"info","message":"Server is running on http://localhost:3000","timestamp":"2024-05-04T18:20:40.612Z"}
+{"level":"info","message":"GET / 302 56 - 6.444 ms","timestamp":"2024-05-04T18:20:45.137Z"}
+{"level":"info","message":"GET /login 200 2809 - 20.615 ms","timestamp":"2024-05-04T18:20:45.159Z"}
+{"level":"info","message":"GET /public/style/styles.css 304 - - 1.796 ms","timestamp":"2024-05-04T18:20:45.171Z"}
+{"level":"info","message":"GET /public/js/login_ajax.js 304 - - 1.837 ms","timestamp":"2024-05-04T18:20:45.172Z"}
+{"level":"info","message":"GET /public/Icon.png 304 - - 0.256 ms","timestamp":"2024-05-04T18:20:45.173Z"}
+{"level":"info","message":"POST /apiForLogin 200 14 - 111.634 ms","timestamp":"2024-05-04T18:20:47.040Z"}
+{"level":"info","message":"GET /home 304 - - 10.211 ms","timestamp":"2024-05-04T18:20:47.064Z"}
+{"level":"info","message":"GET /public/style/styles.css 304 - - 1.036 ms","timestamp":"2024-05-04T18:20:47.072Z"}
+{"level":"info","message":"GET /public/Icon.png 304 - - 2.105 ms","timestamp":"2024-05-04T18:20:47.075Z"}
+{"level":"info","message":"POST /apiForLogin 200 14 - 62.565 ms","timestamp":"2024-05-04T18:20:47.114Z"}
+{"level":"info","message":"Server is running on http://localhost:3000","timestamp":"2024-05-04T18:26:26.870Z"}
+{"level":"info","message":"GET /home 302 56 - 18.274 ms","timestamp":"2024-05-04T18:26:30.410Z"}
+{"level":"info","message":"GET /login 304 - - 16.107 ms","timestamp":"2024-05-04T18:26:30.428Z"}
+{"level":"info","message":"GET /public/style/styles.css 304 - - 1.864 ms","timestamp":"2024-05-04T18:26:30.438Z"}
+{"level":"info","message":"GET /public/Icon.png 304 - - 1.980 ms","timestamp":"2024-05-04T18:26:30.439Z"}
+{"level":"info","message":"GET /public/js/login_ajax.js 304 - - 0.180 ms","timestamp":"2024-05-04T18:26:30.441Z"}
+{"level":"info","message":"GET /public/Icon.png 304 - - 0.239 ms","timestamp":"2024-05-04T18:26:30.456Z"}
+{"level":"info","message":"POST /apiForLogin 200 14 - 114.749 ms","timestamp":"2024-05-04T18:26:31.846Z"}
+{"level":"info","message":"GET /home 200 4708 - 10.475 ms","timestamp":"2024-05-04T18:26:31.869Z"}
+{"level":"info","message":"GET /public/Icon.png 304 - - 0.572 ms","timestamp":"2024-05-04T18:26:31.879Z"}
+{"level":"info","message":"GET /public/style/styles.css 304 - - 1.931 ms","timestamp":"2024-05-04T18:26:31.880Z"}
+{"level":"info","message":"POST /apiForLogin 200 14 - 65.123 ms","timestamp":"2024-05-04T18:26:31.925Z"}
