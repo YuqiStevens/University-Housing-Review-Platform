@@ -11,6 +11,10 @@ const router = express.Router();
 router.route('/')
     .get(async (req, res) => {
         try {
+            if (!req.session.user) {
+                return res.redirect('/login');
+            }
+            
             const title = "Home Page";
             const id = req.session.user.id;
             const isAdmin = req.session.user.role === 'admin';
@@ -22,6 +26,8 @@ router.route('/')
                 return res.status(200).render('home', {
                     title: title,
                     //userName: user.userName,
+                    firstName: req.session.user.firstName,
+                    lastName: req.session.user.lastName,
                     hasHouses: false,
                     isAdmin: isAdmin,
                     searchPerformed: false
@@ -31,6 +37,8 @@ router.route('/')
             res.status(200).render('home', {
                 title: title,
                // userName: user.userName,
+                firstName: req.session.user.firstName,
+                lastName: req.session.user.lastName,
                 hasHouses: true,
                 houses: houses,
                 isAdmin: isAdmin,
@@ -90,6 +98,8 @@ router.route('/search')
 
             res.status(200).render('home', {
                 title: title,
+                firstName: req.session.user.firstName,
+                lastName: req.session.user.lastName,
                 //userName: userName,
                 searchResults: searchResults,
                 noResultsMessage: noResultsMessage,
