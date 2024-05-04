@@ -1,3 +1,5 @@
-/logs/*
-/node_modules/*
-/.idea/*
+/logs/
+/node_modules/
+/package-lock.json
+/seed.js
+/.idea/
