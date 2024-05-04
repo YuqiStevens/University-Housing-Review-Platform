@@ -105,7 +105,7 @@ form {
     width: 100%; /* Responsive width */
     box-sizing: border-box; /* Includes padding and border in the element's total width */
 }
-.login-form, .register-form {
+.login-form, .register-form, .profile-form {
     max-width: 450px; /* Max width of the form itself */
     margin: auto; /* Center the form on the page */
 }
@@ -239,4 +239,36 @@ form {
     background-color: #f9f9f9; /* A very light background to offset the text */
     border-left: 4px solid #cccccc; /* A subtle left border for style */
     box-shadow: 2px 2px 5px rgba(0,0,0,0.1); /* Soft shadow for a 3D effect */
+}
+
+.user-info-table table {
+    width: 90%; /* Adjust width to fit your layout */
+    margin: 20px auto; /* Centering the table on the page with some margin around it */
+    border-collapse: collapse; /* Ensures borders between cells are merged */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Subtle shadow around the table for depth */
+}
+
+.user-info-table th,
+.user-info-table td {
+    text-align: left; /* Aligns text to the left */
+    padding: 12px 20px; /* Adds padding inside each cell for spacing */
+    border-bottom: 1px solid #ddd; /* Adds a light line between rows */
+}
+
+.user-info-table th {
+    background-color: #f4f4f4; /* Light grey background for the header cells */
+    color: #333; /* Darker text color for contrast */
+    font-weight: bold; /* Makes header text bold */
+}
+
+.user-info-table tr:hover {
+    background-color: #f1f1f1; /* Changes background on row hover for better interactivity */
+}
+
+.user-info-table td {
+    font-size: 16px; /* Sets a specific font size for table data */
+}
+
+.user-info-table tr:last-child td {
+    border-bottom: none; /* Removes the border from the last row for cleaner look */
 }

@@ -15,7 +15,6 @@ router.route('/')
         let allReviews = [];
         let hasReviews = false;
         let hasNoReviews = true;
-        let selectedNull = "", selectedMale = "", selectedFemale = "";
 
         try {
             user = await getUserById(id);
@@ -27,14 +26,7 @@ router.route('/')
             // Render the profile page with error message
             return res.status(500).render('profile', {
                 title: title,
-                avatarId: user ? user.avatar : "",
-                userName: user ? user.userName : "",
-                firstName: user ? user.firstName : "",
-                lastName: user ? user.lastName : "",
-                email: user ? user.email : "",
-                selectedNull: selectedNull,
-                selectedMale: selectedMale,
-                selectedFemale: selectedFemale,
+                user: user,
                 hasReviews: hasReviews,
                 hasNoReviews: hasNoReviews,
                 allReviews: [],
@@ -42,24 +34,9 @@ router.route('/')
             });
         }
 
-        if (user.gender === null) {
-            selectedNull = "selected";
-        } else if (user.gender === "male") {
-            selectedMale = "selected";
-        } else if (user.gender === "female") {
-            selectedFemale = "selected";
-        }
-
         return res.status(200).render('profile', {
             title: title,
-            avatarId: user.avatar,
-            userName: user.userName,
-            firstName: user.firstName,
-            lastName: user.lastName,
-            email: user.email,
-            selectedNull: selectedNull,
-            selectedMale: selectedMale,
-            selectedFemale: selectedFemale,
+            user: user,
             hasReviews: hasReviews,
             hasNoReviews: hasNoReviews,
             allReviews: allReviews,
@@ -85,7 +62,6 @@ router.route('/')
         let cleanFirstName = xss(req.body.firstName);
         let cleanLastName = xss(req.body.lastName);
         let cleanEmail = xss(req.body.email).toLowerCase();
-        let cleanGender = xss(req.body.gender).toLowerCase();
         let errors = [];
 
         try {
@@ -120,35 +96,11 @@ router.route('/')
         }
 
 
-        cleanGender = cleanGender.trim();
-        if (cleanGender !== "" && cleanGender !== 'male' && cleanGender !== 'female') {
-            errors.push('The role should be prefer not to say, male or female');
-        }
-
-
         if (errors.length > 0) {
-            let selectedNull = "", selectedMale = "", selectedFemale = "";
-
-
-            if (cleanGender === "") {
-                selectedNull = "selected";
-            } else if (cleanGender === "male") {
-                selectedMale = "selected";
-            } else if (cleanGender === "female") {
-                selectedFemale = "selected";
-            }
-
 
             return res.status(400).render('profile', {
                 title: title,
-                avatarId: user.avatar,
-                userName: cleanUserName,
-                firstName: cleanFirstName,
-                lastName: cleanLastName,
-                email: cleanEmail,
-                selectedNull: selectedNull,
-                selectedMale: selectedMale,
-                selectedFemale: selectedFemale,
+                user: user,
                 hasReviews: hasReviews,
                 hasNoReviews: hasNoReviews,
                 hasErrors: true,
@@ -163,7 +115,6 @@ router.route('/')
             firstName: cleanFirstName,
             lastName: cleanLastName,
             email: cleanEmail,
-            gender: cleanGender
         };
 
 
@@ -175,27 +126,9 @@ router.route('/')
         } catch (e) {
             errors.push(e);
 
-            let selectedNull = "", selectedMale = "", selectedFemale = "";
-
-            if (cleanGender === "") {
-                selectedNull = "selected";
-            } else if (cleanGender === "male") {
-                selectedMale = "selected";
-            } else if (cleanGender === "female") {
-                selectedFemale = "selected";
-            }
-
-
             return res.status(400).render('profile', {
                 title: title,
-                avatarId: user.avatar,
-                userName: cleanUserName,
-                firstName: cleanFirstName,
-                lastName: cleanLastName,
-                email: cleanEmail,
-                selectedNull: selectedNull,
-                selectedMale: selectedMale,
-                selectedFemale: selectedFemale,
+                user: user,
                 hasReviews: hasReviews,
                 hasNoReviews: hasNoReviews,
                 allReviews: allReviews,
