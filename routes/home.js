@@ -28,7 +28,7 @@ router.route('/')
 
         res.status(200).render('home', {
             title: title,
-            name: user.userName,
+            userName: user.userName,
             hasHouses: true,
             houses: houses,
             isAdmin: isAdmin,
