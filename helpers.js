@@ -1,5 +1,6 @@
 import {user_collection, housing_collection} from "./config/mongoCollections.js";
-import bcrypt from 'bcrypt';
+//import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 import {ObjectId} from "mongodb";
 import validator from "validator";
 

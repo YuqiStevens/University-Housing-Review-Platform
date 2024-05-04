@@ -3,6 +3,7 @@ import validation from '../helpers.js';
 import validator from "validator";
 import {review_collection} from '../config/mongoCollections.js';
 
+
 const getAllReviewsByHouseId = async (house_id) => {
     house_id = validation.checkId(house_id, 'house_id');  // Validate house ID
 
@@ -16,24 +17,29 @@ const getAllReviewsByHouseId = async (house_id) => {
     return reviews;  // Return the list of reviews
 };
 
+
+
+
 const getAllReviewsByUserId = async (user_id) => {
   // Validate user ID
   user_id = validation.checkId(user_id, 'user_id');
 
   // Assuming reviews() returns the reviews collection
-  const reviewsCollection = await reviews();
+  const reviewsCollection = await review_collection();
 
   // Find reviews where the userId matches the provided user_id
-  const reviews = await reviewsCollection.find({userId: new ObjectId(user_id)}).toArray();
+  const res = await reviewsCollection.find({userId: new ObjectId(user_id)}).toArray();
 
   // Check if any reviews are found
-  if (reviews.length === 0) {
+  if (res.length === 0) {
       throw new Error(`No reviews found for user with id ${user_id}`);
   }
 
   // Return the list of reviews
-  return reviews;
+  return res;
 };
+
+
 
 const getReviewById = async (review_id) => {
     review_id = validation.checkId(review_id, 'review_id');  // Validate review ID
