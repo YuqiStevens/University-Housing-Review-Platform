@@ -30,9 +30,9 @@
                     <input type="number" id="rentalCostMin" name="rentalCostMin" placeholder="Min Price ($)">
 
                     <label for="rentalCostMax">Max Rental Cost:</label>
-                    <input type="number" id="rentalCostMax" name="rentalCostMax" placeholder="Max Price ($)">
+                    <input type="number" id "rentalCostMax" name="rentalCostMax" placeholder="Max Price ($)">
 
-                    <label for="amenities">Amenities (comma-separated):</label>
+                    <label for "amenities">Amenities (comma-separated):</label>
                     <input type="text" id="amenities" name="amenities" placeholder="e.g., Pool, Gym">
 
                     <label for="garage">Garage:</label>
@@ -52,25 +52,27 @@
         </form>
     </div>
 
-    {{!-- Results rendering section --}}
-    {{#if searchResults}}
-        <div class="search-results">
-            <h3>Searched Results for "{{searchTerm}}":</h3>
-            {{#each searchResults}}
-                <div class="search-result-item">
-                    <div class="housing-info">
-                        <h4>{{this.name}}</h4>
-                        <p>{{this.description}}</p>
-                        <p>Type: {{this.type}}, Price Range: ${{this.rentalCostMin}} - ${{this.rentalCostMax}}</p>
+    {{#if searchPerformed}}
+        {{#if searchResults}}
+            <div class="search-results">
+                <h3>Searched Results for "{{searchTerm}}":</h3>
+                {{#each searchResults}}
+                    <div class="search-result-item">
+                        <div class="housing-info">
+                            <h4>{{this.name}}</h4>
+                            <p>{{this.description}}</p>
+                            <p>Type: {{this.type}}, Price Range: ${{this.rentalCostMin}} - ${{this.rentalCostMax}}</p>
+                        </div>
                     </div>
-                </div>
-            {{/each}}
-        </div>
-    {{else}}
-        <div class="no-results-message">
-            <p class="p-content">No results found for "{{searchTerm}}". Please try different search criteria.</p>
-        </div>
+                {{/each}}
+            </div>
+        {{else}}
+            <div class="no-results-message">
+                <p class="p-content">No results found for "{{searchTerm}}". Please try different search criteria.</p>
+            </div>
+        {{/if}}
     {{/if}}
+
     <h2>How It Works</h2>
     <p class="p-content">Start your housing search using a specific ZIP code or a general location. Apply filters like price, beds/baths, home type, pet policy, and more to find what suits you best.</p>
 </section>

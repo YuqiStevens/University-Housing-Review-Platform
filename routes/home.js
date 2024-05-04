@@ -10,71 +10,101 @@ const router = express.Router();
 
 router.route('/')
     .get(async (req, res) => {
-        const title = "Home Page";
-        const id = req.session.user.id;
-        const isAdmin = req.session.user.role === 'admin';
-        
-        const user = await getUserById(id);
-        const houses = await getAllHousings();
+        try {
+            const title = "Home Page";
+            const id = req.session.user.id;
+            const isAdmin = req.session.user.role === 'admin';
 
-        if (!houses) {
-            return res.status(400).render('home', {
+            const user = await getUserById(id);
+            const houses = await getAllHousings();
+
+            if (!houses || houses.length === 0) {
+                return res.status(200).render('home', {
+                    title: title,
+                    userName: user.userName,
+                    hasHouses: false,
+                    isAdmin: isAdmin,
+                    searchPerformed: false
+                });
+            }
+
+            res.status(200).render('home', {
                 title: title,
-                name: user.userName,
-                hasHouses: false,
+                userName: user.userName,
+                hasHouses: true,
+                houses: houses,
                 isAdmin: isAdmin,
+                searchPerformed: false
             });
+        } catch (e) {
+            return res.status(500).render('error', { title: "Error", message: "Internal server error." });
         }
-
-        res.status(200).render('home', {
-            title: title,
-            userName: user.userName,
-            hasHouses: true,
-            houses: houses,
-            isAdmin: isAdmin,
-        });
     });
 
-router.route('/search').post(async (req, res) => {
-    const title = "Home Page";
-    const isAdmin = req.session.user.role === 'admin';
-    const id = req.session.user.userId;
-    const user = await getUserById(id);
+router.route('/search')
+    .post(async (req, res) => {
+        const title = "Home Page";
+        let isAdmin = false;
+        let userName = '';
 
-    let searchType = xss(req.body.homeType);
-    let searchTerm = xss(req.body.searchTerm);
+        try {
+            if (req.session && req.session.user) {
+                isAdmin = req.session.user.role === 'admin';
+                userName = req.session.user.userName;
+            }
 
-    let searchResults, noResultsMessage;
+            let searchType = xss(req.body.homeType);
+            let searchTerm = xss(req.body.searchTerm);
+            let rentalCostMin = xss(req.body.rentalCostMin);
+            let rentalCostMax = xss(req.body.rentalCostMax);
+            let amenities = xss(req.body.amenities);
+            let garage = xss(req.body.garage);
+            let petPolicy = xss(req.body.petPolicy);
 
-    try {
-        searchTerm = validation.checkSearchValid(searchTerm);
-    } catch (e) {
-        return res.status(400).render('error', { title: "Error", message: e.message });
-    }
+            let searchResults, noResultsMessage = null;
 
-    const filters = {
-        homeType: searchType,
-        rentalCostMin: xss(req.body.rentalCostMin),
-        rentalCostMax: xss(req.body.rentalCostMax),
-        amenities: xss(req.body.amenities),
-        garage: xss(req.body.garage),
-        petPolicy: xss(req.body.petPolicy)
-    };
+            try {
+                searchTerm = validation.checkSearchValid(searchTerm);
+            } catch (e) {
+                return res.status(400).render('error', { title: "Error", message: e.message });
+            }
 
-    searchResults = await getHousingSearchResults(searchTerm, filters);
+            const filters = {
+                homeType: searchType,
+                rentalCostMin: rentalCostMin || null,
+                rentalCostMax: rentalCostMax || null,
+                amenities: amenities || null,
+                garage: garage || null,
+                petPolicy: petPolicy || null
+            };
 
-    if (!searchResults || searchResults.length === 0) {
-        noResultsMessage = "No housings matched your search.";
-    }
+            try {
+                searchResults = await getHousingSearchResults(searchTerm, filters);
+            } catch (e) {
+                return res.status(500).render('error', { title: "Error", message: e.message });
+            }
 
-    res.status(200).render('home', {
-        title: title,
-        name: user.userName,
-        searchResult: searchResults,
-        noResultsMessage: noResultsMessage,
-        searchTerm: searchTerm,
-        isAdmin: isAdmin,
+            if (!searchResults || searchResults.length === 0) {
+                noResultsMessage = "No housings matched your search.";
+            }
+
+            res.status(200).render('home', {
+                title: title,
+                userName: userName,
+                searchResults: searchResults,
+                noResultsMessage: noResultsMessage,
+                searchTerm: searchTerm,
+                isAdmin: isAdmin,
+                searchPerformed: true // indicate that a search was performed
+            });
+
+        } catch (e) {
+            console.error("Search error:", e);
+            return res.status(500).render('error', { title: "Error", message: "Internal server error." });
+        }
     });
-});
+
+
+
 
 export default router;
