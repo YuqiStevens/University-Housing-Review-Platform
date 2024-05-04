@@ -22,7 +22,7 @@
 |--------------|----------|-------------------------------------------------------------------|
 | userId       | ObjectId | Unique identifier for each user.                                  |
 | email        | String   | The user's email address, used as the account identifier.         |
-| passwordHash | String   | A hashed version of the user's password for security.             |
+| hashPassword | String   | A hashed version of the user's password for security.             |
 | firstName    | String   | The user's first name.                                            |
 | lastName     | String   | The user's last name.                                             |
 | role         | String   | The user's role.                                                  |
@@ -42,7 +42,7 @@
 {
   "userId": "5f8d3fse4b8d3c7e9f72d3e8",
   "email": "janedoe@example.com",
-  "passwordHash": "$2b$10$examplehashValueHere",
+  "hashPassword": "$2b$10$examplehashValueHere",
   "firstName": "Jane",
   "lastName": "Doe",
   "city": "Hoboken",
