@@ -6,6 +6,7 @@ import profileRoutes from './profile.js';
 import logoutRoutes from './logout.js';
 import errorRoutes from './error.js';
 import passwordRoutes from './password.js';
+import aboutRoutes from './about.js';
 
 import housingRoutes from './housing.js';
 import reviewsRoutes from './reviews.js';
@@ -20,6 +21,7 @@ const constructorMethod = (app) => {
     app.use('/password', passwordRoutes);
     app.use('/logout', logoutRoutes);
     app.use('/error', errorRoutes);
+    app.use('/about', aboutRoutes);
 
     app.use('/housings', housingRoutes);
     app.use('/reviews', reviewsRoutes);
