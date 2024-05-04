@@ -11,17 +11,36 @@ router.route('/')
     .get(async (req, res) => {
         const title = "Profile";
         const id = req.session.user.id;
-        let user = await getUserById(id);
+        let user;
+        let allReviews = [];
         let hasReviews = false;
         let hasNoReviews = true;
-        let allReviews = await getAllReviewsByUserId(id);
-
-        if (allReviews.length > 0) {
-            hasReviews = true;
-            hasNoReviews = false;
-        }
-
         let selectedNull = "", selectedMale = "", selectedFemale = "";
+
+        try {
+            user = await getUserById(id);
+            allReviews = await getAllReviewsByUserId(id);
+            hasReviews = allReviews.length > 0;
+            hasNoReviews = !hasReviews;
+        } catch (error) {
+            console.error('Error fetching user or reviews:', error);
+            // Render the profile page with error message
+            return res.status(500).render('profile', {
+                title: title,
+                avatarId: user ? user.avatar : "",
+                userName: user ? user.userName : "",
+                firstName: user ? user.firstName : "",
+                lastName: user ? user.lastName : "",
+                email: user ? user.email : "",
+                selectedNull: selectedNull,
+                selectedMale: selectedMale,
+                selectedFemale: selectedFemale,
+                hasReviews: hasReviews,
+                hasNoReviews: hasNoReviews,
+                allReviews: [],
+                error: "An error occurred while fetching the user or reviews."
+            });
+        }
 
         if (user.gender === null) {
             selectedNull = "selected";
@@ -30,7 +49,6 @@ router.route('/')
         } else if (user.gender === "female") {
             selectedFemale = "selected";
         }
-
 
         return res.status(200).render('profile', {
             title: title,

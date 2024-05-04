@@ -1,6 +1,6 @@
 import {user_collection} from "../config/mongoCollections.js";
 import {ObjectId} from "mongodb";
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 import validator from "validator";
 import validation from "../helpers.js"
 import helpers from "../helpers.js";
