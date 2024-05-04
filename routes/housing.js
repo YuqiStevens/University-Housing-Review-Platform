@@ -98,6 +98,8 @@ router.post('/add', upload.array('images'), async (req, res) => {
         validator.isInt(twoBed);
         validator.isInt(threeBed);
         validator.isInt(fourBed);
+        validator.isInt(latitude);
+        validator.isInt(longitude);
 
         // Ensure required fields are provided
         if (!address || !city || !state || !homeType) {
