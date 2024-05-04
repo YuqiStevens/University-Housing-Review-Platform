@@ -18,7 +18,6 @@ const getHousingById = async (id) => {
 
 const addHousing = async (housing) => {
     const housingData = {
-        name: xss(housing.name).trim(),
         address: xss(housing.address).trim(),
         city: xss(housing.city).trim(),
         state: xss(housing.state).trim(),
@@ -28,10 +27,10 @@ const addHousing = async (housing) => {
         rentalCostMin: parseInt(housing.rentalCostMin, 10),
         rentalCostMax: parseInt(housing.rentalCostMax, 10),
         studios: parseInt(housing.studios, 10),
-        beds1: parseInt(housing.beds1, 10),
-        beds2: parseInt(housing.beds2, 10),
-        beds3: parseInt(housing.beds3, 10),
-        beds4: parseInt(housing.beds4, 10),
+        beds1: parseInt(housing.oneBed, 10),
+        beds2: parseInt(housing.towBed, 10),
+        beds3: parseInt(housing.threeBed, 10),
+        beds4: parseInt(housing.fourBed, 10),
         petPolicy: xss(housing.petPolicy).trim(),
         garage: Boolean(housing.garage),
         images: xss(housing.images).trim(),
@@ -41,22 +40,6 @@ const addHousing = async (housing) => {
         },
         rating: parseFloat(housing.rating)
     };
-
-    const admin = await getUserById(adminId);
-    if (admin.role !== "admin") {
-        throw new Error("User does not have authorization to add a housing listing.");
-    }
-
-    try {
-        helpers.checkIfLocationValid(housingData.location);
-        helpers.checkIfHousingNameValid(housingData.name);
-    } catch (e) {
-        throw e;
-    }
-
-    if (await helpers.checkIfHousingNameExists(housingData.name)) {
-        throw new Error("Housing name already exists");
-    }
 
     housingData.established_date = new Date().toUTCString();
 
