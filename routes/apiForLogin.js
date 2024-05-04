@@ -1,7 +1,7 @@
 import express from 'express';
 import validator from 'validator';
 import validation from '../helpers.js';
-import {loginUser} from '../data/users.js';
+import { loginUser } from '../data/users.js';
 import xss from 'xss';
 
 const router = express.Router();
@@ -10,47 +10,53 @@ router.route('/')
         let errors = [];
         let cleanEmail = xss(req.body.email).trim();
         let cleanPassword = xss(req.body.password).trim();
-        if (!cleanEmail) errors.push("Please enter your email address");
-        if (!cleanPassword) errors.push("Please enter your password");
+
+        // Check if email or password fields are empty
+        if (!cleanEmail) {
+            errors.push("Please enter your email address.");
+        }
+        if (!cleanPassword) {
+            errors.push("Please enter your password.");
+        }
+
+        // Validate the format of the email
+        if (!validator.isEmail(cleanEmail)) {
+            errors.push("Email address should be in a valid format, e.g., example@example.com.");
+        }
+
+        // Validate the password requirements
+        try {
+            validation.checkPassword(cleanPassword, 'Password');
+        } catch (e) {
+            errors.push(e.message);
+        }
+
+        // Return errors if any validations fail
         if (errors.length > 0) {
-            let errorMessage = {login: false, error: []};
-            for (let error of errors) {
-                errorMessage.error.push(error);
-            }
-            return res.json(errorMessage);
+            return res.status(400).json({ login: false, error: errors });
         }
 
         try {
-            if (!validator.isEmail(cleanEmail)) errors.push("Email address should be a valid email address format. example@example.com");
-        } catch (e) {
-            errors.push(e);
-        }
-        try {
-            validation.checkPassword(cleanPassword, 'Password')
-        } catch (e) {
-            errors.push(e);
-        }
-
-        if (errors.length > 0) {
-            let errorMessage = {login: false, error: []};
-            for (let error of errors) {
-                errorMessage.error.push(error);
+            const user = await loginUser(cleanEmail, cleanPassword);
+            if (user) {
+                console.log("User login successful, setting session", user);
+                req.session.user = user; // Correctly setting up the session
+                req.session.save(err => {
+                    if (err) {
+                        console.error("Error saving session", err);
+                        return res.status(500).json({ login: false, error: ["Failed to save session."] });
+                    }
+                    console.log("Session saved successfully");
+                    return res.json({ login: true });
+                });
+            } else {
+                console.log("No user found with these credentials");
+                return res.status(401).json({ login: false, error: ["Invalid credentials."] });
             }
-            return res.json(errorMessage);
-        }
-
-        let user;
-        try {
-            user = await loginUser(cleanEmail, cleanPassword);
         } catch (e) {
-            errors.push(e)
-            let errorMessage = {login: false, error: []};
-            for (let error of errors) {
-                errorMessage.error.push(error);
-            }
-            return res.json(errorMessage);
+            console.error("Login error: ", e);
+            return res.status(500).json({ login: false, error: ["Server error during login."] });
         }
-        req.session.user = user;
-        return res.json({login: true});
     });
+
 export default router;

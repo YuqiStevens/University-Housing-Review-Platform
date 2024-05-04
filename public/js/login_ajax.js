@@ -1,72 +1,74 @@
 (function ($) {
-    // Selecting DOM elements
-    const loginForm = $('#login-form');
-    const errorContainer = $('#errorContainer');
-    const emailTerm = $('#email');
-    const passwordTerm = $('#password');
+    let loginForm = $('#login-form'),
+        errorContainer = $('#errorContainer'),
+        emailTerm = $('#email'),
+        passwordTerm = $('#password')
 
-    // Hide error container initially
     errorContainer.hide();
-
-    // Handle form submission
     loginForm.submit(async function (event) {
         event.preventDefault();
-
-        // Retrieve input values
-        const email = emailTerm.val().trim();
-        const password = passwordTerm.val().trim();
-        const errors = [];
-
-        // Validate email format
+        let email = emailTerm.val().trim();
+        let password = passwordTerm.val().trim();
+        let errors = [];
         if (!/\S+@\S+\.\S+/.test(email)) {
-            errors.push("Please enter a valid email address (e.g., example@example.com).");
+            errors.push("Email address should be a valid email address format. example@example.com");
         }
 
-        // Validate password format
         if (password.includes(' ')) {
-            errors.push("Password should not contain spaces.");
+            errors.push("Password should not contain any space");
         } else {
             const passwordRegex = /^(?=.*[A-Z])(?=.*[0-9])(?=.*[^A-Za-z0-9\s]).{8,}$/;
             if (!passwordRegex.test(password)) {
-                errors.push("Password must have at least 8 characters, including 1 uppercase letter, 1 number, and 1 symbol.");
+                errors.push("Password must have at least 8 characters, with at least 1 uppercase letter, 1 number, and 1 symbol");
             }
         }
 
-        // Display validation errors, if any
         if (errors.length > 0) {
-            errorContainer.empty().append(errors.join('<br>'));
+            errorContainer.empty();
+            for (let error of errors) {
+                errorContainer.append(error);
+            }
             errorContainer.show();
             return;
         }
 
-        // Prepare AJAX request
-        const requestConfig = {
+        let requestConfig = {
             method: 'POST',
             url: '/apiForLogin',
             data: {
                 email: email,
                 password: password
             }
-        };
+        }
 
-        // Send AJAX request
-        try {
-            const responseMessage = await $.ajax(requestConfig);
-
-            // Handle server response
+        await $.ajax(requestConfig).then(function(responseMessage) {
+            console.log(responseMessage);
+            errorContainer.empty();
+            errorContainer.hide();
             if (!responseMessage.login) {
-                errorContainer.empty().append(responseMessage.error.join('<br>'));
+                for (let error of responseMessage.error) {
+                    errorContainer.append(error);
+                }
                 errorContainer.show();
-            } else {
-                // Redirect user to home page upon successful login
+                return;
+            }
+            if (responseMessage.login) {
                 window.location.href = '/home';
             }
-        } catch (error) {
-            console.error('An error occurred during login:', error);
-            // Display a generic error message
-            errorContainer.empty().text('An error occurred during login. Please try again later.');
-            errorContainer.show();
-        }
-    });
+        })
+
+        await $.ajax(requestConfig).done(function(responseMessage) {
+            if (responseMessage.login) {
+                console.log("Login successful, redirecting to home");
+                window.location.href = '/home';
+            } else {
+                errorContainer.empty().append("Login failed. Please check your credentials and try again.").show();
+            }
+        }).fail(function(jqXHR, textStatus, errorThrown) {
+            console.error("AJAX call failed: ", textStatus, errorThrown);
+            errorContainer.empty().append("An error occurred during login. Please try again later.").show();
+        });
+
+    })
 
 })(window.jQuery);
