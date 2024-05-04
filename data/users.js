@@ -68,7 +68,6 @@ const addUser = async (
         "userReviews": [],
         "userComments": [],
         "role": role,
-        "ownedStoreId": null,
         "avatar": "default.jpg",
     }
     const userCollection = await user_collection();
