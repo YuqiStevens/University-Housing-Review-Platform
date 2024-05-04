@@ -107,7 +107,7 @@ app.use('/profile', (req, res, next) => {
     }
 });
 
-app.use('/housings/add', (req, res, next) => {
+app.use('/housing/add', (req, res, next) => {
     if (req.session.user && req.session.user.role === 'admin') {
         next();
     } else {
@@ -115,7 +115,7 @@ app.use('/housings/add', (req, res, next) => {
     }
 });
 
-app.use('/housings/edit', (req, res, next) => {
+app.use('/housing/edit', (req, res, next) => {
     if (req.session.user && req.session.user.role === 'admin') {
         next();
     } else {

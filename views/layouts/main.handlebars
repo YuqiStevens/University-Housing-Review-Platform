@@ -15,14 +15,18 @@
             <h1 class="website-title" >University Housing Review Platform</h1>
         </div>
         <nav class="header-buttons">
-            <a href="/home" class="header-link home"><strong>Home</strong></a>
-            {{#if username}}
+            <a href="/home" class="header-link-home"><strong>Home</strong></a>
+            {{#if userName}}
                 <div class="user-greeting">
-                    <strong>Welcome, {{username}}</strong>
+                    <strong>Welcome, {{userName}}</strong>
                 </div>
-                <div>
-                    <a href="/profile" class="header-link login"><strong>Profile</strong></a>
-                    <a href="/logout" class="header-link register"><strong>Logout</strong></a>
+                <div class="dropdown">
+                    <button class="dropbtn">Personal Center</button>
+                    <div class="dropdown-content">
+                        <a href="/profile">Profile</a>
+                        <a href="/password/change">Password Change</a>
+                        <a href="/logout">Logout</a>
+                    </div>
                 </div>
             {{else}}
                 <a href="/login" class="header-link login"><strong>Log In</strong></a>

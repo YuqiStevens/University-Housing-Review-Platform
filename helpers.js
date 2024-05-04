@@ -1,5 +1,6 @@
 import {user_collection, housing_collection} from "./config/mongoCollections.js";
-import bcrypt from 'bcrypt';
+//import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 import {ObjectId} from "mongodb";
 import validator from "validator";
 
@@ -34,6 +35,7 @@ const exportedMethods = {
         if (!user) return null;
         return {
             id: user._id,
+            userName: user.userName,
             firstName: user.firstName,
             lastName: user.lastName,
             email: user.email,

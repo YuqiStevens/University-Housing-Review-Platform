@@ -77,6 +77,22 @@ router.post('/add', upload.array('images'), async (req, res) => {
     }
 });
 
+
+router.get('/add', async (req, res) => {
+    try {
+        if (!req.session.user || req.session.user.role !== 'admin') {
+            res.status(403).render('error', { title: "Forbidden", error: "You are not authorized to add housing" });
+            return;
+        }
+
+        res.render('addHousing', { title: "Add Housing" });
+    } catch (error) {
+        console.error('Error rendering add housing page:', error);
+        res.status(500).send('Internal Server Error');
+    }
+});
+
+
 router.get('/:id', async (req, res) => {
     try {
         const housingId = req.params.id;
