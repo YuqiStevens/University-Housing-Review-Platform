@@ -1,6 +1,5 @@
 <section aria-labelledby="home-header">
     <nav>
-        <a href="/home">Home</a>
         <a href="/about">Learn More About Us</a>
         <div class="dropdown">
             <button class="dropbtn">Personal Center</button>
@@ -16,8 +15,8 @@
         <a href="/listing" class="btn btn-primary">All Housings in Database</a>
     </nav>
 
-    <h1 id="home-header">Welcome to the University Housing Review Platform</h1>
-    <p>This platform is dedicated to assisting new international students in finding the perfect housing around our university by providing honest, comprehensive reviews and detailed listings.</p>
+    <h1 id="home-header" class="h1-content">Welcome to the University Housing Review Platform</h1>
+    <p class="p-content">This platform is dedicated to assisting new international students in finding the perfect housing around our university by providing honest, comprehensive reviews and detailed listings.</p>
 
     <div class="searchContainer">
         <h2>Search Housing Options</h2>
@@ -77,9 +76,9 @@
         </div>
     {{else}}
         <div class="no-results-message">
-            <p>No results found for "{{searchTerm}}". Please try different search criteria.</p>
+            <p class="p-content">No results found for "{{searchTerm}}". Please try different search criteria.</p>
         </div>
     {{/if}}
     <h2>How It Works</h2>
-    <p>Start your housing search using a specific ZIP code or a general location. Apply filters like price, beds/baths, home type, pet policy, and more to find what suits you best.</p>
+    <p class="p-content">Start your housing search using a specific ZIP code or a general location. Apply filters like price, beds/baths, home type, pet policy, and more to find what suits you best.</p>
 </section>

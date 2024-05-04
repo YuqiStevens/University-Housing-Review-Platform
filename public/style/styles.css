@@ -1,4 +1,3 @@
-/* Basic Reset */
 body, h1, h2, h3, p, form, ul, li, nav, section {
     margin: 0;
     padding: 0;
@@ -13,7 +12,6 @@ body {
     padding: 20px;
 }
 
-/* Navigation Styles */
 nav {
     background-color: #00457c;
     color: #fff;
@@ -102,6 +100,16 @@ form {
     border: 1px solid #ccc;
 }
 
+.form-group input {
+    max-width: 400px; /* Adjust the max-width as needed */
+    width: 100%; /* Responsive width */
+    box-sizing: border-box; /* Includes padding and border in the element's total width */
+}
+.login-form, .register-form {
+    max-width: 450px; /* Max width of the form itself */
+    margin: auto; /* Center the form on the page */
+}
+
 .btn {
     display: inline-block;
     background: #007bff;
@@ -165,4 +173,70 @@ form {
         width: 100%;
         padding: 0;
     }
+}
+
+ .error-icon {
+     width: 50px;
+     height: 50px;
+ }
+
+ .website-icon {
+     width: 200px;
+     height: 200px;
+ }
+
+.website-title {
+    color: #204975; /* Change to your preference */
+    font-size: 2em; /* Makes the font larger */
+    font-weight: bold; /* Makes the font bolder */
+    text-shadow: 1px 1px 2px #aaa; /* Optional: Adds a subtle shadow to the text */
+    margin-left: 80px; /* Moves the title a bit more to the right */
+}
+
+.footer-content {
+    text-align: center;
+    padding: 20px; /* Adds padding around the content */
+    line-height: 1.6; /* Increases line spacing */
+    background-color: #f8f8f8; /* Adds a light background color */
+    border-top: 1px solid #ccc; /* Adds a subtle border line at the top */
+}
+
+.footer-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+.start-button {
+    text-align: center;
+    margin-top: 10px; /* Adds space above the button */
+}
+
+.footer-content, .footer-copyright {
+    text-align: center;
+    width: 100%; /* Ensures full width for alignment */
+}
+
+.h1-content {
+    font-family: 'Arial', sans-serif; /* Ensures a clean, modern look */
+    color: #333333; /* Dark gray for readability */
+    font-size: 2.5em; /* Emphasizes the header */
+    font-weight: bold; /* Bold font for header impact */
+    text-shadow: 1px 1px 0px #ffffff; /* Subtle white shadow for depth */
+    margin-bottom: 20px; /* Adds space below the header */
+    padding-bottom: 10px; /* Padding for visual space */
+    border-bottom: 2px solid #eeeeee; /* A light line under the text */
+}
+
+.p-content {
+    font-family: 'Georgia', serif; /* A more elegant, readable typeface */
+    color: #555555; /* A softer black for less strain */
+    font-size: 1em; /* Standard size for web text */
+    line-height: 1.8; /* More space between lines for reading comfort */
+    text-align: justify; /* Ensures the text is evenly justified */
+    margin-bottom: 15px; /* Space after each paragraph */
+    padding: 10px; /* Padding inside paragraph blocks */
+    background-color: #f9f9f9; /* A very light background to offset the text */
+    border-left: 4px solid #cccccc; /* A subtle left border for style */
+    box-shadow: 2px 2px 5px rgba(0,0,0,0.1); /* Soft shadow for a 3D effect */
 }

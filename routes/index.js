@@ -12,7 +12,7 @@ import reviewsRoutes from './reviews.js';
 import commentsRoutes from './comments.js';
 
 const constructorMethod = (app) => {
-    app.use('/home', homeRoutes);
+    app.use('/', loginRoutes);
     app.use('/login', loginRoutes);
     app.use('/apiForLogin', apiForLoginRoutes);
     app.use('/register', registerRoutes);

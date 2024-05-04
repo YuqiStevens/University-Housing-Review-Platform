@@ -1,8 +1,5 @@
 <section aria-labelledby="housing-header">
-    <nav>
-        <a href="/home">Home</a>
-    </nav>
-    <h1 id="housing-header">{{housing.address}}</h1>
+    <h1 id="housing-header" class="h1-content">{{housing.address}}</h1>
     <div class="housing-images">
         {{#each housing.images}}
             <img src="{{this}}" alt="Image of the housing" class="housing-main-image">

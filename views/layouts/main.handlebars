@@ -10,11 +10,12 @@
 <body>
 <header>
     <div class="header-content">
-        <div class="center-content">
-            <img src="/public/Icon.png" alt="Website Icon" class="website-icon">
-            <h1 class="website-title">University-Housing-Review-Platform</h1>
+        <div class="center-content" style="display: flex; align-items: center;">
+            <img src="/public/Icon.png" alt="Website Icon" class="website-icon" style="margin-right: 10px;">
+            <h1 class="website-title" >University Housing Review Platform</h1>
         </div>
         <nav class="header-buttons">
+            <a href="/home" class="header-link home"><strong>Home</strong></a>
             {{#if username}}
                 <div class="user-greeting">
                     <strong>Welcome, {{username}}</strong>

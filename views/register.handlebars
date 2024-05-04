@@ -1,10 +1,6 @@
 <section aria-labelledby="register-header">
-    <nav>
-        <a href="/home">Home</a>
-        <a href="/login">Login</a>
-    </nav>
-    <h1 id="register-header">Create an Account</h1>
-    <p>Register to start reviewing and finding your ideal housing today.</p>
+    <h1 id="register-header" class="h1-content">Create an Account</h1>
+    <p class="p-content">Register to start reviewing and finding your ideal housing today.</p>
 
     <form action="/register" method="post" class="register-form" id="registration-form">
         <div class="form-group">
@@ -77,6 +73,10 @@
         </div>
 
         <button type="submit" class="btn btn-primary">Register</button>
+
+        <div class="register-links">
+            <p>Already have an account? <a href="/login">Log in here</a></p>
+        </div>
     </form>
 
     <ul class="errorContainer" id="errorContainer">
@@ -87,9 +87,6 @@
         {{/if}}
     </ul>
 
-    <div class="register-links">
-        <p>Already have an account? <a href="/login">Log in here</a></p>
-    </div>
 </section>
 
 <script src="/public/js/front_end_validation.js"></script>
