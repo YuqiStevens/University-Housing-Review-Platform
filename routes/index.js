@@ -23,7 +23,7 @@ const constructorMethod = (app) => {
     app.use('/error', errorRoutes);
     app.use('/about', aboutRoutes);
 
-    app.use('/housings', housingRoutes);
+    app.use('/housing', housingRoutes);
     app.use('/reviews', reviewsRoutes);
     app.use('/comments', commentsRoutes);
 
