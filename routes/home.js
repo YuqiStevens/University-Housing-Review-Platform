@@ -11,7 +11,7 @@ const router = express.Router();
 router.route('/')
     .get(async (req, res) => {
         const title = "Home Page";
-        const id = req.session.user.userId;
+        const id = req.session.user.id;
         const isAdmin = req.session.user.role === 'admin';
         
         const user = await getUserById(id);
