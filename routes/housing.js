@@ -2,11 +2,9 @@ import express from 'express';
 import multer from 'multer';
 import path from 'path';
 import { ObjectId } from 'mongodb';
-import { addHousing } from '../data/housing.js';
-import { getHousingById } from '../data/housing.js';
-import { updateHousing } from '../data/housing.js';
+import { addHousing, getHousingById, updateHousing, getAllHousings } from '../data/housing.js';
 import helpers from '../helpers.js';
-import validator from "validator";
+import validator from 'validator';
 import xss from 'xss';
 
 const router = express.Router();
@@ -23,6 +21,33 @@ const storage = multer.diskStorage({
 });
 
 const upload = multer({ storage: storage });
+
+router.get('/list', async (req, res) => {
+    try {
+        const houses = await getAllHousings(); 
+        res.render('listing', {
+            title: "All Housing Listings",
+            housings: houses
+        });
+    } catch (error) {
+        console.error('Error retrieving all housings:', error);
+        res.status(500).render('error', { error: "Internal Server Error" });
+    }
+});
+
+router.get('/add', async (req, res) => {
+    try {
+        if (!req.session.user || req.session.user.role !== 'admin') {
+            res.status(403).render('error', { title: "Forbidden", error: "You are not authorized to add housing" });
+            return;
+        }
+
+        res.render('addHousing', { title: "Add Housing" });
+    } catch (error) {
+        console.error('Error rendering add housing page:', error);
+        res.status(500).send('Internal Server Error');
+    }
+});
 
 router.post('/add', upload.array('images'), async (req, res) => {
     try {
@@ -77,22 +102,6 @@ router.post('/add', upload.array('images'), async (req, res) => {
     }
 });
 
-
-router.get('/add', async (req, res) => {
-    try {
-        if (!req.session.user || req.session.user.role !== 'admin') {
-            res.status(403).render('error', { title: "Forbidden", error: "You are not authorized to add housing" });
-            return;
-        }
-
-        res.render('addHousing', { title: "Add Housing" });
-    } catch (error) {
-        console.error('Error rendering add housing page:', error);
-        res.status(500).send('Internal Server Error');
-    }
-});
-
-
 router.get('/:id', async (req, res) => {
     try {
         const housingId = req.params.id;
@@ -135,8 +144,8 @@ router.post('/edit/:id', upload.array('images'), async (req, res) => {
         const city = xss(helpers.checkString(req.body.city, 'City'));
         const state = xss(helpers.checkString(req.body.state, 'State'));
         const homeType = xss(helpers.checkString(req.body.homeType, 'Home Type'));
-        const rentalCostMin = xss(validator.isInt(req.body.rentalCostMin));
-        const rentalCostMax = xss(validator.isInt(req.body.rentalCostMax));
+        const rentalCostMin = xss(validator.isInt(req.mdentalCostMin));
+        const rentalCostMax = xss(validator.isInt(req.mdentalCostMax));
         const amenities = xss(req.body.amenities);
         const petPolicy = xss(req.body.petPolicy);
         const garage = xss(req.body.garage) === 'on';
