@@ -9,9 +9,17 @@ import {updatePassword} from '../data/users.js';
 
 router.route('/')
     .get(async (req, res) => {
-        return res.status(200).render('password', {
-            title: 'Password Management',
-        });
+        try {
+            if (!req.session.user) {
+                res.status(403).render('error', { title: "Forbidden", error: "You are not authorized to change password" });
+                return;
+            }
+
+            return res.status(200).render('changePassword', { title: "Password Change Page" });
+        } catch (error) {
+            console.error('Error rendering change password page:', error);
+            res.status(500).send('Internal Server Error');
+        }
     })
     .post(async (req, res) => {
         let originalPassword = xss(req.body.originalPassword).trim();
@@ -65,19 +73,5 @@ router.route('/')
             });
         }
     });
-
-router.get('/change', async (req, res) => {
-    try {
-        if (!req.session.user) {
-            res.status(403).render('error', { title: "Forbidden", error: "You are not authorized to change password" });
-            return;
-        }
-
-        res.render('changePassword', { title: "Password Change Page" });
-    } catch (error) {
-        console.error('Error rendering change password page:', error);
-        res.status(500).send('Internal Server Error');
-    }
-});
 
 export default router;
