@@ -43,113 +43,71 @@ router.route('/')
         });
     })
 
-
+router.route('/')
     .post(async (req, res) => {
         const title = "Profile";
         const id = req.session.user.id;
-        let user = await getUserById(id);
-        let hasReviews = false;
-        let hasNoReviews = true;
-
-        let allReviews = await getAllReviewsByUserId(id);
-
-        if (allReviews.length > 0) {
-            hasReviews = true;
-            hasNoReviews = false;
-        }
-
-        let cleanUserName = xss(req.body.userName);
-        let cleanFirstName = xss(req.body.firstName);
-        let cleanLastName = xss(req.body.lastName);
-        let cleanEmail = xss(req.body.email).toLowerCase();
         let errors = [];
 
         try {
-            cleanUserName = helper.checkUserName(cleanUserName, 'User Name');
-        } catch (e) {
-            errors.push(e);
-        }
+            let user = await getUserById(id);
+            let { userName, firstName, lastName, email, city, state, country, age, diploma, discipline } = req.body;
+            // Sanitization
+            userName = xss(userName);
+            firstName = xss(firstName);
+            lastName = xss(lastName);
+            email = xss(email).toLowerCase();
+            city = xss(city);
+            state = xss(state);
+            country = xss(country);
+            age = xss(age);
+            diploma = xss(diploma);
+            discipline = xss(discipline);
 
+            // Validation
+            userName = helper.checkUserName(userName, 'User Name');
+            firstName = helper.checkName(firstName, 'First Name');
+            lastName = helper.checkName(lastName, 'Last Name');
+            email = helper.checkEmail(email, 'E-mail');
+            city = helper.checkString(city, 'City');
+            state = helper.checkString(state, 'State');
+            country = helper.checkString(country, 'Country');
+            diploma = helper.checkString(diploma, 'Highest Diploma');
+            discipline = helper.checkString(discipline, 'Discipline');
 
-        try {
-            cleanFirstName = helper.checkName(cleanFirstName, 'First Name');
-        } catch (e) {
-            errors.push(e);
-        }
-
-
-        try {
-            cleanLastName = helper.checkName(cleanLastName, 'Last Name');
-        } catch (e) {
-            errors.push(e);
-        }
-
-
-        try {
-            cleanEmail = helper.checkEmail(cleanEmail, 'E-mail');
-            const emailNow = req.session.user.email;
-            if (await helper.checkIfEmailExistsExceptMe(emailNow, cleanEmail)) {
-                errors.push('The email address exists');
+            // Check if email already exists in other accounts
+            if (await helper.checkIfEmailExistsExceptMe(user.email, email, id)) {
+                errors.push('The email address already exists');
             }
-        } catch (e) {
-            errors.push(e);
-        }
 
+            if (errors.length > 0) {
+                return res.status(400).render('profile', {
+                    title,
+                    user,
+                    errors,
+                    hasErrors: true
+                });
+            }
 
-        if (errors.length > 0) {
+            // Update the user
+            user = await updateUser(id, { userName, firstName, lastName, email, city, state, country, age, diploma, discipline });
 
-            return res.status(400).render('profile', {
-                title: title,
-                user: user,
-                hasReviews: hasReviews,
-                hasNoReviews: hasNoReviews,
-                hasErrors: true,
-                allReviews: allReviews,
-                errors: errors,
+            // Handle email change for session
+            if (req.session.user.email !== email) {
+                req.session.destroy();
+                res.redirect('/login');
+            } else {
+                res.redirect('/profile');
+            }
+        } catch (error) {
+            console.error('Error updating user:', error);
+            res.status(500).render('profile', {
+                title,
+                user: await getUserById(id),
+                errors: ['Failed to update your profile.'],
+                hasErrors: true
             });
         }
-
-
-        let updatedUser = {
-            userName: cleanUserName,
-            firstName: cleanFirstName,
-            lastName: cleanLastName,
-            email: cleanEmail,
-        };
-
-
-        try {
-            updatedUser = await updateUser(
-                id,
-                updatedUser,
-            );
-        } catch (e) {
-            errors.push(e);
-
-            return res.status(400).render('profile', {
-                title: title,
-                user: user,
-                hasReviews: hasReviews,
-                hasNoReviews: hasNoReviews,
-                allReviews: allReviews,
-                hasErrors: true,
-                errors: errors,
-            });
-        }
-
-
-        if (!updatedUser) {
-            return res.status(500).render('error', {title: "Internal Server Error", error: "Internal Server Error"});
-        }
-
-
-        if (req.session.user.email !== cleanEmail) {
-            req.session.destroy();
-            return res.status(200).redirect('/login');
-        }
-
-        res.status(200).redirect('/profile');
-    })
-
+    });
 
 export default router;
