@@ -66,4 +66,18 @@ router.route('/')
         }
     });
 
+router.get('/change', async (req, res) => {
+    try {
+        if (!req.session.user) {
+            res.status(403).render('error', { title: "Forbidden", error: "You are not authorized to change password" });
+            return;
+        }
+
+        res.render('changePassword', { title: "Password Change Page" });
+    } catch (error) {
+        console.error('Error rendering change password page:', error);
+        res.status(500).send('Internal Server Error');
+    }
+});
+
 export default router;
