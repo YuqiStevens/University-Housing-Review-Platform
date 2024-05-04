@@ -52,7 +52,7 @@ const addUser = async (
     if (await helpers.checkIfEmailExists(email)) throw "There is already a user with that email address";
 
     password = password.trim();
-    if (!await validation.checkIfPasswordCorrect(password)) throw "Password must have at least 8 characters, with at least 1 uppercase letter, 1 number, and 1 symbol";
+    if (!await validation.checkPassword(password, "Password")) throw "Password must have at least 8 characters, with at least 1 uppercase letter, 1 number, and 1 symbol";
     password = await bcrypt.hash(password, 10);
 
     role = role.trim().toLowerCase();
