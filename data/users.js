@@ -122,21 +122,21 @@ const removeUser = async (id) => {
 }
 
 const updateUser = async (id, updatedUser) => {
-    let userName = xss(updatedUser.userName);
+    //let userName = xss(updatedUser.userName);
     let firstName = xss(updatedUser.firstName);
     let lastName = xss(updatedUser.lastName);
     let email = xss(updatedUser.email);
     let gender = (updatedUser.gender);
 
-    if (!userName) throw "Please provide your user name";
+    //if (!userName) throw "Please provide your user name";
     if (!firstName) throw "Please provide your first name";
     if (!lastName) throw "Please provide your last name";
     if (!email) throw "Please provide your email address";
 
     var regex = /^[a-zA-Z]+$/;
-    userName = userName.trim();
-    if (!regex.test(userName)) throw "User name must only contain letters";
-    if (userName.length < 2 || userName.length > 25) throw "User name should have 2 - 25 characters";
+    // userName = userName.trim();
+    // if (!regex.test(userName)) throw "User name must only contain letters";
+    // if (userName.length < 2 || userName.length > 25) throw "User name should have 2 - 25 characters";
 
     firstName = firstName.trim();
     if (!regex.test(firstName)) throw "First name must only contain letters";
@@ -158,7 +158,7 @@ const updateUser = async (id, updatedUser) => {
         {_id: new ObjectId(id)},
         {
             $set: {
-                userName: userName,
+                //userName: userName,
                 firstName: firstName,
                 lastName: lastName,
                 email: email,

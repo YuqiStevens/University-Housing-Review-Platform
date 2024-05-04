@@ -21,7 +21,7 @@ router.route('/')
             if (!houses || houses.length === 0) {
                 return res.status(200).render('home', {
                     title: title,
-                    userName: user.userName,
+                    //userName: user.userName,
                     hasHouses: false,
                     isAdmin: isAdmin,
                     searchPerformed: false
@@ -30,7 +30,7 @@ router.route('/')
 
             res.status(200).render('home', {
                 title: title,
-                userName: user.userName,
+               // userName: user.userName,
                 hasHouses: true,
                 houses: houses,
                 isAdmin: isAdmin,
@@ -45,12 +45,12 @@ router.route('/search')
     .post(async (req, res) => {
         const title = "Home Page";
         let isAdmin = false;
-        let userName = '';
+        //let userName = '';
 
         try {
             if (req.session && req.session.user) {
                 isAdmin = req.session.user.role === 'admin';
-                userName = req.session.user.userName;
+                //userName = req.session.user.userName;
             }
 
             let searchType = xss(req.body.homeType);
@@ -90,7 +90,7 @@ router.route('/search')
 
             res.status(200).render('home', {
                 title: title,
-                userName: userName,
+                //userName: userName,
                 searchResults: searchResults,
                 noResultsMessage: noResultsMessage,
                 searchTerm: searchTerm,

@@ -51,9 +51,9 @@ router.route('/')
 
         try {
             let user = await getUserById(id);
-            let { userName, firstName, lastName, email, city, state, country, age, diploma, discipline } = req.body;
+            let { firstName, lastName, email, city, state, country, age, diploma, discipline } = req.body;
             // Sanitization
-            userName = xss(userName);
+            //userName = xss(userName);
             firstName = xss(firstName);
             lastName = xss(lastName);
             email = xss(email).toLowerCase();
@@ -65,7 +65,7 @@ router.route('/')
             discipline = xss(discipline);
 
             // Validation
-            userName = helper.checkUserName(userName, 'User Name');
+            //userName = helper.checkUserName(userName, 'User Name');
             firstName = helper.checkName(firstName, 'First Name');
             lastName = helper.checkName(lastName, 'Last Name');
             email = helper.checkEmail(email, 'E-mail');
@@ -90,7 +90,7 @@ router.route('/')
             }
 
             // Update the user
-            user = await updateUser(id, { userName, firstName, lastName, email, city, state, country, age, diploma, discipline });
+            user = await updateUser(id, { firstName, lastName, email, city, state, country, age, diploma, discipline });
 
             // Handle email change for session
             if (req.session.user.email !== email) {
