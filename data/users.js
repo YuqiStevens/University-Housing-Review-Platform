@@ -20,14 +20,18 @@ const getUserById = async (id) => {
 }
 
 const addUser = async (
-    userName,
     firstName,
     lastName,
     email,
     password,
-    role
+    role,
+    city,
+    state,
+    country,
+    age,
+    diploma,
+    discipline
 ) => {
-    if (!userName) throw "Please provide your user name";
     if (!firstName) throw "Please provide your first name";
     if (!lastName) throw "Please provide your last name";
     if (!email) throw "Please provide your email address";
@@ -35,10 +39,6 @@ const addUser = async (
     if (!role) throw "Please provide your role";
 
     var regex = /^[a-zA-Z]+$/;
-    userName = userName.trim();
-    if (!regex.test(userName)) throw "User name must only contain letters";
-    if (userName.length < 2 || userName.length > 25) throw "User name should have 2 - 25 characters";
-
     firstName = firstName.trim();
     if (!regex.test(firstName)) throw "First name must only contain letters";
     if (firstName.length < 2 || firstName.length > 25) throw "First name should have 2 - 25 characters";
@@ -59,17 +59,22 @@ const addUser = async (
     if (role !== "admin" && role !== "user") throw "The role should be admin or user";
 
     let newUser = {
-        "userName": userName,
         "firstName": firstName,
         "lastName": lastName,
         "email": email,
         "hashPassword": password,
-        "gender": "",
-        "userReviews": [],
-        "userComments": [],
         "role": role,
-        "avatar": "default.jpg",
-    }
+        "city": city,
+        "state": state,
+        "country": country,
+        "age": age,
+        "diploma": diploma,
+        "discipline": discipline,
+        "createdAt": new Date(),
+        "updatedAt": new Date(),
+        "reviewIds": []
+    };
+
     const userCollection = await user_collection();
     const insertInfo = await userCollection.insertOne(newUser);
     if (!insertInfo.acknowledged || !insertInfo.insertedId) throw 'Could not add user';
@@ -78,6 +83,7 @@ const addUser = async (
         insertedUser: true
     };
 }
+
 
 const loginUser = async (email, password) => {
     if (!email) throw "Please provide your email address";

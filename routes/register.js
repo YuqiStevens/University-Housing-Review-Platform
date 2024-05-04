@@ -15,19 +15,20 @@ router.route('/').get(async (req, res) => {
 
 router.route('/').post(async (req, res) => {
     const title = "Register";
-    let cleanUserName = xss(req.body.userName);
     let cleanFirstName = xss(req.body.firstName);
     let cleanLastName = xss(req.body.lastName);
     let cleanEmail = xss(req.body.email).toLowerCase();
     let cleanPassword = xss(req.body.password);
     let cleanConfirmPassword = xss(req.body.confirmPassword);
     let cleanRole = xss(req.body.role).toLowerCase();
+    let cleanCity = xss(req.body.city);
+    let cleanState = xss(req.body.state);
+    let cleanCountry = xss(req.body.country);
+    let cleanAge = parseInt(xss(req.body.age), 10);
+    let cleanDiploma = xss(req.body.diploma);
+    let cleanDiscipline = xss(req.body.discipline);
     let errors = [];
-    try {
-        cleanUserName = validation.checkUserName(cleanUserName, 'User Name');
-    } catch (e) {
-        errors.push(e);
-    }
+
     try {
         cleanFirstName = validation.checkName(cleanFirstName, 'First Name');
     } catch (e) {
@@ -54,76 +55,74 @@ router.route('/').post(async (req, res) => {
     if (cleanConfirmPassword !== cleanPassword) {
         errors.push('Password did not match');
     }
-    cleanRole = cleanRole.trim();
     if (cleanRole !== 'admin' && cleanRole !== 'user') {
         errors.push('The role should be admin or user');
     }
+    if (isNaN(cleanAge) || cleanAge <= 0) {
+        errors.push('Please enter a valid age');
+    }
 
     if (errors.length > 0) {
-        let selectedAdmin = '', selectedUser = '', selectedDefault = '';
-        if (cleanRole === "admin") {
-            selectedAdmin = "selected";
-        } else if (cleanRole === "user") {
-            selectedUser = "selected";
-        } else {
-            selectedDefault = "selected";
-        }
-        return res.status(400).render('register',
-            {
-                title: "Sign Up",
-                userName: cleanUserName,
-                firstName: cleanFirstName,
-                lastName: cleanLastName,
-                email: cleanEmail,
-                password: cleanPassword,
-                confirmPassword: cleanConfirmPassword,
-                selectedDefault: selectedDefault,
-                selectedAdmin: selectedAdmin,
-                selectedUser: selectedUser,
-                errors: errors,
-                hasErrors: true
-            });
+        return res.status(400).render('register', {
+            title: "Sign Up",
+            firstName: cleanFirstName,
+            lastName: cleanLastName,
+            email: cleanEmail,
+            password: '',
+            confirmPassword: '',
+            city: cleanCity,
+            state: cleanState,
+            country: cleanCountry,
+            age: cleanAge,
+            diploma: cleanDiploma,
+            discipline: cleanDiscipline,
+            roleAdmin: cleanRole === "admin",
+            roleUser: cleanRole === "user",
+            errors: errors,
+            hasErrors: true
+        });
     }
-    let newUser = {};
+
     try {
-        newUser = await addUser(
-            cleanUserName,
+        const newUser = await addUser(
             cleanFirstName,
             cleanLastName,
             cleanEmail,
             cleanPassword,
-            cleanRole
+            cleanRole,
+            cleanCity,
+            cleanState,
+            cleanCountry,
+            cleanAge,
+            cleanDiploma,
+            cleanDiscipline
         );
-    } catch (e) {
-        errors.push(e);
-        let selectedAdmin = '', selectedUser = '', selectedDefault = '';
-        if (cleanRole === "admin") {
-            selectedAdmin = "selected";
-        } else if (cleanRole === "user") {
-            selectedUser = "selected";
-        } else {
-            selectedDefault = "selected";
+        if (!newUser) {
+            throw new Error("User registration failed.");
         }
-        return res.status(400).render('register',
-            {
-                title: "Sign Up",
-                userName: cleanUserName,
-                firstName: cleanFirstName,
-                lastName: cleanLastName,
-                email: cleanEmail,
-                password: cleanPassword,
-                confirmPassword: cleanConfirmPassword,
-                selectedDefault: selectedDefault,
-                selectedAdmin: selectedAdmin,
-                selectedUser: selectedUser,
-                errors: errors,
-                hasErrors: true
-            });
+        res.status(200).redirect('/login');
+    } catch (e) {
+        errors.push(e.message);
+        return res.status(400).render('register', {
+            title: "Sign Up",
+            firstName: cleanFirstName,
+            lastName: cleanLastName,
+            email: cleanEmail,
+            password: '',
+            confirmPassword: '',
+            city: cleanCity,
+            state: cleanState,
+            country: cleanCountry,
+            age: cleanAge,
+            diploma: cleanDiploma,
+            discipline: cleanDiscipline,
+            roleAdmin: cleanRole === "admin",
+            roleUser: cleanRole === "user",
+            errors: errors,
+            hasErrors: true
+        });
     }
-    if (!newUser) {
-        return res.status(500).render('error', {title: "Internal Server Error", error: "Internal Server Error"});
-    }
-    res.status(200).redirect('/login');
-
 });
+
+
 export default router;
