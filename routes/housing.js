@@ -203,27 +203,65 @@ router.get('/edit/:id', async (req, res) => {
     }
 });
 
-router.post('/edit/:id', upload.array('images'), async (req, res) => {
-    console.log(req.body);
-    const housingId = req.params.id;
-    if (!ObjectId.isValid(housingId)) {
-        return res.status(400).send('Invalid Housing ID');
-    }
-
+router.post('/edit/:id', async (req, res) => {
     try {
-        const address = xss(helpers.checkString(req.body.address, 'Address'));
-        const zipCode = xss(helpers.checkString(req.body.zipCode, 'Zip Code'));
-        const city = xss(helpers.checkString(req.body.city, 'City'));
-        const state = xss(helpers.checkString(req.body.state, 'State'));
-        const homeType = xss(helpers.checkString(req.body.homeType, 'Home Type'));
-        const rentalCostMin = xss(validator.isInt(req.mdentalCostMin));
-        const rentalCostMax = xss(validator.isInt(req.mdentalCostMax));
+        // Ensure user is authorized to perform edit operations
+        if (!req.session.user || req.session.user.role !== 'admin') {
+            res.status(403).render('error', { title: "Forbidden", error: "You are not authorized to edit housing" });
+            return;
+        }
+
+        const housingId = req.params.id;
+        if (!ObjectId.isValid(housingId)) {
+            return res.status(400).send('Invalid Housing ID');
+        }
+
+        // Basic details
+        const address = xss(req.body.address);
+        const zipCode = xss(req.body.zipCode);
+        const city = xss(req.body.city);
+        const state = xss(req.body.state);
+        const homeType = xss(req.body.homeType);
+
+        // Cost details
+        const rentalCostMin = xss(req.body.rentalCostMin);
+        const rentalCostMax = xss(req.body.rentalCostMax);
+
+        // Unit details
+        const studios = xss(req.body.studios);
+        const oneBed = xss(req.body['1beds']);
+        const twoBed = xss(req.body['2beds']);
+        const threeBed = xss(req.body['3beds']);
+        const fourBed = xss(req.body['4beds']);
+
+        // Additional details
         const amenities = xss(req.body.amenities);
+        const amenitiesArray = Array.isArray(amenities) ? amenities : amenities.split(',').map(item => item.trim());
         const petPolicy = xss(req.body.petPolicy);
-        const garage = xss(req.body.garage) === 'on';
+        const garage = xss(req.body.garage);
+        const latitude = xss(req.body.latitude);
+        const longitude = xss(req.body.longitude);
 
-        const images = req.files.map(file => file.filename); 
+        // Image handling
+        const images = req.files.map(file => file.filename);  
 
+        // Validations
+        helpers.checkString(address, 'Address');
+        helpers.checkString(zipCode, 'Zip Code');
+        helpers.checkString(city, 'City');
+        helpers.checkString(state, 'State');
+        helpers.checkString(homeType, 'Home Type');
+        validator.isInt(rentalCostMin);
+        validator.isInt(rentalCostMax);
+        validator.isInt(studios);
+        validator.isInt(oneBed);
+        validator.isInt(twoBed);
+        validator.isInt(threeBed);
+        validator.isInt(fourBed);
+        validator.isFloat(latitude);
+        validator.isFloat(longitude);
+
+        // Prepare the update data object
         const updateData = {
             address,
             zipCode,
@@ -234,18 +272,30 @@ router.post('/edit/:id', upload.array('images'), async (req, res) => {
                 min: parseInt(rentalCostMin, 10),
                 max: parseInt(rentalCostMax, 10)
             },
+            studios: parseInt(studios, 10),
+            '1beds': parseInt(oneBed, 10),
+            '2beds': parseInt(twoBed, 10),
+            '3beds': parseInt(threeBed, 10),
+            '4beds': parseInt(fourBed, 10),
             amenities: amenitiesArray,
             petPolicy,
-            garage,
+            garage: garage === 'on',
+            location: {
+                latitude: parseFloat(latitude),
+                longitude: parseFloat(longitude)
+            },
             images
         };
 
+        // Perform the update operation
         await updateHousing(housingId, updateData);
-        res.redirect(`/housing/${housingId}`); 
+        res.redirect(`/housing/${housingId}`);
     } catch (error) {
         console.error('Failed to update housing:', error);
-        res.status(500).send('Failed to update housing');
+        res.status(500).send('Internal Server Error');
     }
 });
+
+
 
 export default router;
