@@ -1,7 +1,4 @@
 import express from 'express';
-import { ObjectId } from 'mongodb';
-import { getUserById } from '../data/users.js';
-import { getAllHousings } from '../data/housing.js';
 import { getHousingSearchResults } from '../data/home.js';
 import validation from '../helpers.js';
 import xss from 'xss';
@@ -11,22 +8,36 @@ const router = express.Router();
 router.route('/')
     .get(async (req, res) => {
         try {
-            if (!req.session.user) {
-                return res.redirect('/login');
+            const title = "Home Page";
+            let isAdmin = false;
+            let firstName = '';
+            let lastName = '';
+            let houses = [];
+
+            if (req.session && req.session.user) {
+                firstName = req.session.user.firstName;
+                lastName = req.session.user.lastName;
+                isAdmin = req.session.user.role === 'admin';
             }
 
-            const title = "Home Page";
-            const id = req.session.user.id;
-            const isAdmin = req.session.user.role === 'admin';
+            houses = await getAllHousings();
 
-            const user = await getUserById(id);
-            const houses = await getAllHousings();
+            if (!houses || houses.length === 0) {
+                return res.status(200).render('home', {
+                    title: title,
+                    firstName: firstName,
+                    lastName: lastName,
+                    hasHouses: false,
+                    isAdmin: isAdmin,
+                    searchPerformed: false
+                });
+            }
 
             res.status(200).render('home', {
                 title: title,
-                firstName: req.session.user.firstName,
-                lastName: req.session.user.lastName,
-                hasHouses: Boolean(houses && houses.length),
+                firstName: firstName,
+                lastName: lastName,
+                hasHouses: true,
                 houses: houses,
                 isAdmin: isAdmin,
                 searchPerformed: false
@@ -36,7 +47,7 @@ router.route('/')
         }
     });
 
-    router.route('/search')
+router.route('/search')
     .post(async (req, res) => {
         const title = "Home Page";
         let isAdmin = false;
@@ -47,9 +58,9 @@ router.route('/')
 
         try {
             if (req.session && req.session.user) {
-                isAdmin = req.session.user.role === 'admin';
                 firstName = req.session.user.firstName;
                 lastName = req.session.user.lastName;
+                isAdmin = req.session.user.role === 'admin';
             }
 
             let searchType = xss(req.body.homeType || '');
@@ -108,7 +119,5 @@ router.route('/')
             return res.status(500).render('error', { title: "Error", message: "Internal server error." });
         }
     });
-
-
 
 export default router;
