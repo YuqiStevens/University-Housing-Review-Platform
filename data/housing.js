@@ -199,6 +199,31 @@ const addReviewIdToHousing = async (housingId, reviewId) => {
     return updateResult;
 };
 
+const removeReviewIdFromHousing = async (housingId, reviewId) => {
+    // Validate the housingId and reviewId
+    housingId = validation.checkId(housingId, 'housing_id');
+    reviewId = validation.checkId(reviewId, 'review_id');
+
+    const housingCollection = await housing_collection();  // Assuming housing_collection() returns the housing collection
+
+    // Update the housing document to remove the reviewId from the reviewIds array
+    const updateResult = await housingCollection.updateOne(
+        { _id: new ObjectId(housingId) },
+        { $pull: { reviewIds: new ObjectId(reviewId) } }  // Use $pull to remove the reviewId
+    );
+
+    // Check if the update was successful
+    if (updateResult.matchedCount === 0) {
+        throw new Error('No housing found with the provided ID.');
+    }
+    if (updateResult.modifiedCount === 0) {
+        throw new Error('Failed to remove the review ID from the housing document.');
+    }
+
+    // Return a message or the update result
+    return updateResult;
+};
+
 
 export {
     getAllHousings,
@@ -206,5 +231,6 @@ export {
     addHousing,
     removeHousing,
     updateHousing,
-    addReviewIdToHousing
+    addReviewIdToHousing,
+    removeReviewIdFromHousing
 };

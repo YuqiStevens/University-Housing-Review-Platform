@@ -1,6 +1,6 @@
 import express from 'express';
 import {addReview, updateReview, updateReviewHelpfulCount, updateAverageRating, getReviewById, removeReviewById} from '../data/reviewsForHousing.js';
-import {getHousingById, addReviewIdToHousing} from '../data/housing.js';
+import {getHousingById, addReviewIdToHousing, removeReviewIdFromHousing} from '../data/housing.js';
 const router = express.Router();
 import helpers from '../helpers.js';
 import xss from 'xss';
@@ -158,7 +158,7 @@ router.get('/delete/:reviewId', async (req, res) => {
             res.status(400).send('Invalid housing ID');
             return;
         }
-
+        await removeReviewIdFromHousing(housingId.toString(), reviewId);
         const result = await removeReviewById(reviewId);
         if (result.deletedCount === 0) {
             return res.status(404).send("No review found with that ID.");
