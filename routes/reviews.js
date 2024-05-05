@@ -164,6 +164,7 @@ router.get('/delete/:reviewId', async (req, res) => {
             return res.status(404).send("No review found with that ID.");
         }
 
+        await updateAverageRating(housingId.toString()); // Update average rating after adding a review
         res.redirect(`/housing/${housingId}`);
     } catch (error) {
         console.error('Error deleting review:', error);
