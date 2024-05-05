@@ -92,6 +92,7 @@ const removeHousing = async (id) => {
 
 const updateHousing = async (housingId, updatedHousing) => {
     console.log("Starting updateHousing with housingId:", housingId);
+    console.log("Starting updateHousing with updatedHousing:", updatedHousing);
 
     // Make sure amenities and images are arrays
     let amenities = updatedHousing.amenities;
@@ -118,7 +119,6 @@ const updateHousing = async (housingId, updatedHousing) => {
     }
 
     const updatedHousingData = {
-        name: xss(updatedHousing.name).trim(),
         address: xss(updatedHousing.address).trim(),
         city: xss(updatedHousing.city).trim(),
         state: xss(updatedHousing.state).trim(),
@@ -128,10 +128,10 @@ const updateHousing = async (housingId, updatedHousing) => {
         rentalCostMin: parseInt(updatedHousing.rentalCostMin, 10),
         rentalCostMax: parseInt(updatedHousing.rentalCostMax, 10),
         studios: parseInt(updatedHousing.studios, 10),
-        beds1: parseInt(updatedHousing.beds1, 10),
-        beds2: parseInt(updatedHousing.beds2, 10),
-        beds3: parseInt(updatedHousing.beds3, 10),
-        beds4: parseInt(updatedHousing.beds4, 10),
+        beds1: parseInt(updatedHousing.oneBed, 10),
+        beds2: parseInt(updatedHousing.towBed, 10),
+        beds3: parseInt(updatedHousing.threeBed, 10),
+        beds4: parseInt(updatedHousing.fourBed, 10),
         petPolicy: xss(updatedHousing.petPolicy).trim(),
         garage: Boolean(updatedHousing.garage),
         images: images,
@@ -150,10 +150,6 @@ const updateHousing = async (housingId, updatedHousing) => {
     } catch (e) {
         console.error("Validation error:", e.message);
         throw e;
-    }
-
-    if (await helpers.checkIfHousingNameExistsForOtherId(updatedHousingData.name, housingId)) {
-        throw new Error("Housing name already exists for a different listing");
     }
 
     const housingsCollection = await housing_collection();

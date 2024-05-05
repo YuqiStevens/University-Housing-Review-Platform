@@ -66,14 +66,17 @@ const exportedMethods = {
 
 
     checkIfLocationValid(location) {
-        if (typeof location !== "object") {
-            throw "The location is not an object!";
+        if (typeof location !== "object" || location === null) {
+            throw new Error("The location must be a non-null object!");
         }
-        if (!location.address || !location.city || !location.state || !location.zip) {
-            throw "Location must include address, city, state, and zip";
+        if (typeof location.latitude !== "number" || typeof location.longitude !== "number") {
+            throw new Error("Latitude and longitude must be numeric values!");
         }
-        if (!validator.isPostalCode(location.zip, 'US')) {
-            throw "Invalid US postal code";
+        if (location.latitude < -90 || location.latitude > 90) {
+            throw new Error("Latitude must be between -90 and 90 degrees!");
+        }
+        if (location.longitude < -180 || location.longitude > 180) {
+            throw new Error("Longitude must be between -180 and 180 degrees!");
         }
     },
 
