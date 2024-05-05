@@ -1,4 +1,15 @@
 <section aria-labelledby="housing-header">
+    <nav>
+        <div class="dropdown">
+            <button class="dropbtn">Personal Center</button>
+            <div class="dropdown-content">
+                <a href="/profile">Profile</a>
+                <a href="/password/change">Password Change</a>
+                <a href="/logout">Logout</a>
+            </div>
+        </div>
+    </nav>
+
     <h1 id="housing-header" class="h1-content">{{housing.address}}</h1>
     <div class="housing-images">
         {{#each housing.images}}
@@ -48,6 +59,9 @@
                         {{/each}}
                     {{/if}}
                 </div>
+                {{#if canEdit}}
+                    <a href="/reviews/edit/{{_id}}" class="btn btn-primary">Edit review</a>
+                {{/if}}
                 <button class="helpful-button" data-review-id="{{_id}}">
                     <img src="/public/HelpfulIcon.png" alt="Helpful">
                     Helpful (<span id="helpful-count-{{_id}}">{{helpfulCounts}}</span>)
