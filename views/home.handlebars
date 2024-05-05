@@ -30,7 +30,6 @@
                     <input type="number" id="rentalCostMin" name="rentalCostMin" placeholder="Min Price ($)">
 
                     <label for="rentalCostMax">Max Rental Cost:</label>
-
                     <input type="number" id ="rentalCostMax" name="rentalCostMax" placeholder="Max Price ($)">
 
                     <label for "amenities">Amenities (comma-separated):</label>
@@ -54,15 +53,15 @@
     </div>
 
     {{#if searchPerformed}}
-        {{#if searchResults}}
+        {{#if searchResults.length}}
             <div class="search-results">
                 <h3>Searched Results for "{{searchTerm}}":</h3>
                 {{#each searchResults}}
                     <div class="search-result-item">
                         <div class="housing-info">
-                            <h4>{{this.name}}</h4>
-                            <p>{{this.description}}</p>
-                            <p>Type: {{this.type}}, Price Range: ${{this.rentalCostMin}} - ${{this.rentalCostMax}}</p>
+                            <h4>{{this.address}}</h4>
+                            <p>Location: {{this.city}}, {{this.state}}, Zip: {{this.zipCode}}</p>
+                            <p>Type: {{this.homeType}}, Price Range: ${{this.rentalCostMin}} - ${{this.rentalCostMax}}</p>
                         </div>
                     </div>
                 {{/each}}

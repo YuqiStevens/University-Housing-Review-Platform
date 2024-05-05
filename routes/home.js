@@ -49,58 +49,60 @@ router.route('/')
         }
     });
 
-router.route('/search')
+    router.route('/search')
     .post(async (req, res) => {
         const title = "Home Page";
         let isAdmin = false;
-        //let userName = '';
+        let firstName = '';
+        let lastName = '';
+        let searchResults = [];
+        let noResultsMessage = null;
 
         try {
             if (req.session && req.session.user) {
                 isAdmin = req.session.user.role === 'admin';
-                //userName = req.session.user.userName;
+                firstName = req.session.user.firstName;
+                lastName = req.session.user.lastName;
             }
 
-            let searchType = xss(req.body.homeType);
-            let searchTerm = xss(req.body.searchTerm);
-            let rentalCostMin = xss(req.body.rentalCostMin);
-            let rentalCostMax = xss(req.body.rentalCostMax);
-            let amenities = xss(req.body.amenities);
-            let garage = xss(req.body.garage);
-            let petPolicy = xss(req.body.petPolicy);
+            let searchType = xss(req.body.homeType || '');
+            let searchTerm = xss(req.body.searchTerm || '');
+            let rentalCostMin = parseFloat(xss(req.body.rentalCostMin || '0')) || 0;
+            let rentalCostMax = parseFloat(xss(req.body.rentalCostMax || 'Infinity')) || Infinity;
+            let amenities = xss(req.body.amenities || '');
+            let garage = xss(req.body.garage || '');
+            let petPolicy = xss(req.body.petPolicy || '');
 
-            let searchResults, noResultsMessage = null;
+            // Construct filters object
+            const filters = {};
 
+            if (searchType) filters.homeType = searchType;
+            if (rentalCostMin > 0) filters.rentalCostMin = { $gte: rentalCostMin };
+            if (rentalCostMax < Infinity) filters.rentalCostMax = { $lte: rentalCostMax };
+            if (amenities) filters.amenities = { $regex: new RegExp(amenities, 'i') };
+            if (garage) filters.garage = garage === 'true';
+            if (petPolicy) filters.petPolicy = petPolicy;
+
+            // Validate search term
             try {
                 searchTerm = validation.checkSearchValid(searchTerm);
             } catch (e) {
                 return res.status(400).render('error', { title: "Error", message: e.message });
             }
 
-            const filters = {
-                homeType: searchType,
-                rentalCostMin: rentalCostMin || null,
-                rentalCostMax: rentalCostMax || null,
-                amenities: amenities || null,
-                garage: garage || null,
-                petPolicy: petPolicy || null
-            };
-
             try {
                 searchResults = await getHousingSearchResults(searchTerm, filters);
+                if (!searchResults || searchResults.length === 0) {
+                    noResultsMessage = "No housings matched your search.";
+                }
             } catch (e) {
                 return res.status(500).render('error', { title: "Error", message: e.message });
             }
 
-            if (!searchResults || searchResults.length === 0) {
-                noResultsMessage = "No housings matched your search.";
-            }
-
             res.status(200).render('home', {
                 title: title,
-                firstName: req.session.user.firstName,
-                lastName: req.session.user.lastName,
-                //userName: userName,
+                firstName: firstName,
+                lastName: lastName,
                 searchResults: searchResults,
                 noResultsMessage: noResultsMessage,
                 searchTerm: searchTerm,
@@ -113,6 +115,7 @@ router.route('/search')
             return res.status(500).render('error', { title: "Error", message: "Internal server error." });
         }
     });
+
 
 
 
