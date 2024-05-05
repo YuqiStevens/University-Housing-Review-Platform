@@ -1,7 +1,6 @@
 <section aria-labelledby="edit-review-header">
     <nav>
         <a href="/housing/{{housing.id}}">Back to Housing</a>
-        <a href="/reviews/{{review.id}}">Back to Review</a>
     </nav>
     <h1 id="edit-review-header" class="h1-content">Edit Review: {{review.title}}</h1>
 
@@ -14,11 +13,12 @@
         <div class="form-group">
             <label for="rating">Rating:</label>
             <select id="rating" name="rating" required>
-                <option value="1" {{#if (eq review.rating 1)}}selected{{/if}}>1 - Poor</option>
-                <option value="2" {{#if (eq review.rating 2)}}selected{{/if}}>2 - Fair</option>
-                <option value="3" {{#if (eq review.rating 3)}}selected{{/if}}>3 - Good</option>
-                <option value="4" {{#if (eq review.rating 4)}}selected{{/if}}>4 - Very Good</option>
-                <option value="5" {{#if (eq review.rating 5)}}selected{{/if}}>5 - Excellent</option>
+                <option value="">Choose a rating</option>
+                <option value="1">1 - Poor</option>
+                <option value="2">2 - Fair</option>
+                <option value="3">3 - Good</option>
+                <option value="4">4 - Very Good</option>
+                <option value="5">5 - Excellent</option>
             </select>
         </div>
 
@@ -29,7 +29,7 @@
 
         <div class="form-group">
             <label for="images">Image URLs (comma-separated):</label>
-            <input type="text" id="images" name="images" value="{{review.images | join ', '}}" placeholder="Enter image URLs, separated by commas">
+            <input type="text" id="images" name="images" value="{{review.images}}" placeholder="Enter image URLs, separated by commas">
         </div>
 
         <button type="submit" class="btn btn-primary">Update Review</button>
