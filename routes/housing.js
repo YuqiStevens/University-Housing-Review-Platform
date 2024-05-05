@@ -22,7 +22,9 @@ const storage = multer.diskStorage({
     }
 });
 
+
 const upload = multer({ storage: storage });
+
 
 router.get('/list', async (req, res) => {
     try {
@@ -36,6 +38,7 @@ router.get('/list', async (req, res) => {
         res.status(500).render('error', { error: "Internal Server Error" });
     }
 });
+
 
 router.get('/add', async (req, res) => {
     try {
@@ -51,9 +54,10 @@ router.get('/add', async (req, res) => {
     }
 });
 
-router.post('/add', upload.array('images'), async (req, res) => {
-    try {
 
+
+router.post('/add', async (req, res) => {
+    try {
         if (!req.session.user || req.session.user.role !== 'admin') {
             res.status(403).render('error', { title: "Forbidden", error: "You are not authorized to add housing" });
             return;
@@ -86,7 +90,8 @@ router.post('/add', upload.array('images'), async (req, res) => {
         const longitude = xss(req.body.longitude);
 
         // Image handling
-        const images = req.files.map(file => file.filename);  
+        const imagesInput = xss(req.body.images);
+        const images = imagesInput ? imagesInput.split(',').map(url => url.trim()) : [];
 
         // Validations
         helpers.checkString(address, 'Address');
@@ -94,21 +99,15 @@ router.post('/add', upload.array('images'), async (req, res) => {
         helpers.checkString(city, 'City');
         helpers.checkString(state, 'State');
         helpers.checkString(homeType, 'Home Type');
-        validator.isInt(rentalCostMin);
-        validator.isInt(rentalCostMax);
-        validator.isInt(studios);
-        validator.isInt(oneBed);
-        validator.isInt(twoBed);
-        validator.isInt(threeBed);
-        validator.isInt(fourBed);
-        validator.isInt(latitude);
-        validator.isInt(longitude);
-
-        // Ensure required fields are provided
-        if (!address || !city || !state || !homeType) {
-            res.status(400).send('Missing required fields');
-            return;
-        }
+        if (!validator.isInt(rentalCostMin)) throw new Error('Invalid minimum rental cost');
+        if (!validator.isInt(rentalCostMax)) throw new Error('Invalid maximum rental cost');
+        if (!validator.isInt(studios)) throw new Error('Invalid number of studios');
+        if (!validator.isInt(oneBed)) throw new Error('Invalid number of 1 bedroom units');
+        if (!validator.isInt(twoBed)) throw new Error('Invalid number of 2 bedroom units');
+        if (!validator.isInt(threeBed)) throw new Error('Invalid number of 3 bedroom units');
+        if (!validator.isInt(fourBed)) throw new Error('Invalid number of 4 bedroom units');
+        if (latitude && !validator.isFloat(latitude)) throw new Error('Invalid latitude');
+        if (longitude && !validator.isFloat(longitude)) throw new Error('Invalid longitude');
 
         // Prepare the housing data object
         const housingData = {
@@ -128,20 +127,22 @@ router.post('/add', upload.array('images'), async (req, res) => {
             petPolicy,
             garage: garage === 'on',
             location: {
-                latitude,
-                longitude
+                latitude: parseFloat(latitude),
+                longitude: parseFloat(longitude)
             },
             images
         };
 
         // Add the new housing entry to the database
         const newHousing = await addHousing(housingData);
-        res.redirect('/housing/list'); 
+        res.redirect('/housing/list');
     } catch (error) {
         console.error('Error adding housing:', error);
         res.status(500).send('Internal Server Error');
     }
 });
+
+
 
 router.get('/:id', async (req, res) => {
     try {
@@ -176,6 +177,9 @@ router.get('/:id', async (req, res) => {
         res.status(500).send('Internal Server Error');
     }
 });
+
+
+
 
 router.get('/edit/:id', async (req, res) => {
     try {
@@ -214,7 +218,10 @@ router.get('/edit/:id', async (req, res) => {
     }
 });
 
-router.post('/edit/:id', upload.array('images'),async (req, res) => {
+
+
+
+router.post('/edit/:id', async (req, res) => {
     try {
         // Ensure user is authorized to perform edit operations
         console.log('req.body', req.body);
@@ -255,7 +262,8 @@ router.post('/edit/:id', upload.array('images'),async (req, res) => {
         const longitude = xss(req.body.longitude);
 
         // Image handling
-        const images = req.files.map(file => file.filename);
+        const imagesInput = xss(req.body.images);
+        const images = imagesInput ? imagesInput.split(',').map(url => url.trim()) : [];
 
         // Validations
         helpers.checkString(address, 'Address');
@@ -263,15 +271,15 @@ router.post('/edit/:id', upload.array('images'),async (req, res) => {
         helpers.checkString(city, 'City');
         helpers.checkString(state, 'State');
         helpers.checkString(homeType, 'Home Type');
-        validator.isInt(rentalCostMin);
-        validator.isInt(rentalCostMax);
-        validator.isInt(studios);
-        validator.isInt(oneBed);
-        validator.isInt(twoBed);
-        validator.isInt(threeBed);
-        validator.isInt(fourBed);
-        validator.isFloat(latitude);
-        validator.isFloat(longitude);
+        if (!validator.isInt(rentalCostMin)) throw new Error('Invalid minimum rental cost');
+        if (!validator.isInt(rentalCostMax)) throw new Error('Invalid maximum rental cost');
+        if (!validator.isInt(studios)) throw new Error('Invalid number of studios');
+        if (!validator.isInt(oneBed)) throw new Error('Invalid number of 1 bedroom units');
+        if (!validator.isInt(twoBed)) throw new Error('Invalid number of 2 bedroom units');
+        if (!validator.isInt(threeBed)) throw new Error('Invalid number of 3 bedroom units');
+        if (!validator.isInt(fourBed)) throw new Error('Invalid number of 4 bedroom units');
+        if (latitude && !validator.isFloat(latitude)) throw new Error('Invalid latitude');
+        if (longitude && !validator.isFloat(longitude)) throw new Error('Invalid longitude');
 
         // Prepare the update data object
         const updateData = {
@@ -291,8 +299,8 @@ router.post('/edit/:id', upload.array('images'),async (req, res) => {
             petPolicy,
             garage: garage === 'on',
             location: {
-                latitude,
-                longitude
+                latitude: parseFloat(latitude),
+                longitude: parseFloat(longitude)
             },
             images
         };
