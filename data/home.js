@@ -22,7 +22,6 @@ export async function getHousingSearchResults(searchTerm, filters = {}) {
     if (filters.homeType) {
         query.homeType = filters.homeType;
     }
-
     if (filters.rentalCostMin !== undefined || filters.rentalCostMax !== undefined) {
         query.rentalCost = {};
         if (filters.rentalCostMin !== undefined) {
@@ -32,19 +31,20 @@ export async function getHousingSearchResults(searchTerm, filters = {}) {
             query.rentalCost.$lte = filters.rentalCostMax;
         }
     }
-  
     if (filters.garage !== undefined) {
-        query.garage = filters.garage === 'true';
+        query.garage = filters.garage;
     }
-      
     if (filters.petPolicy) {
         // 确保查询条件与数据库中的数据一致，这里直接使用传入的宠物政策作为查询条件
         query.petPolicy = filters.petPolicy;
     }
 
-    console.log("Final Query:", JSON.stringify(query, null, 2));
+    console.log("Query:", query);
 
-    const matchedHousings = await housingsCollection.find(query).limit(20).toArray();
+    const matchedHousings = await housingsCollection
+        .find(query)
+        .limit(20)
+        .toArray();
 
     console.log("Matched Housings:", matchedHousings);
 
