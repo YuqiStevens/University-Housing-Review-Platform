@@ -133,9 +133,12 @@ router.post('/edit/:reviewId', async (req, res) => {
         console.log('UpdatedReview --------', updatedReview);
 
         await updateReview(reviewId, updatedReview);
+        await updateAverageRating(housingId.toString()); // Update average rating after adding a review
+
         res.redirect(`/housing/${housingId}`);
     } catch (error) {
         console.error('Failed to update review:', error);
+
         res.status(500).send('Failed to update review due to server error.');
     }
 });
