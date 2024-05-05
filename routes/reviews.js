@@ -1,6 +1,6 @@
 import express from 'express';
 import {addReview, updateReview} from '../data/reviewsForHousing.js';
-
+import { getHousingById } from '../data/housing.js';
 const router = express.Router();
 import helpers from '../helpers.js';
 import xss from 'xss';
@@ -55,14 +55,18 @@ router.post('/add/:housingId', async (req, res) => {
         return res.status(400).send("Rating must be an integer between 1 and 5.");
     }
 
+    const userId = req.session.user.id;
     const imageUrls = images.split(',').map(url => xss(url.trim()));
 
     const review = {
-        housingId: housingId,
+        houseId: housingId,
+        userId: userId,
         title: title,
         rating: cleanRating,
         body: body,
-        images: imageUrls
+        images: imageUrls,
+        helpfulCounts : 0,
+        comments : []
     };
 
     try {
@@ -131,6 +135,23 @@ router.post('/delete/:reviewId', async (req, res) => {
     } catch (error) {
         console.error('Error deleting review:', error);
         res.status(500).send('Server error occurred while deleting the review.');
+    }
+});
+
+router.get('/addReview/:housingId', async (req, res) => {
+    try {
+        if (!req.session.user) {
+            res.status(403).render('error', { title: "Forbidden", error: "You are not authorized to add reviews" });
+            return;
+        }
+        
+        const housingId = req.params.housingId;
+        const house = await getHousingById(housingId);
+        res.render('addReview', { title: "Add Reviews" ,
+                                housing : house         });
+    } catch (error) {
+        console.error('Error rendering add reviews page:', error);
+        res.status(500).send('Internal Server Error');
     }
 });
 

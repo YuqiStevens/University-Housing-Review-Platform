@@ -4,7 +4,7 @@
     </nav>
     <h1 id="add-review-header" class="h1-content">Add a Review for {{housing.address}}</h1>
 
-    <form action="/reviews/add{{housing.id}}" method="post">
+    <form action="/reviews/add/{{housing._id}}" method="post">
         <div class="form-group">
             <label for="title">Review Title:</label>
             <input type="text" id="title" name="title" placeholder="Enter review title" required>
