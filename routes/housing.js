@@ -190,6 +190,11 @@ router.get('/edit/:id', async (req, res) => {
             res.status(404).render('error', { title: "Not Found", error: "Housing not found" });
             return;
         }
+        housing.selectedApartment = housing.homeType === "Apartment";
+        housing.selectedHouse = housing.homeType === "House";
+        housing.selectedTownhome = housing.homeType === "Townhome";
+        housing.selectedAllowed = housing.petPolicy === "Allowed";
+        housing.selectedNotAllowed = housing.petPolicy === "Not Allowed";
 
         res.render('editHousing', { title: "Edit Housing"});
     } catch (error) {

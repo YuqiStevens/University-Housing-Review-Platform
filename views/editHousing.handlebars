@@ -28,27 +28,29 @@
         <div class="form-group">
             <label for="homeType">Home Type:</label>
             <select id="homeType" name="homeType">
-                <option value="Apartment" {{#if (eq housing.homeType "Apartment")}}selected{{/if}}>Apartment</option>
-                <option value="House" {{#if (eq housing.homeType "House")}}selected{{/if}}>House</option>
-                <option value="Townhome" {{#if (eq housing.homeType "Townhome")}}selected{{/if}}>Townhome</option>
+                <option value="Apartment" {{#if housing.selectedApartment}}selected{{/if}}>Apartment</option>
+                <option value="House" {{#if housing.selectedHouse}}selected{{/if}}>House</option>
+                <option value="Townhome" {{#if housing.selectedTownhome}}selected{{/if}}>Townhome</option>
             </select>
         </div>
 
         <div class="form-group">
             <label for="rentalCostMin">Rental Cost:</label>
-            <input type="number" id="rentalCostMin" name="rentalCostMin" placeholder="Enter min monthly rent price" required>
+            <input type="number" id="rentalCostMin" name="rentalCostMin" placeholder="Enter min monthly rent price"
+                required>
         </div>
 
         <div class="form-group">
             <label for="rentalCostMax">Rental Cost:</label>
-            <input type="number" id="rentalCostMax" name="rentalCostMax" placeholder="Enter max monthly rent price" required>
+            <input type="number" id="rentalCostMax" name="rentalCostMax" placeholder="Enter max monthly rent price"
+                required>
         </div>
 
         <div class="form-group">
             <label for="petPolicy">Pet Policy:</label>
             <select id="petPolicy" name="petPolicy">
-                <option value="Allowed" {{#if (eq housing.petPolicy "Allowed")}}selected{{/if}}>Allowed</option>
-                <option value="Not Allowed" {{#if (eq housing.petPolicy "Not Allowed")}}selected{{/if}}>Not Allowed</option>
+                <option value="Allowed" {{#if housing.selectedAllowed}}selected{{/if}}>Allowed</option>
+                <option value="Not Allowed" {{#if housing.selectedNotAllowed}}selected{{/if}}>Not Allowed</option>
             </select>
         </div>
 
