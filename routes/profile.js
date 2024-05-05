@@ -53,7 +53,6 @@ router.route('/')
             let user = await getUserById(id);
             let { firstName, lastName, email, city, state, country, age, diploma, discipline } = req.body;
             // Sanitization
-            //userName = xss(userName);
             firstName = xss(firstName);
             lastName = xss(lastName);
             email = xss(email).toLowerCase();
@@ -65,7 +64,6 @@ router.route('/')
             discipline = xss(discipline);
 
             // Validation
-            //userName = helper.checkUserName(userName, 'User Name');
             firstName = helper.checkName(firstName, 'First Name');
             lastName = helper.checkName(lastName, 'Last Name');
             email = helper.checkEmail(email, 'E-mail');
@@ -90,14 +88,25 @@ router.route('/')
             }
 
             // Update the user
-            user = await updateUser(id, { firstName, lastName, email, city, state, country, age, diploma, discipline });
+            const updatedUser = await updateUser(id, { firstName, lastName, email, city, state, country, age, diploma, discipline });
 
-            // Handle email change for session
-            if (req.session.user.email !== email) {
-                req.session.destroy();
-                res.redirect('/login');
+            // If the update is successful, update session information
+            if (updatedUser) {
+                req.session.user.firstName = firstName;
+                req.session.user.lastName = lastName;
+
+                // Handle email change for session
+                if (req.session.user.email !== email) {
+                    req.session.destroy();
+                    res.redirect('/login');
+                } else {
+                    // If only names or other non-email fields have changed
+                    req.session.save(() => {
+                        res.redirect('/profile');
+                    });
+                }
             } else {
-                res.redirect('/profile');
+                throw new Error('User update failed');
             }
         } catch (error) {
             console.error('Error updating user:', error);

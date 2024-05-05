@@ -122,53 +122,79 @@ const removeUser = async (id) => {
 }
 
 const updateUser = async (id, updatedUser) => {
-    //let userName = xss(updatedUser.userName);
-    let firstName = xss(updatedUser.firstName);
-    let lastName = xss(updatedUser.lastName);
-    let email = xss(updatedUser.email);
-    let gender = (updatedUser.gender);
+    // Extract fields from updatedUser and sanitize inputs
+    let { userName, firstName, lastName, email, city, state, country, age, diploma, discipline } = updatedUser;
 
-    //if (!userName) throw "Please provide your user name";
+    // Validation
     if (!firstName) throw "Please provide your first name";
     if (!lastName) throw "Please provide your last name";
     if (!email) throw "Please provide your email address";
+    if (!city) throw "Please provide your city";
+    if (!state) throw "Please provide your state";
+    if (!country) throw "Please provide your country";
+    if (!age) throw "Please provide your age";
+    if (!diploma) throw "Please provide your highest diploma";
+    if (!discipline) throw "Please provide your discipline";
 
-    var regex = /^[a-zA-Z]+$/;
-    // userName = userName.trim();
-    // if (!regex.test(userName)) throw "User name must only contain letters";
-    // if (userName.length < 2 || userName.length > 25) throw "User name should have 2 - 25 characters";
-
+    // Trim inputs and check with regex where applicable
+    const regex = /^[a-zA-Z\s]+$/;  // Allows letters and spaces
     firstName = firstName.trim();
-    if (!regex.test(firstName)) throw "First name must only contain letters";
-    if (firstName.length < 2 || firstName.length > 25) throw "First name should have 2 - 25 characters";
-
     lastName = lastName.trim();
-    if (!regex.test(lastName)) throw "Last name must only contain letters";
-    if (lastName.length < 2 || lastName.length > 25) throw "Last name should have 2 - 25 characters";
-
     email = email.trim().toLowerCase();
-    if (!validator.isEmail(email)) throw "Email address should be a valid email address format. example@example.com";
-    if (await helpers.checkIfEmailExistsExceptMe(email)) throw "There is already a user with that email address";
+    city = city.trim();
+    state = state.trim();
+    country = country.trim();
+    diploma = diploma.trim();
+    discipline = discipline.trim();
 
-    gender = gender.trim().toLowerCase();
-    if (gender !== "" && gender !== 'male' && gender !== 'female') throw "The gender should be prefer not to say, male or female";
+    if (!regex.test(firstName) || firstName.length < 2 || firstName.length > 25) {
+        throw "First name must only contain letters and be 2 - 25 characters long";
+    }
+
+    if (!regex.test(lastName) || lastName.length < 2 || lastName.length > 25) {
+        throw "Last name must only contain letters and be 2 - 25 characters long";
+    }
+
+    if (!validator.isEmail(email)) {
+        throw "Email address should be a valid email address format, e.g., example@example.com";
+    }
+
+    // Further validation might be required for other fields as per business logic
+    age = parseInt(age, 10);
+    if (isNaN(age) || age < 18) {
+        throw "Age must be a valid number and at least 18";
+    }
+
+    // Check for unique email address among other users
+    if (await helpers.checkIfEmailExistsExceptMe(email, id)) {
+        throw "There is already a user with that email address";
+    }
 
     const userCollection = await user_collection();
     const updateInfo = await userCollection.findOneAndUpdate(
-        {_id: new ObjectId(id)},
+        { _id: new ObjectId(id) },
         {
             $set: {
-                //userName: userName,
                 firstName: firstName,
                 lastName: lastName,
                 email: email,
-                gender: gender,
+                city: city,
+                state: state,
+                country: country,
+                age: age,
+                diploma: diploma,
+                discipline: discipline,
+                updatedAt: new Date()  // Updates the timestamp on each update
             }
         },
-        {returnDocument: 'after'});
+        { returnDocument: 'after' }
+    );
+
     if (!updateInfo) throw 'Could not update user';
-    return {updatedUser: true};
+
+    return { updatedUser: true };
 }
+
 const getAllUsers = async () => {
     const usersCollection = await user_collection();
     const allUsers = await usersCollection.find({}).toArray();
