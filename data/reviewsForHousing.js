@@ -188,6 +188,6 @@ export {
     addReview,
     removeReviewById,
     updateReview,
-    updateReviewHelpfulCount
+    updateReviewHelpfulCount,
     updateAverageRating
 };
