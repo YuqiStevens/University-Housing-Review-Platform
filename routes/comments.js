@@ -1,9 +1,9 @@
 import express from 'express';
 import {addComment, getCommentById} from '../data/commentsForReviews.js';
-
 const router = express.Router();
 import helpers from '../helpers.js';
 import xss from 'xss';
+import { getReviewById } from '../data/reviewsForHousing.js';
 
 router.post('/add/:reviewId', async (req, res) => {
     const reviewId = req.params.reviewId;
@@ -62,6 +62,24 @@ router.get('/:commentId', async (req, res) => {
     } catch (error) {
         console.error('Error fetching comment:', error);
         res.status(500).send('Server error occurred while fetching the comment.');
+    }
+});
+
+router.get('/addComment/:reviewId', async (req, res) => {
+    try {
+        if (!req.session.user) {
+            res.status(403).render('error', { title: "Forbidden", error: "You are not authorized to add comments" });
+            return;
+        }
+        
+        const reviewId = req.params.reviewId;
+        const review = await getReviewById(reviewId);
+        res.render('addComment', { title: "Add Comments" ,
+                                review : review
+                            });
+    } catch (error) {
+        console.error('Error rendering add reviews page:', error);
+        res.status(500).send('Internal Server Error');
     }
 });
 
