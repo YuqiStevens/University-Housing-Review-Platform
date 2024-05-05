@@ -60,14 +60,16 @@
                     {{/if}}
                 </div>
                 {{#if canEdit}}
+                    <a href="/reviews/delete/{{_id}}" class="btn btn-primary">Delete review</a>
+                {{/if}}
+                {{#if canEdit}}
                     <a href="/reviews/edit/{{_id}}" class="btn btn-primary">Edit review</a>
                 {{/if}}
+                <a href="/comments/addComment/{{_id}}" class="btn btn-primary">Add Comment</a>
                 <button class="helpful-button" data-review-id="{{_id}}">
                     <img src="/public/HelpfulIcon.png" alt="Helpful">
                     Helpful (<span id="helpful-count-{{_id}}">{{helpfulCounts}}</span>)
                 </button>
-                <!-- Redirect to Add Comment Page -->
-                <a href="/comments/addComment/{{_id}}" class="btn btn-primary">Add Comment</a>
                 <div class="comments">
                     <h4>Comments:</h4>
                     {{#if comments}}
