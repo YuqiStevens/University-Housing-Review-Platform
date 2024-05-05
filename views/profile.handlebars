@@ -123,6 +123,34 @@
                         </div>
                     </li>
                 {{/each}}
+                {{#each reviews}}
+                    <div class="review">
+                        <h3>{{title}}</h3>
+                        <p><strong>Rating:</strong> {{rating}}/5</p>
+                        <p>{{body}}</p>
+                        <div class="review-images">
+                            {{#if images}}
+                                {{#each images}}
+                                    <img src="{{this}}" alt="Review Image" style="max-width: 200px; margin: 10px;">
+                                {{/each}}
+                            {{/if}}
+                        </div>
+                        <p><strong>Created At:</strong> {{createdAt}}</p>
+                        <p><strong>Last Updated At:</strong> {{updatedAt}}</p>
+                        <div class="comments">
+                            <h4>Comments:</h4>
+                            {{#if comments}}
+                                <ul>
+                                    {{#each comments}}
+                                        <li>{{this.firstName}}  {{this.lastName}}: {{this.text}}</li>
+                                    {{/each}}
+                                </ul>
+                            {{else}}
+                                <p>No comments yet.</p>
+                            {{/if}}
+                        </div>
+                    </div>
+                {{/each}}
             </ul>
         {{else}}
             <p>You have not written any reviews yet.</p>

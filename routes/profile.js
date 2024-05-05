@@ -5,7 +5,7 @@ import {getUserById, updateUser} from '../data/users.js'
 import {getAllReviewsByUserId} from '../data/reviewsForHousing.js';
 import helper from '../helpers.js';
 import xss from 'xss';
-
+import {getHousingById} from "../data/housing.js";
 
 router.route('/')
     .get(async (req, res) => {
@@ -25,7 +25,6 @@ router.route('/')
         } catch (error) {
             console.error('Error fetching user or reviews:', error);
             errorMsg = "An error occurred while fetching the user or reviews.";
-            // Handle partial user data
             if (!user.reviews) {
                 user.reviews = [];
             }
@@ -33,16 +32,13 @@ router.route('/')
 
         return res.status(errorMsg ? 500 : 200).render('profile', {
             title: title,
-            user: { ...user, reviews: allReviews },
+            user: user,
+            reviews: allReviews,
             hasReviews: hasReviews,
             hasNoReviews: hasNoReviews,
             error: errorMsg
         });
     });
-
-
-
-
 
 router.route('/')
     .post(async (req, res) => {
@@ -52,7 +48,7 @@ router.route('/')
 
         try {
             let user = await getUserById(id);
-            let { firstName, lastName, email, city, state, country, age, diploma, discipline } = req.body;
+            let {firstName, lastName, email, city, state, country, age, diploma, discipline} = req.body;
             // Sanitization
             firstName = xss(firstName);
             lastName = xss(lastName);
@@ -89,7 +85,17 @@ router.route('/')
             }
 
             // Update the user
-            const updatedUser = await updateUser(id, { firstName, lastName, email, city, state, country, age, diploma, discipline });
+            const updatedUser = await updateUser(id, {
+                firstName,
+                lastName,
+                email,
+                city,
+                state,
+                country,
+                age,
+                diploma,
+                discipline
+            });
 
             // If the update is successful, update session information
             if (updatedUser) {
