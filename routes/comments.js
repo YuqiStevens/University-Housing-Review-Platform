@@ -1,5 +1,5 @@
 import express from 'express';
-import {addComment, getCommentById} from '../data/commentsForReviews.js';
+import {addComment, addCommentToReview, getCommentById} from '../data/commentsForReviews.js';
 const router = express.Router();
 import helpers from '../helpers.js';
 import xss from 'xss';
@@ -21,9 +21,12 @@ router.post('/add/:reviewId', async (req, res) => {
         const newComment = {
             reviewId: reviewId,
             text: comment,
+            firstName : req.session.user.firstName,
+            lastName : req.session.user.lastName,
             userId: req.session.user.id,
             createdAt: new Date()
         };
+        const updatedReview = await addCommentToReview(reviewId, newComment);
         const housingId= review.houseId.toString();
         await addComment(newComment);
         res.redirect(`/housing/${housingId}`);
