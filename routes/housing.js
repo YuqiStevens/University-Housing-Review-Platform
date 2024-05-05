@@ -170,6 +170,33 @@ router.get('/:id', async (req, res) => {
     }
 });
 
+router.get('/edit/:id', async (req, res) => {
+    try {
+        if (!req.session.user || req.session.user.role !== 'admin') {
+            res.status(403).render('error', { title: "Forbidden", error: "You are not authorized to edit housing" });
+            return;
+        }
+
+        const housingId = req.params.id;
+        if (!ObjectId.isValid(housingId)) {
+            res.status(400).render('error', { title: "Bad Request", error: "Invalid Housing ID" });
+            return;
+        }
+
+        const housing = await getHousingById(housingId); // Implement this function to retrieve housing details by ID
+        
+        if (!housing) {
+            res.status(404).render('error', { title: "Not Found", error: "Housing not found" });
+            return;
+        }
+
+        res.render('editHousing', { title: "Edit Housing"});
+    } catch (error) {
+        console.error('Error rendering edit housing page:', error);
+        res.status(500).send('Internal Server Error');
+    }
+});
+
 router.post('/edit/:id', upload.array('images'), async (req, res) => {
     const housingId = req.params.id;
     if (!ObjectId.isValid(housingId)) {
