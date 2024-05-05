@@ -32,10 +32,10 @@ const getAllCommentsByUserId = async (user_id) => {
     return comments; // Return the array of comments
 };
 
-const addComment = async (user_id, review_id, commentText) => {
-    user_id = helpers.checkId(user_id, 'user_id');
-    review_id = helpers.checkId(review_id, 'review_id');
-    commentText = helpers.checkString(commentText, 'commentText');
+const addComment = async (comment) => {
+    const user_id = helpers.checkId(comment.userId, 'user_id');
+    const review_id = helpers.checkId(comment.reviewId, 'review_id');
+    const commentText = helpers.checkString(comment.text, 'commentText');
 
     const commentsCollection = await comment_collection();
 

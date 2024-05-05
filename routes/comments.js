@@ -8,7 +8,7 @@ import { getReviewById } from '../data/reviewsForHousing.js';
 router.post('/add/:reviewId', async (req, res) => {
     const reviewId = req.params.reviewId;
     const comment = xss(req.body.comment);
-
+    const review= await getReviewById(reviewId);
     if (!helpers.checkId(reviewId, 'Review ID')) {
         return res.status(400).send('Invalid Review ID');
     }
@@ -24,9 +24,9 @@ router.post('/add/:reviewId', async (req, res) => {
             userId: req.session.user.id,
             createdAt: new Date()
         };
-
+        const housingId= review.houseId.toString();
         await addComment(newComment);
-        res.redirect(`/review/${reviewId}`);
+        res.redirect(`/housing/${housingId}`);
     } catch (error) {
         console.error('Error adding comment:', error);
         res.status(500).send('Failed to add comment due to server error.');
