@@ -32,20 +32,44 @@
     {{/if}}
 
 
-    <h2>Reviews</h2>
-    {{#if housing.reviewIds.length}}
-        <div class="reviews-container">
-            {{#each housing.reviewIds as |reviewId|}}
-                {{reviewPartial reviewId=reviewId}}
-                <button onclick="markReviewHelpful('{{reviewId}}')" class="helpful-button">
+   <h2>Reviews</h2>
+{{#if reviews.length}}
+    <div class="reviews-container">
+        {{#each reviews}}
+            <div class="review">
+                <h3>{{title}}</h3>
+                <p>{{firstName}}   {{lastName}}</p>
+                <p><strong>Rating:</strong> {{rating}}/5</p>
+                <p>{{body}}</p>
+                <div class="review-images">
+                    {{#if images}}
+                        {{#each images}}
+                            <img src="{{this}}" alt="Review Image" style="max-width: 200px; margin: 10px;">
+                        {{/each}}
+                    {{/if}}
+                </div>
+                <button onclick="markReviewHelpful('{{_id}}')" class="helpful-button">
                     <img src="/public/HelpfulIcon.png" alt="Helpful">
-                    Helpful ({{findReviewById reviewId 'helpfulCounts'}})
+                    Helpful (<span id="helpful-count-{{_id}}">{{helpfulCounts}}</span>)
                 </button>
-            {{/each}}
-        </div>
-    {{else}}
-        <p>No reviews yet. Be the first to write a review!</p>
-    {{/if}}
+                <div class="comments">
+                    <h4>Comments:</h4>
+                    {{#if comments}}
+                        <ul>
+                            {{#each comments}}
+                                <li>{{this.author}}: {{this.content}}</li>
+                            {{/each}}
+                        </ul>
+                    {{else}}
+                        <p>No comments yet.</p>
+                    {{/if}}
+                </div>
+            </div>
+        {{/each}}
+    </div>
+{{else}}
+    <p>No reviews yet. Be the first to write a review!</p>
+{{/if}}
     <a href="/reviews/addReview/{{housing._id}}" class="btn btn-primary">Add Review</a>
 </section>
 
@@ -65,4 +89,5 @@
             }
         });
     }
+
 </script>

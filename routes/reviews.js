@@ -1,6 +1,6 @@
 import express from 'express';
 import {addReview, updateReview} from '../data/reviewsForHousing.js';
-import { getHousingById } from '../data/housing.js';
+import { getHousingById,addReviewIdToHousing } from '../data/housing.js';
 const router = express.Router();
 import helpers from '../helpers.js';
 import xss from 'xss';
@@ -58,6 +58,9 @@ router.post('/add/:housingId', async (req, res) => {
     const userId = req.session.user.id;
     const imageUrls = images.split(',').map(url => xss(url.trim()));
 
+    
+    const firstName = req.session.user.firstName;
+    const lastName = req.session.user.lastName;
     const review = {
         houseId: housingId,
         userId: userId,
@@ -66,11 +69,14 @@ router.post('/add/:housingId', async (req, res) => {
         body: body,
         images: imageUrls,
         helpfulCounts : 0,
-        comments : []
+        comments : [],
+        firstName : firstName,
+        lastName : lastName
     };
 
     try {
-        await addReview(review);
+        const newReview = await addReview(review);
+        await addReviewIdToHousing(housingId, newReview._id.toString());
         res.redirect(`/housing/${housingId}`);
     } catch (error) {
         console.error('Error adding review:', error);
