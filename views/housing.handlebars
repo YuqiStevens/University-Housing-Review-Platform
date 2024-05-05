@@ -20,17 +20,21 @@
     {{/if}}
 
     <h2>Amenities</h2>
-    <ul class="amenities-list">
-        {{#each housing.amenities}}
-            <li>{{this}}</li>
-        {{/each}}
-    </ul>
+    {{#if housing.amenities.length}}
+        <ul class="amenities-list">
+            {{#each housing.amenities}}
+                <li>{{this}}</li>
+            {{/each}}
+        </ul>
+    {{else}}
+        <p>No amenities listed.</p>
+    {{/if}}
 
     <h2>Reviews</h2>
     {{#if housing.reviewIds.length}}
         <div class="reviews-container">
             {{#each housing.reviewIds as |reviewId|}}
-                {{> reviewPartial reviewId=reviewId}}
+                {{reviewPartial reviewId=reviewId}}
                 <button onclick="markReviewHelpful('{{reviewId}}')" class="helpful-button">
                     <img src="/public/HelpfulIcon.png" alt="Helpful">
                     Helpful ({{findReviewById reviewId 'helpfulCounts'}})
