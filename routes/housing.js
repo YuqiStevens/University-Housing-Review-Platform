@@ -160,16 +160,29 @@ router.get('/:id', async (req, res) => {
         }
 
         const isAdmin = req.session.user && req.session.user.role === 'admin';
+        const currentUserId = req.session.user ? req.session.user.id : null;
+        // console.log('currentUserId: ', currentUserId);
+
         let reviews;
         reviews = await getAllReviewsByHouseId(housingId); 
 
         const cleanAddress = xss(housing.address);
-        //  use the
+
+        const processedReviews = reviews.map(review => {
+            const reviewUserId = review.userId ? review.userId.toString() : null;
+            return {
+                ...review,
+                canEdit: reviewUserId === currentUserId
+            };
+        });
+
+        // console.log('processedReviews: ', processedReviews);
 
         res.render('housing', {
-            title: `Details of ${cleanAddress}`,  
+            title: `Details of ${cleanAddress}`,
             housing: housing,
-            reviews: reviews,
+            reviews: processedReviews,
+            currentUserId: currentUserId,
             isAdmin: isAdmin
         });
     } catch (error) {
