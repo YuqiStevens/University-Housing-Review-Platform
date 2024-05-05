@@ -156,6 +156,31 @@ const updateReview = async (review_id, updates) => {
     return {success: true, message: 'Review successfully updated.'};
 };
 
+const updateReviewHelpfulCount = async (review_id) => {
+    review_id = validation.checkId(review_id, 'review_id');
+    const reviewsCollection = await review_collection();
+
+    // Increment the helpfulCounts field
+    const updateResult = await reviewsCollection.updateOne(
+        { _id: new ObjectId(review_id) },
+        { $inc: { helpfulCounts: 1 } }  // Use $inc to increment helpfulCounts by 1
+    );
+
+    if (!updateResult.matchedCount) {
+        console.log("No review found with ID:", review_id);
+        return null;
+    }
+
+    if (!updateResult.modifiedCount) {
+        console.log("The helpful count was not updated.");
+        return null;
+    }
+
+    // Return the new helpful count
+    const updatedReview = await reviewsCollection.findOne({ _id: new ObjectId(review_id) });
+    return updatedReview;
+};
+
 export {
     getAllReviewsByUserId,
     getAllReviewsByHouseId,
@@ -163,5 +188,6 @@ export {
     addReview,
     removeReviewById,
     updateReview,
+    updateReviewHelpfulCount,
     updateAverageRating
 };
