@@ -54,28 +54,31 @@ const getReviewById = async (review_id) => {
     return review;  // Return the review
 };
 
-const addReview = async (house_id, user_id, rating, title, body, images = [], helpfulCounts = 0, comments = []) => {
-    house_id = validation.checkId(house_id, 'house_id');
-    user_id = validation.checkId(user_id, 'user_id');
-    rating = validator.isInt(rating);
-    title = validation.checkString(title, 'title');
-    body = validation.checkString(body, 'body');
+const addReview = async (review) => {
+    // Validate each part of the review object
+    review.houseId = validation.checkId(review.houseId, 'house_id');
+    review.userId = validation.checkId(review.userId, 'user_id');
+    if (!Number.isInteger(review.rating)) {
+        throw new Error("Rating must be an integer.");
+    }
+    review.title = validation.checkString(review.title, 'title');
+    review.body = validation.checkString(review.body, 'body');
+    review.images = review.images || [];
+    review.helpfulCounts = review.helpfulCounts || 0;
+    review.comments = review.comments || [];
 
-    const reviewsCollection = await review_collection();  // Assuming reviews() returns the reviews collection
+    const reviewsCollection = await review_collection();  // Assuming review_collection() returns the reviews collection
 
+    // Create a new review with updated timestamps
     const newReview = {
-        houseId: new ObjectId(house_id),
-        userId: new ObjectId(user_id),
-        rating,
-        title,
-        body,
-        images,
-        helpfulCounts,
-        comments,
+        ...review,
+        houseId: new ObjectId(review.houseId),
+        userId: new ObjectId(review.userId),
         createdAt: new Date(),
         updatedAt: new Date()
     };
 
+    // Insert the new review into the database
     const insertResult = await reviewsCollection.insertOne(newReview);
     if (insertResult.insertedCount === 0) {
         throw new Error('Failed to add the review.');
