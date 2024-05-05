@@ -52,12 +52,14 @@
                     <img src="/public/HelpfulIcon.png" alt="Helpful">
                     Helpful (<span id="helpful-count-{{_id}}">{{helpfulCounts}}</span>)
                 </button>
+                <!-- Redirect to Add Comment Page -->
+                <a href="/comments/addComment/{{_id}}" class="btn btn-primary">Add Comment</a>
                 <div class="comments">
                     <h4>Comments:</h4>
                     {{#if comments}}
                         <ul>
                             {{#each comments}}
-                                <li>{{this.author}}: {{this.content}}</li>
+                                <li>{{this.firstName}}  {{this.lastName}}: {{this.text}}</li>
                             {{/each}}
                         </ul>
                     {{else}}

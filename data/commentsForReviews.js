@@ -1,9 +1,10 @@
-import { comment_collection } from '../config/mongoCollections.js';
+import { comment_collection, review_collection } from '../config/mongoCollections.js';
 import * as usersFunctions from './users.js';
 import * as reviewsFunctions from './reviewsForHousing.js';
 import { ObjectId } from 'mongodb';
 import xss from 'xss';
 import helpers from '../helpers.js';
+import validation from '../helpers.js';
 
 const getAllCommentsByReviewId = async (review_id) => {
     review_id = xss(review_id);
@@ -32,10 +33,12 @@ const getAllCommentsByUserId = async (user_id) => {
     return comments; // Return the array of comments
 };
 
-const addComment = async (user_id, review_id, commentText) => {
-    user_id = helpers.checkId(user_id, 'user_id');
-    review_id = helpers.checkId(review_id, 'review_id');
-    commentText = helpers.checkString(commentText, 'commentText');
+const addComment = async (comment) => {
+    const user_id = helpers.checkId(comment.userId, 'user_id');
+    const review_id = helpers.checkId(comment.reviewId, 'review_id');
+    const commentText = helpers.checkString(comment.text, 'commentText');
+    const firstName = helpers.checkString(comment.firstName, 'firstName');
+    const lastName = helpers.checkString(comment.lastName, 'lastName');
 
     const commentsCollection = await comment_collection();
 
@@ -55,6 +58,8 @@ const addComment = async (user_id, review_id, commentText) => {
         _id: new ObjectId(),
         reviewId: new ObjectId(review_id),
         userId: new ObjectId(user_id),
+        firstName: firstName,
+        lastName: lastName,
         comment: commentText,
         createdAt: new Date()
     };
@@ -113,11 +118,36 @@ const getCommentById = async (comment_id) => {
     return comment; // Return the found comment
 };
 
+const addCommentToReview = async (reviewId, comment) => {
+    // Validate the reviewId
+    reviewId = validation.checkId(reviewId, 'review_id');
+
+    const reviewCollection = await review_collection();  // Assuming reviewCollection() returns the review collection
+
+    // Add the comment to the comments array using $push
+    const updateResult = await reviewCollection.updateOne(
+        { _id: new ObjectId(reviewId) },
+        { $push: { comments: comment } }
+    );
+
+    // Check if the update was successful
+    if (updateResult.matchedCount === 0) {
+        throw new Error('No review found with the provided ID.');
+    }
+    if (updateResult.modifiedCount === 0) {
+        throw new Error('Failed to add comment to the review.');
+    }
+
+    // Return a message or the update result
+    return updateResult;
+};
+
 export {
     getAllCommentsByReviewId,
     getAllCommentsByUserId,
     addComment,
     removeComment,
     updateComment,
-    getCommentById
+    getCommentById,
+    addCommentToReview
 };
