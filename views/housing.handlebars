@@ -19,6 +19,7 @@
         <a href="/housing/edit/{{housing._id}}" class="btn btn-secondary">Edit Housing</a>
     {{/if}}
 
+
     <h2>Amenities</h2>
     {{#if housing.amenities.length}}
         <ul class="amenities-list">
@@ -29,6 +30,7 @@
     {{else}}
         <p>No amenities listed.</p>
     {{/if}}
+
 
     <h2>Reviews</h2>
     {{#if housing.reviewIds.length}}

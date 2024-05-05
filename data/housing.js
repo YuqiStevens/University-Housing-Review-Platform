@@ -1,6 +1,6 @@
-import {housing_collection} from "../config/mongoCollections.js";
-import {ObjectId} from "mongodb";
-import {getUserById} from "./users.js";
+import { housing_collection } from "../config/mongoCollections.js";
+import { ObjectId } from "mongodb";
+import { getUserById } from "./users.js";
 import xss from "xss";
 import helpers from "../helpers.js";
 
@@ -13,17 +13,47 @@ const getHousingById = async (id) => {
     const housingCollection = await housing_collection();
     const housing = await housingCollection.findOne({_id: new ObjectId(id)});
     if (!housing) throw "Store not found";
+
+    // Ensure amenities is an array
+    if (typeof housing.amenities === 'string') {
+        housing.amenities = [housing.amenities];
+    } else if (!Array.isArray(housing.amenities)) {
+        housing.amenities = [];
+    }
+
     return housing;
 };
 
+
+
 const addHousing = async (housing) => {
+    // Make sure amenities and images are arrays
+    let amenities = housing.amenities;
+    let images = housing.images;
+
+    if (typeof amenities === 'string') {
+        amenities = xss(amenities).split(',').map(item => item.trim());
+    }
+
+    if (!Array.isArray(amenities)) {
+        amenities = [];
+    }
+
+    if (typeof images === 'string') {
+        images = xss(images).split(',').map(item => item.trim());
+    }
+
+    if (!Array.isArray(images)) {
+        images = [];
+    }
+
     const housingData = {
         address: xss(housing.address).trim(),
         city: xss(housing.city).trim(),
         state: xss(housing.state).trim(),
         zipCode: xss(housing.zipCode).trim(),
         homeType: xss(housing.homeType).trim(),
-        amenities: xss(housing.amenities).trim(),
+        amenities: amenities,
         rentalCostMin: parseInt(housing.rentalCostMin, 10),
         rentalCostMax: parseInt(housing.rentalCostMax, 10),
         studios: parseInt(housing.studios, 10),
@@ -33,7 +63,7 @@ const addHousing = async (housing) => {
         beds4: parseInt(housing.fourBed, 10),
         petPolicy: xss(housing.petPolicy).trim(),
         garage: Boolean(housing.garage),
-        images: xss(housing.images).trim(),
+        images: images,
         location: {
             latitude: parseFloat(housing.location.latitude),
             longitude: parseFloat(housing.location.longitude)
@@ -49,6 +79,7 @@ const addHousing = async (housing) => {
     return newId.toString();
 };
 
+
 const removeHousing = async (id) => {
     const housingsCollection = await housing_collection();
     const deletionInfo = await housingsCollection.findOneAndDelete({
@@ -62,6 +93,26 @@ const removeHousing = async (id) => {
 };
 
 const updateHousing = async (housingId, updatedHousing) => {
+    // Make sure amenities and images are arrays
+    let amenities = updatedHousing.amenities;
+    let images = updatedHousing.images;
+
+    if (typeof amenities === 'string') {
+        amenities = xss(amenities).split(',').map(item => item.trim());
+    }
+
+    if (!Array.isArray(amenities)) {
+        amenities = [];
+    }
+
+    if (typeof images === 'string') {
+        images = xss(images).split(',').map(item => item.trim());
+    }
+
+    if (!Array.isArray(images)) {
+        images = [];
+    }
+
     let adminId = xss(updatedHousing.adminId).trim();
     const updatedHousingData = {
         name: xss(updatedHousing.name).trim(),
@@ -70,7 +121,7 @@ const updateHousing = async (housingId, updatedHousing) => {
         state: xss(updatedHousing.state).trim(),
         zipCode: xss(updatedHousing.zipCode).trim(),
         homeType: xss(updatedHousing.homeType).trim(),
-        amenities: xss(updatedHousing.amenities).trim(),
+        amenities: amenities,
         rentalCostMin: parseInt(updatedHousing.rentalCostMin, 10),
         rentalCostMax: parseInt(updatedHousing.rentalCostMax, 10),
         studios: parseInt(updatedHousing.studios, 10),
@@ -80,7 +131,7 @@ const updateHousing = async (housingId, updatedHousing) => {
         beds4: parseInt(updatedHousing.beds4, 10),
         petPolicy: xss(updatedHousing.petPolicy).trim(),
         garage: Boolean(updatedHousing.garage),
-        images: xss(updatedHousing.images).trim(),
+        images: images,
         location: {
             latitude: parseFloat(updatedHousing.location.latitude),
             longitude: parseFloat(updatedHousing.location.longitude)
@@ -116,6 +167,8 @@ const updateHousing = async (housingId, updatedHousing) => {
 
     return housingId;
 };
+
+
 
 export {
     getAllHousings,

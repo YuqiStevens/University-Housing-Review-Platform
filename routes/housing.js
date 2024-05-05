@@ -77,6 +77,7 @@ router.post('/add', upload.array('images'), async (req, res) => {
 
         // Additional details
         const amenities = xss(req.body.amenities);
+        const amenitiesArray = Array.isArray(amenities) ? amenities : amenities.split(',').map(item => item.trim());
         const petPolicy = xss(req.body.petPolicy);
         const garage = xss(req.body.garage);
         const latitude = xss(req.body.latitude);
@@ -121,7 +122,7 @@ router.post('/add', upload.array('images'), async (req, res) => {
             twoBed: parseInt(twoBed, 10),
             threeBed: parseInt(threeBed, 10),
             fourBed: parseInt(fourBed, 10),
-            amenities: amenities.split(',').map(item => item.trim()),
+            amenities: amenitiesArray,
             petPolicy,
             garage: garage === 'on',
             location: {
@@ -200,7 +201,7 @@ router.post('/edit/:id', upload.array('images'), async (req, res) => {
                 min: parseInt(rentalCostMin, 10),
                 max: parseInt(rentalCostMax, 10)
             },
-            amenities: amenities ? amenities.split(',').map(item => item.trim()) : [],
+            amenities: amenitiesArray,
             petPolicy,
             garage,
             images
