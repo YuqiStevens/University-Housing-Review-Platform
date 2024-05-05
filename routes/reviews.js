@@ -134,4 +134,18 @@ router.post('/delete/:reviewId', async (req, res) => {
     }
 });
 
+router.get('/addReview', async (req, res) => {
+    try {
+        if (!req.session.user) {
+            res.status(403).render('error', { title: "Forbidden", error: "You are not authorized to add reviews" });
+            return;
+        }
+
+        res.render('addReview', { title: "Add Reviews" });
+    } catch (error) {
+        console.error('Error rendering add reviews page:', error);
+        res.status(500).send('Internal Server Error');
+    }
+});
+
 export default router;
