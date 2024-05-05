@@ -24,8 +24,6 @@ const getHousingById = async (id) => {
     return housing;
 };
 
-
-
 const addHousing = async (housing) => {
     // Make sure amenities and images are arrays
     let amenities = housing.amenities;
@@ -93,27 +91,32 @@ const removeHousing = async (id) => {
 };
 
 const updateHousing = async (housingId, updatedHousing) => {
+    console.log("Starting updateHousing with housingId:", housingId);
+
     // Make sure amenities and images are arrays
     let amenities = updatedHousing.amenities;
     let images = updatedHousing.images;
 
     if (typeof amenities === 'string') {
         amenities = xss(amenities).split(',').map(item => item.trim());
+        console.log("Processed amenities from string to array:", amenities);
     }
 
     if (!Array.isArray(amenities)) {
         amenities = [];
+        console.log("Defaulted amenities to empty array as it was not an array.");
     }
 
     if (typeof images === 'string') {
         images = xss(images).split(',').map(item => item.trim());
+        console.log("Processed images from string to array:", images);
     }
 
     if (!Array.isArray(images)) {
         images = [];
+        console.log("Defaulted images to empty array as it was not an array.");
     }
 
-    let adminId = xss(updatedHousing.adminId).trim();
     const updatedHousingData = {
         name: xss(updatedHousing.name).trim(),
         address: xss(updatedHousing.address).trim(),
@@ -139,15 +142,13 @@ const updateHousing = async (housingId, updatedHousing) => {
         rating: parseFloat(updatedHousing.rating)
     };
 
-    const admin = await getUserById(adminId);
-    if (admin.role !== "admin") {
-        throw new Error("User does not have authorization to update a housing listing.");
-    }
+    console.log("Prepared updated housing data:", updatedHousingData);
 
     try {
         helpers.checkIfLocationValid(updatedHousingData.location);
         helpers.checkIfHousingNameValid(updatedHousingData.name);
     } catch (e) {
+        console.error("Validation error:", e.message);
         throw e;
     }
 
@@ -161,12 +162,15 @@ const updateHousing = async (housingId, updatedHousing) => {
         {$set: updatedHousingData}
     );
 
+    console.log("MongoDB updateOne response:", updateInfo);
+
     if (updateInfo.modifiedCount === 0) {
         throw new Error("No housing entry was updated.");
     }
 
     return housingId;
 };
+
 
 
 
