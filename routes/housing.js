@@ -150,7 +150,6 @@ router.get('/:id', async (req, res) => {
 
         const isAdmin = req.session.user && req.session.user.role === 'admin';
         const currentUserId = req.session.user ? req.session.user.id : null;
-        // console.log('currentUserId: ', currentUserId);
 
         let reviews;
         reviews = await getAllReviewsByHouseId(housingId); 
@@ -159,8 +158,15 @@ router.get('/:id', async (req, res) => {
 
         const processedReviews = reviews.map(review => {
             const reviewUserId = review.userId ? review.userId.toString() : null;
+            const processedComments = review.comments.map(comment => {
+                return {
+                   ...comment,
+                    isAdmin: req.session.user.role === 'admin',
+                };
+            })
             return {
                 ...review,
+                comments: processedComments,
                 isAdmin: req.session.user.role === 'admin',
                 canEdit: reviewUserId === currentUserId
             };

@@ -59,7 +59,7 @@
                         {{/each}}
                     {{/if}}
                 </div>
-                {{#if canEdit}}
+                {{#if isAdmin}}
                     <a href="/reviews/delete/{{_id}}" class="btn btn-primary">Delete review</a>
                 {{/if}}
                 {{#if canEdit}}
@@ -75,7 +75,10 @@
                     {{#if comments}}
                         <ul>
                             {{#each comments}}
-                                <li>{{this.firstName}}  {{this.lastName}}: {{this.text}}</li>
+                                <li>{{this.firstName}} {{this.lastName}}: {{this.text}}</li>
+                                {{#if isAdmin}}
+                                    <a href="/comments/delete/{{commentId}}" class="btn btn-primary">Delete Comments</a>
+                                {{/if}}
                             {{/each}}
                         </ul>
                     {{else}}
