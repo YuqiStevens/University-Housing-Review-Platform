@@ -26,9 +26,9 @@ router.post('/add/:reviewId', async (req, res) => {
             userId: req.session.user.id,
             createdAt: new Date()
         };
+        newComment = await addComment(newComment);
         const updatedReview = await addCommentToReview(reviewId, newComment);
         const housingId= review.houseId.toString();
-        await addComment(newComment);
         res.redirect(`/housing/${housingId}`);
     } catch (error) {
         console.error('Error adding comment:', error);
