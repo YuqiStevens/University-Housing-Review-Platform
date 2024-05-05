@@ -11,10 +11,11 @@ router.route('/')
     .get(async (req, res) => {
         const title = "Profile";
         const id = req.session.user.id;
-        let user;
+        let user = {};
         let allReviews = [];
         let hasReviews = false;
         let hasNoReviews = true;
+        let errorMsg = null;
 
         try {
             user = await getUserById(id);
@@ -23,25 +24,25 @@ router.route('/')
             hasNoReviews = !hasReviews;
         } catch (error) {
             console.error('Error fetching user or reviews:', error);
-            // Render the profile page with error message
-            return res.status(500).render('profile', {
-                title: title,
-                user: user,
-                hasReviews: hasReviews,
-                hasNoReviews: hasNoReviews,
-                allReviews: [],
-                error: "An error occurred while fetching the user or reviews."
-            });
+            errorMsg = "An error occurred while fetching the user or reviews.";
+            // Handle partial user data
+            if (!user.reviews) {
+                user.reviews = [];
+            }
         }
 
-        return res.status(200).render('profile', {
+        return res.status(errorMsg ? 500 : 200).render('profile', {
             title: title,
-            user: user,
+            user: { ...user, reviews: allReviews },
             hasReviews: hasReviews,
             hasNoReviews: hasNoReviews,
-            allReviews: allReviews,
+            error: errorMsg
         });
-    })
+    });
+
+
+
+
 
 router.route('/')
     .post(async (req, res) => {
