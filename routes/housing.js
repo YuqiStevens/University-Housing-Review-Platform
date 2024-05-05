@@ -77,6 +77,7 @@ router.post('/add', upload.array('images'), async (req, res) => {
 
         // Additional details
         const amenities = xss(req.body.amenities);
+        const amenitiesArray = Array.isArray(amenities) ? amenities : amenities.split(',').map(item => item.trim());
         const petPolicy = xss(req.body.petPolicy);
         const garage = xss(req.body.garage);
         const latitude = xss(req.body.latitude);
@@ -121,7 +122,7 @@ router.post('/add', upload.array('images'), async (req, res) => {
             twoBed: parseInt(twoBed, 10),
             threeBed: parseInt(threeBed, 10),
             fourBed: parseInt(fourBed, 10),
-            amenities: amenities.split(',').map(item => item.trim()),
+            amenities: amenitiesArray,
             petPolicy,
             garage: garage === 'on',
             location: {
@@ -170,7 +171,40 @@ router.get('/:id', async (req, res) => {
     }
 });
 
+router.get('/edit/:id', async (req, res) => {
+    try {
+        if (!req.session.user || req.session.user.role !== 'admin') {
+            res.status(403).render('error', { title: "Forbidden", error: "You are not authorized to edit housing" });
+            return;
+        }
+
+        const housingId = req.params.id;
+        if (!ObjectId.isValid(housingId)) {
+            res.status(400).render('error', { title: "Bad Request", error: "Invalid Housing ID" });
+            return;
+        }
+
+        const housing = await getHousingById(housingId); // Implement this function to retrieve housing details by ID
+        
+        if (!housing) {
+            res.status(404).render('error', { title: "Not Found", error: "Housing not found" });
+            return;
+        }
+        housing.selectedApartment = housing.homeType === "Apartment";
+        housing.selectedHouse = housing.homeType === "House";
+        housing.selectedTownhome = housing.homeType === "Townhome";
+        housing.selectedAllowed = housing.petPolicy === "Allowed";
+        housing.selectedNotAllowed = housing.petPolicy === "Not Allowed";
+
+        res.render('editHousing', { title: "Edit Housing"});
+    } catch (error) {
+        console.error('Error rendering edit housing page:', error);
+        res.status(500).send('Internal Server Error');
+    }
+});
+
 router.post('/edit/:id', upload.array('images'), async (req, res) => {
+    console.log(req.body);
     const housingId = req.params.id;
     if (!ObjectId.isValid(housingId)) {
         return res.status(400).send('Invalid Housing ID');
@@ -200,7 +234,7 @@ router.post('/edit/:id', upload.array('images'), async (req, res) => {
                 min: parseInt(rentalCostMin, 10),
                 max: parseInt(rentalCostMax, 10)
             },
-            amenities: amenities ? amenities.split(',').map(item => item.trim()) : [],
+            amenities: amenitiesArray,
             petPolicy,
             garage,
             images
