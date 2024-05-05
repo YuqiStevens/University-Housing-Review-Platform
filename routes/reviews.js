@@ -1,5 +1,5 @@
 import express from 'express';
-import {addReview, updateReview, updateReviewHelpfulCount, updateAverageRating, getReviewById} from '../data/reviewsForHousing.js';
+import {addReview, updateReview, updateReviewHelpfulCount, updateAverageRating, getReviewById, removeReviewById} from '../data/reviewsForHousing.js';
 import {getHousingById, addReviewIdToHousing} from '../data/housing.js';
 const router = express.Router();
 import helpers from '../helpers.js';
@@ -130,8 +130,6 @@ router.post('/edit/:reviewId', async (req, res) => {
             return;
         }
 
-        console.log('UpdatedReview --------', updatedReview);
-
         await updateReview(reviewId, updatedReview);
         await updateAverageRating(housingId.toString()); // Update average rating after adding a review
 
@@ -143,7 +141,7 @@ router.post('/edit/:reviewId', async (req, res) => {
     }
 });
 
-router.post('/delete/:reviewId', async (req, res) => {
+router.get('/delete/:reviewId', async (req, res) => {
     const reviewId = req.params.reviewId;
 
     if (!helpers.checkId(reviewId, 'Review ID')) {
@@ -151,12 +149,22 @@ router.post('/delete/:reviewId', async (req, res) => {
     }
 
     try {
+        const review= await getReviewById(reviewId);
+        if (!helpers.checkId(reviewId, 'Review ID')) {
+            return res.status(400).send('Invalid Review ID');
+        }
+        const housingId = review.houseId;
+        if (!ObjectId.isValid(housingId)) {
+            res.status(400).send('Invalid housing ID');
+            return;
+        }
+
         const result = await removeReviewById(reviewId);
         if (result.deletedCount === 0) {
             return res.status(404).send("No review found with that ID.");
         }
 
-        res.redirect('/reviews/user/' + req.session.user.id);
+        res.redirect(`/housing/${housingId}`);
     } catch (error) {
         console.error('Error deleting review:', error);
         res.status(500).send('Server error occurred while deleting the review.');

@@ -161,6 +161,7 @@ router.get('/:id', async (req, res) => {
             const reviewUserId = review.userId ? review.userId.toString() : null;
             return {
                 ...review,
+                isAdmin: req.session.user.role === 'admin',
                 canEdit: reviewUserId === currentUserId
             };
         });
