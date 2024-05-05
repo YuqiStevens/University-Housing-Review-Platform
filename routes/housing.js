@@ -6,12 +6,9 @@ import { addHousing, getHousingById, updateHousing, getAllHousings } from '../da
 import helpers from '../helpers.js';
 import validator from 'validator';
 import xss from 'xss';
-import { get } from 'http';
 import { getAllReviewsByHouseId } from '../data/reviewsForHousing.js';
 
 const router = express.Router();
-
-// for picture upload
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
         cb(null, path.join(process.cwd(), 'public/images/housing'));
@@ -21,10 +18,7 @@ const storage = multer.diskStorage({
         cb(null, file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname));
     }
 });
-
-
 const upload = multer({ storage: storage });
-
 
 router.get('/list', async (req, res) => {
     try {
@@ -39,7 +33,6 @@ router.get('/list', async (req, res) => {
     }
 });
 
-
 router.get('/add', async (req, res) => {
     try {
         if (!req.session.user || req.session.user.role !== 'admin') {
@@ -53,8 +46,6 @@ router.get('/add', async (req, res) => {
         res.status(500).send('Internal Server Error');
     }
 });
-
-
 
 router.post('/add', async (req, res) => {
     try {
@@ -142,8 +133,6 @@ router.post('/add', async (req, res) => {
     }
 });
 
-
-
 router.get('/:id', async (req, res) => {
     try {
         const housingId = req.params.id;
@@ -191,9 +180,6 @@ router.get('/:id', async (req, res) => {
     }
 });
 
-
-
-
 router.get('/edit/:id', async (req, res) => {
     try {
         if (!req.session.user || req.session.user.role !== 'admin') {
@@ -230,9 +216,6 @@ router.get('/edit/:id', async (req, res) => {
         res.status(500).send('Internal Server Error');
     }
 });
-
-
-
 
 router.post('/edit/:id', async (req, res) => {
     try {
@@ -310,8 +293,5 @@ router.post('/edit/:id', async (req, res) => {
         res.status(500).send('Internal Server Error');
     }
 });
-
-
-
 
 export default router;
