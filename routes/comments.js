@@ -1,5 +1,5 @@
 import express from 'express';
-import {addComment, addCommentToReview, getCommentById} from '../data/commentsForReviews.js';
+import {addComment, addCommentToReview, getCommentById, removeComment, removeCommentFromReview} from '../data/commentsForReviews.js';
 const router = express.Router();
 import helpers from '../helpers.js';
 import xss from 'xss';
@@ -81,6 +81,44 @@ router.get('/addComment/:reviewId', async (req, res) => {
     } catch (error) {
         console.error('Error rendering add reviews page:', error);
         res.status(500).send('Internal Server Error');
+    }
+});
+
+router.post('/delete/:commentId', async (req, res) => {
+    const commentId = req.params.commentId;
+
+    // First, find the review that contains the comment
+    const comment = await getCommentById(commentId);
+    const reviewId= comment.reviewId;
+    const review= await getReviewById(reviewId);
+    const housingId= review.houseId.toString();
+    // Validate the commentId before attempting to delete
+    if (!helpers.checkId(commentId, 'Comment ID')) {
+        return res.status(400).send('Invalid Comment ID');
+    }
+
+    try {
+        // Proceed to delete the comment from the review
+        const updatedReview = await removeCommentFromReview(reviewId, commentId);
+        await removeComment(commentId);
+        res.redirect(`/housing/${housingId}`);  // Redirecting back to the review page or to another appropriate page
+    } catch (error) {
+        console.error('Error deleting comment:', error);
+        res.status(500).send('Failed to delete comment due to server error.');
+    }
+});
+
+router.post('/delete/:commentId', async (req, res) => {
+    const commentId = req.params.commentId;
+
+    try {
+        await deleteComment(commentId, reviewId);
+        
+        await removeCommentfromReview(commen)
+        res.send('Comment deleted successfully');
+    } catch (error) {
+        console.error('Failed to delete comment:', error);
+        res.status(500).send('Error deleting comment');
     }
 });
 

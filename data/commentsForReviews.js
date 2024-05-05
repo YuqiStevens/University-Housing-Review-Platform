@@ -142,6 +142,31 @@ const addCommentToReview = async (reviewId, comment) => {
     return updateResult;
 };
 
+const removeCommentFromReview = async (reviewId, commentId) => {
+    // Validate the reviewId and commentId
+    reviewId = validation.checkId(reviewId, 'review_id');
+    commentId = validation.checkId(commentId, 'comment_id');
+
+    const reviewCollection = await review_collection();  // Assuming reviewCollection() returns the review collection
+
+    // Remove the comment from the comments array using $pull
+    const updateResult = await reviewCollection.updateOne(
+        { _id: new ObjectId(reviewId) },
+        { $pull: { comments: { _id: new ObjectId(commentId) } } }
+    );
+
+    // Check if the update was successful
+    if (updateResult.matchedCount === 0) {
+        throw new Error('No review found with the provided ID.');
+    }
+    if (updateResult.modifiedCount === 0) {
+        throw new Error('Failed to remove comment from the review.');
+    }
+
+    // Return a message or the update result
+    return updateResult;
+};
+
 export {
     getAllCommentsByReviewId,
     getAllCommentsByUserId,
@@ -149,5 +174,6 @@ export {
     removeComment,
     updateComment,
     getCommentById,
-    addCommentToReview
+    addCommentToReview,
+    removeCommentFromReview
 };
