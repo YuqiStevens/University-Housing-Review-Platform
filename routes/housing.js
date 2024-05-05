@@ -208,7 +208,7 @@ router.get('/edit/:id', async (req, res) => {
     }
 });
 
-router.post('/edit/:id', async (req, res) => {
+router.post('/edit/:id', upload.array('images'),async (req, res) => {
     try {
         // Ensure user is authorized to perform edit operations
         console.log('req.body', req.body);
@@ -274,21 +274,19 @@ router.post('/edit/:id', async (req, res) => {
             city,
             state,
             homeType,
-            rentalCost: {
-                min: parseInt(rentalCostMin, 10),
-                max: parseInt(rentalCostMax, 10)
-            },
+            rentalCostMin: parseInt(rentalCostMin, 10),
+            rentalCostMax: parseInt(rentalCostMax, 10),
             studios: parseInt(studios, 10),
-            '1beds': parseInt(oneBed, 10),
-            '2beds': parseInt(twoBed, 10),
-            '3beds': parseInt(threeBed, 10),
-            '4beds': parseInt(fourBed, 10),
+            oneBed: parseInt(oneBed, 10),
+            twoBed: parseInt(twoBed, 10),
+            threeBed: parseInt(threeBed, 10),
+            fourBed: parseInt(fourBed, 10),
             amenities: amenitiesArray,
             petPolicy,
             garage: garage === 'on',
             location: {
-                latitude: parseFloat(latitude),
-                longitude: parseFloat(longitude)
+                latitude,
+                longitude
             },
             images
         };
