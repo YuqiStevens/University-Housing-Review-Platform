@@ -36,8 +36,6 @@ router.post('/add/:reviewId', async (req, res) => {
     }
 });
 
-
-// 这里需要找到对应的评论模板来显示评论详情，不知道具体在哪里
 router.get('/:commentId', async (req, res) => {
     const commentId = req.params.commentId;
 
@@ -85,6 +83,5 @@ router.get('/addComment/:reviewId', async (req, res) => {
         res.status(500).send('Internal Server Error');
     }
 });
-
 
 export default router;

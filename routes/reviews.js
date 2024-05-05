@@ -4,6 +4,7 @@ import {getHousingById, addReviewIdToHousing} from '../data/housing.js';
 const router = express.Router();
 import helpers from '../helpers.js';
 import xss from 'xss';
+import {ObjectId} from "mongodb";
 
 router.get('/edit/:reviewId', async (req, res) => {
     try {
@@ -17,6 +18,8 @@ router.get('/edit/:reviewId', async (req, res) => {
         if (!review) {
             return res.status(404).send("Review not found.");
         }
+
+        review.id = review._id;
 
         const cleanReview = {
             ...review,
@@ -85,7 +88,6 @@ router.post('/add/:housingId', async (req, res) => {
     }
 });
 
-
 router.post('/edit/:reviewId', async (req, res) => {
     const reviewId = req.params.reviewId;
 
@@ -117,8 +119,21 @@ router.post('/edit/:reviewId', async (req, res) => {
             images: imageUrls
         };
 
+        const review= await getReviewById(reviewId);
+        if (!helpers.checkId(reviewId, 'Review ID')) {
+            return res.status(400).send('Invalid Review ID');
+        }
+        const housingId = review.houseId;
+
+        if (!ObjectId.isValid(housingId)) {
+            res.status(400).send('Invalid housing ID');
+            return;
+        }
+
+        console.log('UpdatedReview --------', updatedReview);
+
         await updateReview(reviewId, updatedReview);
-        res.redirect(`/review/${reviewId}`);
+        res.redirect(`/housing/${housingId}`);
     } catch (error) {
         console.error('Failed to update review:', error);
         res.status(500).send('Failed to update review due to server error.');
@@ -185,6 +200,5 @@ router.post('/helpful/:reviewId', async (req, res) => {
         res.status(500).send('Internal Server Error');
     }
 });
-
 
 export default router;

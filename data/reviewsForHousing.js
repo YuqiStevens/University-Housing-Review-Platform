@@ -136,9 +136,13 @@ const updateReview = async (review_id, updates) => {
 
     // Prepare update object
     const updateData = {};
-    if (updates.rating) updateData.rating = helpers.checkNumber(updates.rating, 'rating');
-    if (updates.title) updateData.title = helpers.checkString(updates.title, 'title');
-    if (updates.body) updateData.body = helpers.checkString(updates.body, 'body');
+    if (!Number.isInteger(updates.rating)) {
+        throw new Error("Rating must be an integer.");
+    }
+    updateData.rating = updates.rating;
+
+    if (updates.title) updateData.title = validation.checkString(updates.title, 'title');
+    if (updates.body) updateData.body = validation.checkString(updates.body, 'body');
     if (updates.images) updateData.images = updates.images; // Assuming images are an array of strings
 
     updateData.updatedAt = new Date(); // Update the updatedAt timestamp
