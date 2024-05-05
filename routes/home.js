@@ -1,5 +1,5 @@
 import express from 'express';
-import { getAllHousings } from '../data/housing.js'; 
+import { getAllHousings } from '../data/housing.js';
 import { getHousingSearchResults } from '../data/home.js';
 import validation from '../helpers.js';
 import xss from 'xss';
@@ -76,8 +76,15 @@ router.route('/search')
             const filters = {};
 
             if (searchType) filters.homeType = searchType;
-            if (!isNaN(rentalCostMin) && rentalCostMin > 0) filters.rentalCostMin = rentalCostMin;
-            if (!isNaN(rentalCostMax) && rentalCostMax < Infinity) filters.rentalCostMax = rentalCostMax;
+            if (!isNaN(rentalCostMin) && rentalCostMin > 0 || !isNaN(rentalCostMax) && rentalCostMax < Infinity) {
+                filters.rentalCost = {};
+                if (!isNaN(rentalCostMin) && rentalCostMin > 0) {
+                    filters.rentalCost.$gte = rentalCostMin;
+                }
+                if (!isNaN(rentalCostMax) && rentalCostMax < Infinity) {
+                    filters.rentalCost.$lte = rentalCostMax;
+                }
+            }
             if (amenities) filters.amenities = { $regex: new RegExp(amenities, 'i') };
             if (garage === 'true') filters.garage = true;
             if (garage === 'false') filters.garage = false;
