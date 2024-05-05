@@ -29,11 +29,10 @@
                     <label for="rentalCostMin">Min Rental Cost:</label>
                     <input type="number" id="rentalCostMin" name="rentalCostMin" placeholder="Min Price ($)">
 
-                    <label for="rentalCostMax">Max Rental Cost:</label>
+                    <label for ="rentalCostMax">Max Rental Cost:</label>
+                    <input type="number" id="rentalCostMax" name="rentalCostMax" placeholder="Max Price ($)">
 
-                    <input type="number" id ="rentalCostMax" name="rentalCostMax" placeholder="Max Price ($)">
-
-                    <label for "amenities">Amenities (comma-separated):</label>
+                    <label for ="amenities">Amenities (comma-separated):</label>
                     <input type="text" id="amenities" name="amenities" placeholder="e.g., Pool, Gym">
 
                     <label for="garage">Garage:</label>
@@ -49,20 +48,29 @@
                     </select>
                 </div>
             </div>
-            <div id="errorContainer" class="error-messages"></div>
+            <div id="errorContainer" class="error-messages">
+                {{#if noResultsMessage}}
+                    <p class="p-content">{{noResultsMessage}}</p>
+                {{/if}}
+            </div>
         </form>
     </div>
 
     {{#if searchPerformed}}
-        {{#if searchResults}}
+        {{#if searchResults.length}}
             <div class="search-results">
                 <h3>Searched Results for "{{searchTerm}}":</h3>
                 {{#each searchResults}}
                     <div class="search-result-item">
                         <div class="housing-info">
-                            <h4>{{this.name}}</h4>
-                            <p>{{this.description}}</p>
-                            <p>Type: {{this.type}}, Price Range: ${{this.rentalCostMin}} - ${{this.rentalCostMax}}</p>
+                            <h4>{{this.address}}</h4>
+                            <p>Location: {{this.city}}, {{this.state}}, Zip: {{this.zipCode}}</p>
+                            <p>Type: {{this.homeType}}, Price Range: ${{this.rentalCostMin}} - ${{this.rentalCostMax}}</p>
+                            {{#if this.amenities.length}}
+                                <p>Amenities: {{#each this.amenities}}{{this}}{{#unless @last}}, {{/unless}}{{/each}}</p>
+                            {{else}}
+                                <p>Amenities: None</p>
+                            {{/if}}
                         </div>
                     </div>
                 {{/each}}
