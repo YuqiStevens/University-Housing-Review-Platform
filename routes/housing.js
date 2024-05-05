@@ -201,17 +201,23 @@ router.get('/edit/:id', async (req, res) => {
         housing.selectedTownhome = housing.homeType === "Townhome";
         housing.selectedAllowed = housing.petPolicy === "Allowed";
         housing.selectedNotAllowed = housing.petPolicy === "Not Allowed";
+        housing.id = housing._id;
+        console.log(housing);
 
-        res.render('editHousing', { title: "Edit Housing"});
+        res.render('editHousing', {
+            title: "Edit Housing",
+            housing: housing
+        });
     } catch (error) {
         console.error('Error rendering edit housing page:', error);
         res.status(500).send('Internal Server Error');
     }
 });
 
-router.post('/edit/:id', async (req, res) => {
+router.post('/edit/:id', upload.array('images'),async (req, res) => {
     try {
         // Ensure user is authorized to perform edit operations
+        console.log('req.body', req.body);
         if (!req.session.user || req.session.user.role !== 'admin') {
             res.status(403).render('error', { title: "Forbidden", error: "You are not authorized to edit housing" });
             return;
@@ -249,7 +255,7 @@ router.post('/edit/:id', async (req, res) => {
         const longitude = xss(req.body.longitude);
 
         // Image handling
-        const images = req.files.map(file => file.filename);  
+        const images = req.files.map(file => file.filename);
 
         // Validations
         helpers.checkString(address, 'Address');
@@ -274,21 +280,19 @@ router.post('/edit/:id', async (req, res) => {
             city,
             state,
             homeType,
-            rentalCost: {
-                min: parseInt(rentalCostMin, 10),
-                max: parseInt(rentalCostMax, 10)
-            },
+            rentalCostMin: parseInt(rentalCostMin, 10),
+            rentalCostMax: parseInt(rentalCostMax, 10),
             studios: parseInt(studios, 10),
-            '1beds': parseInt(oneBed, 10),
-            '2beds': parseInt(twoBed, 10),
-            '3beds': parseInt(threeBed, 10),
-            '4beds': parseInt(fourBed, 10),
+            oneBed: parseInt(oneBed, 10),
+            twoBed: parseInt(twoBed, 10),
+            threeBed: parseInt(threeBed, 10),
+            fourBed: parseInt(fourBed, 10),
             amenities: amenitiesArray,
             petPolicy,
             garage: garage === 'on',
             location: {
-                latitude: parseFloat(latitude),
-                longitude: parseFloat(longitude)
+                latitude,
+                longitude
             },
             images
         };
