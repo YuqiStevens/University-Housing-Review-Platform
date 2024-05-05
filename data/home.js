@@ -22,24 +22,21 @@ export async function getHousingSearchResults(searchTerm, filters = {}) {
         query.homeType = filters.homeType;
     }
     if (filters.rentalCostMin !== undefined) {
-        query.rentalCostMin = { $gte: filters.rentalCostMin };
+        query.rentalCostMin = { $gte: Number(filters.rentalCostMin) };
     }
     if (filters.rentalCostMax !== undefined) {
-        query.rentalCostMax = { ...query.rentalCostMin, $lte: filters.rentalCostMax };
+        query.rentalCostMax = { $lte: Number(filters.rentalCostMax) };
     }
     if (filters.garage !== undefined) {
-        query.garage = filters.garage;
+        query.garage = filters.garage === 'true';
     }
     if (filters.petPolicy) {
         query.petPolicy = filters.petPolicy;
     }
 
-    console.log("Query:", query);
+    console.log("Final Query:", JSON.stringify(query, null, 2));
 
-    const matchedHousings = await housingsCollection
-        .find(query)
-        .limit(20)
-        .toArray();
+    const matchedHousings = await housingsCollection.find(query).limit(20).toArray();
 
     console.log("Matched Housings:", matchedHousings);
 
