@@ -1,5 +1,5 @@
 import express from 'express';
-import {addReview, updateReview, updateReviewHelpfulCount, updateAverageRating} from '../data/reviewsForHousing.js';
+import {addReview, updateReview, updateReviewHelpfulCount, updateAverageRating, getReviewById} from '../data/reviewsForHousing.js';
 import {getHousingById, addReviewIdToHousing} from '../data/housing.js';
 const router = express.Router();
 import helpers from '../helpers.js';
