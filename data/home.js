@@ -1,7 +1,7 @@
 import { housing_collection } from "../config/mongoCollections.js";
 import helpers from "../helpers.js";
 
-export async function getHousingSearchResults(searchTerm, filters) {
+export async function getHousingSearchResults(searchTerm, filters = {}) {
     searchTerm = helpers.checkSearchValid(searchTerm);
 
     const housingsCollection = await housing_collection();
@@ -14,16 +14,34 @@ export async function getHousingSearchResults(searchTerm, filters) {
             { city: regex },
             { state: regex },
             { zipCode: regex },
-            { homeType: regex },
             { amenities: regex }
-        ],
-        ...filters
+        ]
     };
+
+    if (filters.homeType) {
+        query.homeType = filters.homeType;
+    }
+    if (filters.rentalCostMin !== undefined) {
+        query.rentalCostMin = { $gte: filters.rentalCostMin };
+    }
+    if (filters.rentalCostMax !== undefined) {
+        query.rentalCostMax = { ...query.rentalCostMin, $lte: filters.rentalCostMax };
+    }
+    if (filters.garage !== undefined) {
+        query.garage = filters.garage;
+    }
+    if (filters.petPolicy) {
+        query.petPolicy = filters.petPolicy;
+    }
+
+    console.log("Query:", query);
 
     const matchedHousings = await housingsCollection
         .find(query)
         .limit(20)
         .toArray();
+
+    console.log("Matched Housings:", matchedHousings);
 
     // Format the results
     const formattedHousings = matchedHousings.map(housing => ({
@@ -36,16 +54,10 @@ export async function getHousingSearchResults(searchTerm, filters) {
         homeType: housing.homeType,
         rentalCostMin: housing.rentalCostMin,
         rentalCostMax: housing.rentalCostMax,
-        amenities: housing.amenities,
+        amenities: Array.isArray(housing.amenities) ? housing.amenities : [housing.amenities],
         photo_id: housing.photo_id || '',
         isHousing: true
     }));
 
     return formattedHousings;
 }
-
-
-
-
-
-
