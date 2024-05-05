@@ -6,6 +6,8 @@ import { addHousing, getHousingById, updateHousing, getAllHousings } from '../da
 import helpers from '../helpers.js';
 import validator from 'validator';
 import xss from 'xss';
+import { get } from 'http';
+import { getAllReviewsByHouseId } from '../data/reviewsForHousing.js';
 
 const router = express.Router();
 
@@ -157,12 +159,16 @@ router.get('/:id', async (req, res) => {
         }
 
         const isAdmin = req.session.user && req.session.user.role === 'admin';
+        let reviews;
+        reviews = await getAllReviewsByHouseId(housingId); 
 
         const cleanAddress = xss(housing.address);
+        //  use the
 
         res.render('housing', {
             title: `Details of ${cleanAddress}`,  
             housing: housing,
+            reviews: reviews,
             isAdmin: isAdmin
         });
     } catch (error) {

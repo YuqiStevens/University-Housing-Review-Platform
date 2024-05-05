@@ -58,6 +58,9 @@ router.post('/add/:housingId', async (req, res) => {
     const userId = req.session.user.id;
     const imageUrls = images.split(',').map(url => xss(url.trim()));
 
+    
+    const firstName = req.session.user.firstName;
+    const lastName = req.session.user.lastName;
     const review = {
         houseId: housingId,
         userId: userId,
@@ -66,7 +69,9 @@ router.post('/add/:housingId', async (req, res) => {
         body: body,
         images: imageUrls,
         helpfulCounts : 0,
-        comments : []
+        comments : [],
+        firstName : firstName,
+        lastName : lastName
     };
 
     try {

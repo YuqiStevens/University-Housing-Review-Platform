@@ -7,12 +7,12 @@ import {review_collection} from '../config/mongoCollections.js';
 const getAllReviewsByHouseId = async (house_id) => {
     house_id = validation.checkId(house_id, 'house_id');  // Validate house ID
 
-    const reviewsCollection = await reviews();  // Assuming reviews() returns the reviews collection
+    const reviewsCollection = await review_collection();  // Assuming reviews() returns the reviews collection
     const reviews = await reviewsCollection.find({houseId: new ObjectId(house_id)}).toArray();
 
-    if (reviews.length === 0) {
-        throw new Error(`No reviews found for house with id ${house_id}`);
-    }
+    // if (reviews.length === 0) {
+    //     throw new Error(`No reviews found for house with id ${house_id}`);
+    // }
 
     return reviews;  // Return the list of reviews
 };
