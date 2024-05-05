@@ -91,6 +91,8 @@ const removeHousing = async (id) => {
     return deletionInfo;
 };
 
+
+
 const updateHousing = async (housingId, updatedHousing) => {
     console.log("Starting updateHousing with housingId:", housingId);
     console.log("Starting updateHousing with updatedHousing:", updatedHousing);
@@ -126,21 +128,21 @@ const updateHousing = async (housingId, updatedHousing) => {
         zipCode: xss(updatedHousing.zipCode).trim(),
         homeType: xss(updatedHousing.homeType).trim(),
         amenities: amenities,
-        rentalCostMin: parseInt(updatedHousing.rentalCostMin, 10),
-        rentalCostMax: parseInt(updatedHousing.rentalCostMax, 10),
-        studios: parseInt(updatedHousing.studios, 10),
-        beds1: parseInt(updatedHousing.oneBed, 10),
-        beds2: parseInt(updatedHousing.towBed, 10),
-        beds3: parseInt(updatedHousing.threeBed, 10),
-        beds4: parseInt(updatedHousing.fourBed, 10),
+        rentalCostMin: parseInt(updatedHousing.rentalCostMin, 10) || 0,
+        rentalCostMax: parseInt(updatedHousing.rentalCostMax, 10) || 0,
+        studios: parseInt(updatedHousing.studios, 10) || 0,
+        beds1: parseInt(updatedHousing.oneBed, 10) || 0,
+        beds2: parseInt(updatedHousing.twoBed, 10) || 0,
+        beds3: parseInt(updatedHousing.threeBed, 10) || 0,
+        beds4: parseInt(updatedHousing.fourBed, 10) || 0,
         petPolicy: xss(updatedHousing.petPolicy).trim(),
         garage: Boolean(updatedHousing.garage),
         images: images,
         location: {
-            latitude: parseFloat(updatedHousing.location.latitude),
-            longitude: parseFloat(updatedHousing.location.longitude)
+            latitude: parseFloat(updatedHousing.location.latitude) || 0.0,
+            longitude: parseFloat(updatedHousing.location.longitude) || 0.0
         },
-        rating: parseFloat(updatedHousing.rating)
+        rating: parseFloat(updatedHousing.rating) || 0.0
     };
 
     console.log("Prepared updated housing data:", updatedHousingData);
@@ -167,6 +169,10 @@ const updateHousing = async (housingId, updatedHousing) => {
 
     return housingId;
 };
+
+
+
+
 
 const addReviewIdToHousing = async (housingId, reviewId) => {
     // Validate the housingId and reviewId

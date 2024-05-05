@@ -1,7 +1,6 @@
 import express from 'express';
-import {addReview, updateReview, updateReviewHelpfulCount} from '../data/reviewsForHousing.js';
+import {addReview, updateReview, updateReviewHelpfulCount, updateAverageRating} from '../data/reviewsForHousing.js';
 import {getHousingById, addReviewIdToHousing} from '../data/housing.js';
-
 const router = express.Router();
 import helpers from '../helpers.js';
 import xss from 'xss';
@@ -78,6 +77,7 @@ router.post('/add/:housingId', async (req, res) => {
     try {
         const newReview = await addReview(review);
         await addReviewIdToHousing(housingId, newReview._id.toString());
+        await updateAverageRating(housingId); // Update average rating after adding a review
         res.redirect(`/housing/${housingId}`);
     } catch (error) {
         console.error('Error adding review:', error);

@@ -1,105 +1,107 @@
-<section aria-labelledby="add-housing-header">
-    <h1 id="add-housing-header" class="h1-content">Add New Housing</h1>
-    <p class="p-content">Fill out the form below to add a new housing listing to the platform.</p>
+<section aria-labelledby="edit-housing-header">
+    <nav>
+        <a href="/housing/{{housing.id}}">Back to Housing Details</a>
+    </nav>
+    <h1 id="edit-housing-header" class="h1-content">Edit Housing: {{housing.address}}</h1>
 
-    <form action="/housing/add" method="post" class="add-housing-form" enctype="multipart/form-data">
+    <form action="/housing/edit/{{housing.id}}" method="post">
         <div class="form-group">
             <label for="address">Address:</label>
-            <input type="text" id="address" name="address" placeholder="Enter full address" required>
+            <input type="text" id="address" name="address" value="{{housing.address}}" required>
         </div>
 
         <div class="form-group">
             <label for="zipCode">Zip Code:</label>
-            <input type="text" id="zipCode" name="zipCode" placeholder="Enter zip code" required>
+            <input type="text" id="zipCode" name="zipCode" value="{{housing.zipCode}}" required>
         </div>
 
         <div class="form-group">
             <label for="city">City:</label>
-            <input type="text" id="city" name="city" placeholder="Enter city" required>
+            <input type="text" id="city" name="city" value="{{housing.city}}" required>
         </div>
 
         <div class="form-group">
             <label for="state">State:</label>
-            <input type="text" id="state" name="state" placeholder="Enter state" required>
+            <input type="text" id="state" name="state" value="{{housing.state}}" required>
         </div>
 
         <div class="form-group">
             <label for="homeType">Home Type:</label>
             <select id="homeType" name="homeType">
-                <option value="Apartment">Apartment</option>
-                <option value="House">House</option>
-                <option value="Townhome">Townhome</option>
+                <option value="Apartment" {{#if housing.selectedApartment}}selected{{/if}}>Apartment</option>
+                <option value="House" {{#if housing.selectedHouse}}selected{{/if}}>House</option>
+                <option value="Townhome" {{#if housing.selectedTownhome}}selected{{/if}}>Townhome</option>
             </select>
         </div>
 
         <div class="form-group">
             <label for="rentalCostMin">Minimum Rental Cost:</label>
-            <input type="number" id="rentalCostMin" name="rentalCostMin" placeholder="Enter minimum monthly rent" required>
+            <input type="number" id="rentalCostMin" name="rentalCostMin" value="{{housing.rentalCostMin}}" required>
         </div>
 
         <div class="form-group">
             <label for="rentalCostMax">Maximum Rental Cost:</label>
-            <input type="number" id="rentalCostMax" name="rentalCostMax" placeholder="Enter maximum monthly rent" required>
+            <input type="number" id="rentalCostMax" name="rentalCostMax" value="{{housing.rentalCostMax}}" required>
         </div>
 
         <div class="form-group">
             <label for="studios">Number of Studios:</label>
-            <input type="number" id="studios" name="studios" placeholder="Enter number of studios">
+            <input type="number" id="studios" name="studios" value="{{housing.studios}}">
         </div>
 
         <div class="form-group">
             <label for="1beds">Number of 1 Bedroom Units:</label>
-            <input type="number" id="1beds" name="1beds" placeholder="Enter number of 1 bedroom units">
+            <input type="number" id="1beds" name="1beds" value="{{housing.[1beds]}}">
         </div>
 
         <div class="form-group">
             <label for="2beds">Number of 2 Bedroom Units:</label>
-            <input type="number" id="2beds" name="2beds" placeholder="Enter number of 2 bedroom units">
+            <input type="number" id="2beds" name="2beds" value="{{housing.[2beds]}}">
         </div>
 
         <div class="form-group">
             <label for="3beds">Number of 3 Bedroom Units:</label>
-            <input type="number" id="3beds" name="3beds" placeholder="Enter number of 3 bedroom units">
+            <input type "number" id="3beds" name "3beds" value="{{housing.[3beds]}}">
+        </div>
+
+        <div "form-group">
+            <label for "4beds">Number of 4 Bedroom Units:</label>
+            <input type "number" id "4beds" name "4beds" value "{{housing.[4beds]}}">
         </div>
 
         <div class="form-group">
-            <label for="4beds">Number of 4 Bedroom Units:</label>
-            <input type="number" id="4beds" name="4beds" placeholder="Enter number of 4 bedroom units">
+            <label for "amenities">Amenities (comma-separated):</label>
+            <input type="text" id="amenities" name="amenities" value="{{housing.amenities}}">
         </div>
 
-        <div class="form-group">
-            <label for="amenities">Amenities (comma-separated):</label>
-            <input type="text" id="amenities" name="amenities" placeholder="e.g., Pool, Gym, WiFi">
-        </div>
-
-        <div class="form-group">
+        <div "form-group">
             <label for="petPolicy">Pet Policy:</label>
-            <select id="petPolicy" name="petPolicy">
-                <option value="Allowed">Allowed</option>
-                <option value="Not Allowed">Not Allowed</option>
+            <select id="petPolicy" name "petPolicy">
+                <option value="Allowed" {{#if housing.selectedAllowed}}selected{{/if}}>Allowed</option>
+                <option value="Not Allowed" {{#if housing.selectedNotAllowed}}selected{{/if}}>Not Allowed</option>
             </select>
         </div>
 
-        <div class="form-group">
-            <label for="garage">Garage Available:</label>
-            <input type="checkbox" id="garage" name="garage">
+        <div "form-group">
+            <label for "garage">Garage:</label>
+            <input type="checkbox" id="garage" name "garage" {{#if housing.garage}}checked{{/if}}>
         </div>
 
         <div class="form-group">
             <label for="latitude">Latitude:</label>
-            <input type="text" id="latitude" name="latitude" placeholder="Enter latitude">
+            <input type="text" id="latitude" name "latitude" value="{{housing.latitude}}">
         </div>
 
         <div class="form-group">
             <label for="longitude">Longitude:</label>
-            <input type="text" id="longitude" name="longitude" placeholder="Enter longitude">
+            <input type="text" id "longitude" name="longitude" value="{{housing.longitude}}">
         </div>
 
         <div class="form-group">
             <label for="images">Image URLs (comma-separated):</label>
-            <input type="text" id="images" name="images" placeholder="Enter image URLs">
+            <input type "text" id="images" name="images" value="{{housing.images}}">
         </div>
 
-        <button type="submit" class="btn btn-primary">Add Housing</button>
+        <button type="submit" class="btn btn-primary">Update Housing</button>
     </form>
 </section>

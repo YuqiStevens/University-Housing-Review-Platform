@@ -2,6 +2,7 @@ import {ObjectId} from "mongodb";
 import validation from '../helpers.js';
 import validator from "validator";
 import {review_collection} from '../config/mongoCollections.js';
+import { housing_collection } from "../config/mongoCollections.js";
 
 
 const getAllReviewsByHouseId = async (house_id) => {
@@ -15,6 +16,29 @@ const getAllReviewsByHouseId = async (house_id) => {
     // }
 
     return reviews;  // Return the list of reviews
+};
+
+const updateAverageRating = async (housingId) => {
+    const reviews = await getAllReviewsByHouseId(housingId);
+    if (reviews.length === 0) return; // No reviews to calculate average
+
+    const totalRating = reviews.reduce((acc, review) => acc + review.rating, 0);
+    const averageRating = totalRating / reviews.length;
+
+    await updateHousingRating(housingId, averageRating);
+};
+
+const updateHousingRating = async (housingId, newRating) => {
+    const housingsCollection = await housing_collection(); // Assuming this returns the housing collection
+
+    const updateInfo = await housingsCollection.updateOne(
+        {_id: new ObjectId(housingId)},
+        {$set: {rating: newRating}}
+    );
+
+    if (updateInfo.modifiedCount === 0) {
+        throw new Error("Failed to update the housing rating.");
+    }
 };
 
 
@@ -165,4 +189,5 @@ export {
     removeReviewById,
     updateReview,
     updateReviewHelpfulCount
+    updateAverageRating
 };
