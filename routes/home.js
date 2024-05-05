@@ -1,4 +1,5 @@
 import express from 'express';
+import { getAllHousings } from '../data/housing.js'; 
 import { getHousingSearchResults } from '../data/home.js';
 import validation from '../helpers.js';
 import xss from 'xss';
