@@ -195,8 +195,13 @@ router.get('/edit/:id', async (req, res) => {
         housing.selectedTownhome = housing.homeType === "Townhome";
         housing.selectedAllowed = housing.petPolicy === "Allowed";
         housing.selectedNotAllowed = housing.petPolicy === "Not Allowed";
+        housing.id = housing._id;
+        console.log(housing);
 
-        res.render('editHousing', { title: "Edit Housing"});
+        res.render('editHousing', {
+            title: "Edit Housing",
+            housing: housing
+        });
     } catch (error) {
         console.error('Error rendering edit housing page:', error);
         res.status(500).send('Internal Server Error');
@@ -206,6 +211,7 @@ router.get('/edit/:id', async (req, res) => {
 router.post('/edit/:id', async (req, res) => {
     try {
         // Ensure user is authorized to perform edit operations
+        console.log('req.body', req.body);
         if (!req.session.user || req.session.user.role !== 'admin') {
             res.status(403).render('error', { title: "Forbidden", error: "You are not authorized to edit housing" });
             return;
@@ -243,7 +249,7 @@ router.post('/edit/:id', async (req, res) => {
         const longitude = xss(req.body.longitude);
 
         // Image handling
-        const images = req.files.map(file => file.filename);  
+        const images = req.files.map(file => file.filename);
 
         // Validations
         helpers.checkString(address, 'Address');
