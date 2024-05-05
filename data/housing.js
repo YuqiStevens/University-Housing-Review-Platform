@@ -3,6 +3,7 @@ import { ObjectId } from "mongodb";
 import { getUserById } from "./users.js";
 import xss from "xss";
 import helpers from "../helpers.js";
+import validation from '../helpers.js';
 
 const getAllHousings = async () => {
     const housingsCollection = await housing_collection();
@@ -168,12 +169,36 @@ const updateHousing = async (housingId, updatedHousing) => {
     return housingId;
 };
 
+const addReviewIdToHousing = async (housingId, reviewId) => {
+    // Validate the housingId and reviewId
+    housingId = validation.checkId(housingId, 'housing_id');
+    reviewId = validation.checkId(reviewId, 'review_id');
 
+    const housingCollection = await housing_collection();  // Assuming housing_collection() returns the housing collection
+
+    // Update the housing document to add the reviewId to the reviewIds array
+    const updateResult = await housingCollection.updateOne(
+        { _id: new ObjectId(housingId) },
+        { $addToSet: { reviewIds: new ObjectId(reviewId) } }  // Use $addToSet to prevent duplicates
+    );
+
+    // Check if the update was successful
+    if (updateResult.matchedCount === 0) {
+        throw new Error('No housing found with the provided ID.');
+    }
+    if (updateResult.modifiedCount === 0) {
+        throw new Error('Review ID already exists in the housing document or update failed.');
+    }
+
+    // Return a message or the update result
+    return updateResult;
+};
 
 export {
     getAllHousings,
     getHousingById,
     addHousing,
     removeHousing,
-    updateHousing
+    updateHousing,
+    addReviewIdToHousing
 };
