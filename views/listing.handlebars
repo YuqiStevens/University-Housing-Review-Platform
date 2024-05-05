@@ -18,12 +18,13 @@
             <ul class="housing-list">
                 {{#each housings}}
                     <li class="housing-item">
-                    
                         <a href="/housing/{{this._id}}" class="housing-link">
-
                             <div class="housing-info">
                                 <h2>{{this.address}}</h2>
                                 <p class="housing-location">{{this.city}}, {{this.state}} {{this.zipCode}}</p>
+                                {{#if this.images}}
+                                    <img src="{{this.images.[0]}}" alt="Housing Image" class="housing-image">
+                                {{/if}}
                                 <p class="housing-rating">Rating: {{this.rating}} / 5</p>
                             </div>
                         </a>
@@ -35,5 +36,5 @@
         {{/if}}
     {{else}}
         <p class="p-content">No listings found. Try broadening your search criteria or check back later for new listings.</p>
-    {{/if}}
-</section>
+        {{/if}}
+    </section>

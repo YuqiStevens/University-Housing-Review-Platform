@@ -2,6 +2,7 @@ import {ObjectId} from "mongodb";
 import validation from '../helpers.js';
 import validator from "validator";
 import {review_collection} from '../config/mongoCollections.js';
+import { housing_collection } from "../config/mongoCollections.js";
 
 
 const getAllReviewsByHouseId = async (house_id) => {
@@ -15,6 +16,29 @@ const getAllReviewsByHouseId = async (house_id) => {
     // }
 
     return reviews;  // Return the list of reviews
+};
+
+const updateAverageRating = async (housingId) => {
+    const reviews = await getAllReviewsByHouseId(housingId);
+    if (reviews.length === 0) return; // No reviews to calculate average
+
+    const totalRating = reviews.reduce((acc, review) => acc + review.rating, 0);
+    const averageRating = totalRating / reviews.length;
+
+    await updateHousingRating(housingId, averageRating);
+};
+
+const updateHousingRating = async (housingId, newRating) => {
+    const housingsCollection = await housing_collection(); // Assuming this returns the housing collection
+
+    const updateInfo = await housingsCollection.updateOne(
+        {_id: new ObjectId(housingId)},
+        {$set: {rating: newRating}}
+    );
+
+    if (updateInfo.modifiedCount === 0) {
+        throw new Error("Failed to update the housing rating.");
+    }
 };
 
 
@@ -132,6 +156,31 @@ const updateReview = async (review_id, updates) => {
     return {success: true, message: 'Review successfully updated.'};
 };
 
+const updateReviewHelpfulCount = async (review_id) => {
+    review_id = validation.checkId(review_id, 'review_id');
+    const reviewsCollection = await review_collection();
+
+    // Increment the helpfulCounts field
+    const updateResult = await reviewsCollection.updateOne(
+        { _id: new ObjectId(review_id) },
+        { $inc: { helpfulCounts: 1 } }  // Use $inc to increment helpfulCounts by 1
+    );
+
+    if (!updateResult.matchedCount) {
+        console.log("No review found with ID:", review_id);
+        return null;
+    }
+
+    if (!updateResult.modifiedCount) {
+        console.log("The helpful count was not updated.");
+        return null;
+    }
+
+    // Return the new helpful count
+    const updatedReview = await reviewsCollection.findOne({ _id: new ObjectId(review_id) });
+    return updatedReview;
+};
+
 export {
     getAllReviewsByUserId,
     getAllReviewsByHouseId,
@@ -139,4 +188,6 @@ export {
     addReview,
     removeReviewById,
     updateReview,
+    updateReviewHelpfulCount,
+    updateAverageRating
 };

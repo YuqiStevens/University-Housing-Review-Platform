@@ -48,7 +48,7 @@
                         {{/each}}
                     {{/if}}
                 </div>
-                <button onclick="markReviewHelpful('{{_id}}')" class="helpful-button">
+                <button class="helpful-button" data-review-id="{{_id}}">
                     <img src="/public/HelpfulIcon.png" alt="Helpful">
                     Helpful (<span id="helpful-count-{{_id}}">{{helpfulCounts}}</span>)
                 </button>
@@ -75,21 +75,10 @@
     <a href="/reviews/addReview/{{housing._id}}" class="btn btn-primary">Add Review</a>
 </section>
 
-<script>
-    function markReviewHelpful(reviewId) {
-        // AJAX call to backend to increment the helpful count and update the list of users who found the review helpful
-        $.ajax({
-            url: '/review/' + reviewId + '/helpful',
-            type: 'POST',
-            success: function(response) {
-                // Update the count on the button directly without reloading
-                document.querySelector('button[onclick="markReviewHelpful(\'' + reviewId + '\')"]').innerHTML =
-                        '<img src="/public/Icon.png" alt="Helpful"> Helpful (' + response.helpfulCounts + ')';
-            },
-            error: function(error) {
-                console.error('Error updating helpful count:', error);
-            }
-        });
-    }
-
-</script>
+<script src="https://code.jquery.com/jquery-2.2.4.min.js"
+        integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44="
+        crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"
+        integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS"
+        crossorigin="anonymous"></script>
+<script src="/public/js/review_helpful_ajax.js"></script>

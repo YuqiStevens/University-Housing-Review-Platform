@@ -1,6 +1,6 @@
 import express from 'express';
-import {addReview, updateReview} from '../data/reviewsForHousing.js';
-import { getHousingById,addReviewIdToHousing } from '../data/housing.js';
+import {addReview, updateReview, updateReviewHelpfulCount, updateAverageRating} from '../data/reviewsForHousing.js';
+import {getHousingById, addReviewIdToHousing} from '../data/housing.js';
 const router = express.Router();
 import helpers from '../helpers.js';
 import xss from 'xss';
@@ -58,7 +58,7 @@ router.post('/add/:housingId', async (req, res) => {
     const userId = req.session.user.id;
     const imageUrls = images.split(',').map(url => xss(url.trim()));
 
-    
+
     const firstName = req.session.user.firstName;
     const lastName = req.session.user.lastName;
     const review = {
@@ -68,15 +68,16 @@ router.post('/add/:housingId', async (req, res) => {
         rating: cleanRating,
         body: body,
         images: imageUrls,
-        helpfulCounts : 0,
-        comments : [],
-        firstName : firstName,
-        lastName : lastName
+        helpfulCounts: 0,
+        comments: [],
+        firstName: firstName,
+        lastName: lastName
     };
 
     try {
         const newReview = await addReview(review);
         await addReviewIdToHousing(housingId, newReview._id.toString());
+        await updateAverageRating(housingId); // Update average rating after adding a review
         res.redirect(`/housing/${housingId}`);
     } catch (error) {
         console.error('Error adding review:', error);
@@ -147,18 +148,43 @@ router.post('/delete/:reviewId', async (req, res) => {
 router.get('/addReview/:housingId', async (req, res) => {
     try {
         if (!req.session.user) {
-            res.status(403).render('error', { title: "Forbidden", error: "You are not authorized to add reviews" });
+            res.status(403).render('error', {title: "Forbidden", error: "You are not authorized to add reviews"});
             return;
         }
-        
+
         const housingId = req.params.housingId;
         const house = await getHousingById(housingId);
-        res.render('addReview', { title: "Add Reviews" ,
-                                housing : house         });
+        res.render('addReview', {
+            title: "Add Reviews",
+            housing: house
+        });
     } catch (error) {
         console.error('Error rendering add reviews page:', error);
         res.status(500).send('Internal Server Error');
     }
 });
+
+router.post('/helpful/:reviewId', async (req, res) => {
+    try {
+        console.log('req.params', req.params);
+        const reviewId = req.params.reviewId;
+        console.log('req.params.reviewId', reviewId);
+
+        if (!helpers.checkId(reviewId, 'Review ID')) {
+            return res.status(400).send('Invalid Review ID');
+        }
+
+        const updatedReview = await updateReviewHelpfulCount(reviewId);
+        if (!updatedReview) {
+            return res.status(404).send('Review not found or update failed');
+        }
+
+        res.json({ helpfulCounts: updatedReview.helpfulCounts });
+    } catch (error) {
+        console.error('Failed to mark review as helpful:', error);
+        res.status(500).send('Internal Server Error');
+    }
+});
+
 
 export default router;
