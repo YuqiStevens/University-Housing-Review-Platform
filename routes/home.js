@@ -72,7 +72,6 @@ router.route('/search')
             let garage = xss(req.body.garage || '');
             let petPolicy = xss(req.body.petPolicy || '');
 
-            // Construct filters object
             const filters = {};
 
             if (searchType) filters.homeType = searchType;
@@ -92,7 +91,6 @@ router.route('/search')
 
             console.log("Filters:", filters);
 
-            // Validate search term
             try {
                 searchTerm = validation.checkSearchValid(searchTerm);
             } catch (e) {
@@ -119,7 +117,7 @@ router.route('/search')
                 noResultsMessage: noResultsMessage,
                 searchTerm: searchTerm,
                 isAdmin: isAdmin,
-                searchPerformed: true // indicate that a search was performed
+                searchPerformed: true
             });
 
         } catch (e) {

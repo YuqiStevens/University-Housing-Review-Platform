@@ -10,27 +10,25 @@ const getAllCommentsByReviewId = async (review_id) => {
     review_id = xss(review_id);
     review_id = helpers.checkId(review_id, 'review_id');
     const commentsCollection = await comments();
-    // Query to find all comments for a given review_id
     const comments = await commentsCollection.find({ review_id: new ObjectId(review_id) }).toArray();
 
     if (!comments || comments.length === 0) {
         throw new Error(`No comments found for review with id ${review_id}`);
     }
-    return comments;  // Return the array of comments
+    return comments;
 };
 
 const getAllCommentsByUserId = async (user_id) => {
     user_id = xss(user_id);
     user_id = helpers.checkId(user_id, "user_id");
-    const commentsCollection = await comments(); // Assuming comments() returns the comments collection
+    const commentsCollection = await comments();
 
-    // Query to find all comments made by the specific user
     const comments = await commentsCollection.find({ userId: new ObjectId(user_id) }).toArray();
 
     if (!comments || comments.length === 0) {
         throw new Error(`No comments found for user with id ${user_id}`);
     }
-    return comments; // Return the array of comments
+    return comments;
 };
 
 const addComment = async (comment) => {
@@ -42,13 +40,11 @@ const addComment = async (comment) => {
 
     const commentsCollection = await comment_collection();
 
-    // Ensure the user exists (assuming a getUserById function)
     const user = await usersFunctions.getUserById(user_id);
     if (!user) {
         throw new Error(`User with id ${user_id} does not exist.`);
     }
 
-    // Ensure the review exists (assuming a getReviewById function)
     const review = await reviewsFunctions.getReviewById(review_id);
     if (!review) {
         throw new Error(`Review with id ${review_id} does not exist.`);
@@ -68,12 +64,12 @@ const addComment = async (comment) => {
         throw new Error('Failed to add the comment.');
     }
 
-    return newComment; // Return the newly created comment object
+    return newComment;
 };
 
 const removeComment = async (comment_id) => {
-    comment_id = helpers.checkId(comment_id, 'comment_id'); // Validate the comment ID
-    const commentsCollection = await comment_collection(); // Assuming comments() returns the comments collection
+    comment_id = helpers.checkId(comment_id, 'comment_id');
+    const commentsCollection = await comment_collection();
 
     const deleteResult = await commentsCollection.deleteOne({ _id: new ObjectId(comment_id) });
     if (deleteResult.deletedCount === 0) {
@@ -84,12 +80,11 @@ const removeComment = async (comment_id) => {
 };
 
 const updateComment = async (comment_id, content) => {
-    comment_id = helpers.checkId(comment_id, 'comment_id'); // Validate comment ID
-    content = helpers.checkString(content, 'content'); // Validate content
+    comment_id = helpers.checkId(comment_id, 'comment_id');
+    content = helpers.checkString(content, 'content');
 
-    const commentsCollection = await comment_collection(); // Assuming comments() returns the comments collection
+    const commentsCollection = await comment_collection();
 
-    // Update the comment in the database
     const updateResult = await commentsCollection.updateOne(
         { _id: new ObjectId(comment_id) },
         { $set: { comment: content } }
@@ -103,33 +98,29 @@ const updateComment = async (comment_id, content) => {
 };
 
 const getCommentById = async (comment_id) => {
-    comment_id = helpers.checkId(comment_id, 'comment_id'); // Validate the comment ID
+    comment_id = helpers.checkId(comment_id, 'comment_id');
 
-    const commentsCollection = await comment_collection(); // Assuming comments() returns the comments collection
+    const commentsCollection = await comment_collection();
 
-    // Fetch the comment from the database
     const comment = await commentsCollection.findOne({ _id: new ObjectId(comment_id) });
 
     if (!comment) {
         throw new Error(`No comment found with id ${comment_id}`);
     }
 
-    return comment; // Return the found comment
+    return comment;
 };
 
 const addCommentToReview = async (reviewId, comment) => {
-    // Validate the reviewId
     reviewId = validation.checkId(reviewId, 'review_id');
 
-    const reviewCollection = await review_collection();  // Assuming reviewCollection() returns the review collection
+    const reviewCollection = await review_collection();
 
-    // Add the comment to the comments array using $push
     const updateResult = await reviewCollection.updateOne(
         { _id: new ObjectId(reviewId) },
         { $push: { comments: comment } }
     );
 
-    // Check if the update was successful
     if (updateResult.matchedCount === 0) {
         throw new Error('No review found with the provided ID.');
     }
@@ -137,24 +128,20 @@ const addCommentToReview = async (reviewId, comment) => {
         throw new Error('Failed to add comment to the review.');
     }
 
-    // Return a message or the update result
     return updateResult;
 };
 
 const removeCommentFromReview = async (reviewId, commentId) => {
-    // Validate the reviewId and commentId
     reviewId = validation.checkId(reviewId, 'review_id');
     commentId = validation.checkId(commentId, 'comment_id');
 
-    const reviewCollection = await review_collection();  // Assuming reviewCollection() returns the review collection
+    const reviewCollection = await review_collection();
 
-    // Remove the comment from the comments array using $pull
     const updateResult = await reviewCollection.updateOne(
         { _id: new ObjectId(reviewId) },
         { $pull: { comments: { _id: new ObjectId(commentId) } } }
     );
 
-    // Check if the update was successful
     if (updateResult.matchedCount === 0) {
         throw new Error('No review found with the provided ID.');
     }
@@ -162,7 +149,6 @@ const removeCommentFromReview = async (reviewId, commentId) => {
         throw new Error('Failed to remove comment from the review.');
     }
 
-    // Return a message or the update result
     return updateResult;
 };
 

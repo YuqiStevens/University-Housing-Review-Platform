@@ -4,23 +4,19 @@ import validator from "validator";
 import {review_collection} from '../config/mongoCollections.js';
 import { housing_collection } from "../config/mongoCollections.js";
 
-
 const getAllReviewsByHouseId = async (house_id) => {
     house_id = validation.checkId(house_id, 'house_id');  // Validate house ID
 
-    const reviewsCollection = await review_collection();  // Assuming reviews() returns the reviews collection
+    const reviewsCollection = await review_collection();
     const reviews = await reviewsCollection.find({houseId: new ObjectId(house_id)}).toArray();
 
-    // if (reviews.length === 0) {
-    //     throw new Error(`No reviews found for house with id ${house_id}`);
-    // }
 
-    return reviews;  // Return the list of reviews
+    return reviews;
 };
 
 const updateAverageRating = async (housingId) => {
     const reviews = await getAllReviewsByHouseId(housingId);
-    if (reviews.length === 0) return; // No reviews to calculate average
+    if (reviews.length === 0) return;
 
     const totalRating = reviews.reduce((acc, review) => acc + review.rating, 0);
     const averageRating = totalRating / reviews.length;
@@ -29,7 +25,7 @@ const updateAverageRating = async (housingId) => {
 };
 
 const updateHousingRating = async (housingId, newRating) => {
-    const housingsCollection = await housing_collection(); // Assuming this returns the housing collection
+    const housingsCollection = await housing_collection();
 
     const updateInfo = await housingsCollection.updateOne(
         {_id: new ObjectId(housingId)},
@@ -42,39 +38,33 @@ const updateHousingRating = async (housingId, newRating) => {
 };
 
 const getAllReviewsByUserId = async (user_id) => {
-  // Validate user ID
   user_id = validation.checkId(user_id, 'user_id');
 
-  // Assuming reviews() returns the reviews collection
   const reviewsCollection = await review_collection();
 
-  // Find reviews where the userId matches the provided user_id
   const res = await reviewsCollection.find({userId: new ObjectId(user_id)}).toArray();
 
-  // Check if any reviews are found
   if (res.length === 0) {
       throw new Error(`No reviews found for user with id ${user_id}`);
   }
 
-  // Return the list of reviews
   return res;
 };
 
 const getReviewById = async (review_id) => {
     review_id = validation.checkId(review_id, 'review_id');  // Validate review ID
 
-    const reviewsCollection = await review_collection();  // Assuming reviews() returns the reviews collection
+    const reviewsCollection = await review_collection();
     const review = await reviewsCollection.findOne({_id: new ObjectId(review_id)});
 
     if (!review) {
         throw new Error(`No review found with id ${review_id}`);
     }
 
-    return review;  // Return the review
+    return review;
 };
 
 const addReview = async (review) => {
-    // Validate each part of the review object
     review.houseId = validation.checkId(review.houseId, 'house_id');
     review.userId = validation.checkId(review.userId, 'user_id');
     if (!Number.isInteger(review.rating)) {
@@ -87,8 +77,6 @@ const addReview = async (review) => {
     review.comments = review.comments || [];
 
     const reviewsCollection = await review_collection();  // Assuming review_collection() returns the reviews collection
-
-    // Create a new review with updated timestamps
     const newReview = {
         ...review,
         houseId: new ObjectId(review.houseId),
@@ -103,13 +91,13 @@ const addReview = async (review) => {
         throw new Error('Failed to add the review.');
     }
 
-    return newReview;  // Return the newly created review object
+    return newReview;
 };
 
 const removeReviewById = async (review_id) => {
     review_id = validation.checkId(review_id, 'review_id');  // Validate review ID
 
-    const reviewsCollection = await review_collection();  // Assuming reviews() returns the reviews collection
+    const reviewsCollection = await review_collection();
     const deleteResult = await reviewsCollection.deleteOne({_id: new ObjectId(review_id)});
 
     if (deleteResult.deletedCount === 0) {
@@ -120,16 +108,14 @@ const removeReviewById = async (review_id) => {
 };
 
 const updateReview = async (review_id, updates) => {
-    review_id = validation.checkId(review_id, 'review_id');  // Validate review ID
+    review_id = validation.checkId(review_id, 'review_id');
 
-    // Ensure there is something to update
     if (Object.keys(updates).length === 0) {
         throw new Error("No updates provided");
     }
 
-    const reviewsCollection = await review_collection();  // Assuming reviews() returns the reviews collection
+    const reviewsCollection = await review_collection();
 
-    // Prepare update object
     const updateData = {};
     if (!Number.isInteger(updates.rating)) {
         throw new Error("Rating must be an integer.");
@@ -138,11 +124,10 @@ const updateReview = async (review_id, updates) => {
 
     if (updates.title) updateData.title = validation.checkString(updates.title, 'title');
     if (updates.body) updateData.body = validation.checkString(updates.body, 'body');
-    if (updates.images) updateData.images = updates.images; // Assuming images are an array of strings
+    if (updates.images) updateData.images = updates.images;
 
-    updateData.updatedAt = new Date(); // Update the updatedAt timestamp
+    updateData.updatedAt = new Date();
 
-    // Perform the update
     const updateResult = await reviewsCollection.updateOne(
         {_id: new ObjectId(review_id)},
         {$set: updateData}
@@ -159,10 +144,9 @@ const updateReviewHelpfulCount = async (review_id) => {
     review_id = validation.checkId(review_id, 'review_id');
     const reviewsCollection = await review_collection();
 
-    // Increment the helpfulCounts field
     const updateResult = await reviewsCollection.updateOne(
         { _id: new ObjectId(review_id) },
-        { $inc: { helpfulCounts: 1 } }  // Use $inc to increment helpfulCounts by 1
+        { $inc: { helpfulCounts: 1 } }
     );
 
     if (!updateResult.matchedCount) {
@@ -175,7 +159,6 @@ const updateReviewHelpfulCount = async (review_id) => {
         return null;
     }
 
-    // Return the new helpful count
     const updatedReview = await reviewsCollection.findOne({ _id: new ObjectId(review_id) });
     return updatedReview;
 };
