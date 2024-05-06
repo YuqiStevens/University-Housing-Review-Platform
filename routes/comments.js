@@ -54,8 +54,6 @@ router.get('/:commentId', async (req, res) => {
             text: xss(comment.text)
         };
 
-        // 假设你有一个对应的模板来显示评论详情
-        // 如果你需要显示评论回复或相关信息，确保模板和数据适配这一需求
         res.render('commentDetail', {
             title: `Comment by ${comment.userId}`,
             comment: cleanComment
