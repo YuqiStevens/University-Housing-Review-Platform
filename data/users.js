@@ -6,6 +6,7 @@ import validation from "../helpers.js"
 import helpers from "../helpers.js";
 import xss from "xss";
 
+
 const getUserById = async (id) => {
     if (!id) throw 'You must provide an id to search for';
     if (typeof id !== 'string') throw 'Id must be a string';
@@ -19,6 +20,7 @@ const getUserById = async (id) => {
     if (!user) throw 'No user with that id';
     return user;
 };
+
 
 const addUser = async (
     firstName,
@@ -86,6 +88,7 @@ const addUser = async (
 }
 
 
+
 const loginUser = async (email, password) => {
     if (!email) throw "Please provide your email address";
     if (!password) throw "Please provide your password";
@@ -110,6 +113,7 @@ const loginUser = async (email, password) => {
 };
 
 
+
 const removeUser = async (id) => {
     const usersCollection = await user_collection();
     const deletionInfo = await usersCollection.findOneAndDelete({
@@ -121,6 +125,9 @@ const removeUser = async (id) => {
     console.log(deletionInfo);
     return deletionInfo;
 }
+
+
+
 
 const updateUser = async (id, updatedUser) => {
     // Extract fields from updatedUser and sanitize inputs
@@ -196,11 +203,15 @@ const updateUser = async (id, updatedUser) => {
     return { updatedUser: true };
 }
 
+
+
 const getAllUsers = async () => {
     const usersCollection = await user_collection();
     const allUsers = await usersCollection.find({}).toArray();
     return allUsers;
 }
+
+
 
 const updatePassword = async (id, password) => {
     const userCollection = await user_collection();
@@ -215,6 +226,11 @@ const updatePassword = async (id, password) => {
         },
         {returnDocument: 'after'});
 }
+
+
+
+
+
 
 export {
     getUserById,
