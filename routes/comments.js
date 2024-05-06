@@ -54,8 +54,6 @@ router.get('/:commentId', async (req, res) => {
             text: xss(comment.text)
         };
 
-        // 假设你有一个对应的模板来显示评论详情
-        // 如果你需要显示评论回复或相关信息，确保模板和数据适配这一需求
         res.render('commentDetail', {
             title: `Comment by ${comment.userId}`,
             comment: cleanComment
@@ -85,12 +83,11 @@ router.get('/addComment/:reviewId', async (req, res) => {
 });
 
 router.get('/delete/:commentId', async (req, res) => {
-    console.log('req delete commentId', req);
     const commentId = req.params.commentId;
 
     // First, find the review that contains the comment
     const comment = await getCommentById(commentId);
-    const reviewId= comment.reviewId;
+    const reviewId= comment.reviewId.toString();
     const review= await getReviewById(reviewId);
     const housingId= review.houseId.toString();
     // Validate the commentId before attempting to delete
@@ -106,19 +103,6 @@ router.get('/delete/:commentId', async (req, res) => {
     } catch (error) {
         console.error('Error deleting comment:', error);
         res.status(500).send('Failed to delete comment due to server error.');
-    }
-});
-
-router.post('/delete/:commentId', async (req, res) => {
-    const commentId = req.params.commentId;
-
-    try {
-        await removeComment(commentId);
-        
-        res.send('Comment deleted successfully');
-    } catch (error) {
-        console.error('Failed to delete comment:', error);
-        res.status(500).send('Error deleting comment');
     }
 });
 
