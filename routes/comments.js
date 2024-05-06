@@ -18,7 +18,7 @@ router.post('/add/:reviewId', async (req, res) => {
     }
 
     try {
-        const newComment = {
+        let newComment = {
             reviewId: reviewId,
             text: comment,
             firstName : req.session.user.firstName,
@@ -84,7 +84,8 @@ router.get('/addComment/:reviewId', async (req, res) => {
     }
 });
 
-router.post('/delete/:commentId', async (req, res) => {
+router.get('/delete/:commentId', async (req, res) => {
+    console.log('req delete commentId', req);
     const commentId = req.params.commentId;
 
     // First, find the review that contains the comment
@@ -112,9 +113,8 @@ router.post('/delete/:commentId', async (req, res) => {
     const commentId = req.params.commentId;
 
     try {
-        await deleteComment(commentId, reviewId);
+        await removeComment(commentId);
         
-        await removeCommentfromReview(commen)
         res.send('Comment deleted successfully');
     } catch (error) {
         console.error('Failed to delete comment:', error);

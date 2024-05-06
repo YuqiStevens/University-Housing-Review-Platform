@@ -75,9 +75,9 @@
                     {{#if comments}}
                         <ul>
                             {{#each comments}}
-                                <li>{{this.firstName}} {{this.lastName}}: {{this.text}}</li>
+                                <li>{{this.firstName}} {{this.lastName}}: {{this.comment}}</li>
                                 {{#if isAdmin}}
-                                    <a href="/comments/delete/{{commentId}}" class="btn btn-primary">Delete Comments</a>
+                                    <a href="/comments/delete/{{_id}}" class="btn btn-primary">Delete Comments</a>
                                 {{/if}}
                             {{/each}}
                         </ul>
