@@ -21,6 +21,7 @@
                 <div class="search-filters">
                     <label for="homeType">Type of Home:</label>
                     <select id="homeType" name="homeType">
+                        <option value="">Any</option>
                         <option value="Apartment">Apartment</option>
                         <option value="House">House</option>
                         <option value="Townhome">Townhome</option>
@@ -37,12 +38,14 @@
 
                     <label for="garage">Garage:</label>
                     <select id="garage" name="garage">
+                        <option value="">Any</option>
                         <option value="true">Available</option>
                         <option value="false">Not Available</option>
                     </select>
 
                     <label for="petPolicy">Pet Policy:</label>
                     <select id="petPolicy" name="petPolicy">
+                        <option value="">Any</option>
                         <option value="Allowed">Pet Friendly</option>  
                         <option value="Not Allowed">No Pets</option>
                     </select>
@@ -62,16 +65,18 @@
                 <h3>Searched Results for "{{searchTerm}}":</h3>
                 {{#each searchResults}}
                     <div class="search-result-item">
-                        <div class="housing-info">
-                            <h4>{{this.address}}</h4>
-                            <p>Location: {{this.city}}, {{this.state}}, Zip: {{this.zipCode}}</p>
-                            <p>Type: {{this.homeType}}, Price Range: ${{this.rentalCostMin}} - ${{this.rentalCostMax}}</p>
-                            {{#if this.amenities.length}}
-                                <p>Amenities: {{#each this.amenities}}{{this}}{{#unless @last}}, {{/unless}}{{/each}}</p>
-                            {{else}}
-                                <p>Amenities: None</p>
-                            {{/if}}
-                        </div>
+                        <a href="/housing/{{this.housingID}}" class="housing-link">
+                            <div class="housing-info">
+                                <h4>{{this.address}}</h4>
+                                <p>Location: {{this.city}}, {{this.state}}, Zip: {{this.zipCode}}</p>
+                                <p>Type: {{this.homeType}}, Price Range: ${{this.rentalCostMin}} - ${{this.rentalCostMax}}</p>
+                                {{#if this.amenities.length}}
+                                    <p>Amenities: {{#each this.amenities}}{{this}}{{#unless @last}}, {{/unless}}{{/each}}</p>
+                                {{else}}
+                                    <p>Amenities: None</p>
+                                {{/if}}
+                            </div>
+                        </a>
                     </div>
                 {{/each}}
             </div>
