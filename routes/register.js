@@ -6,12 +6,10 @@ import xss from 'xss';
 
 const router = express.Router();
 
-
 router.route('/').get(async (req, res) => {
     const title = "Register";
     res.render('register', {title: title});
 });
-
 
 router.route('/').post(async (req, res) => {
     const title = "Register";
@@ -123,6 +121,5 @@ router.route('/').post(async (req, res) => {
         });
     }
 });
-
 
 export default router;

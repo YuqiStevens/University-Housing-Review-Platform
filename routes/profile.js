@@ -5,7 +5,6 @@ import {getUserById, updateUser} from '../data/users.js'
 import {getAllReviewsByUserId} from '../data/reviewsForHousing.js';
 import helper from '../helpers.js';
 import xss from 'xss';
-import {getHousingById} from "../data/housing.js";
 
 router.route('/')
     .get(async (req, res) => {
@@ -49,7 +48,7 @@ router.route('/')
         try {
             let user = await getUserById(id);
             let {firstName, lastName, email, city, state, country, age, diploma, discipline} = req.body;
-            // Sanitization
+
             firstName = xss(firstName);
             lastName = xss(lastName);
             email = xss(email).toLowerCase();
@@ -60,7 +59,6 @@ router.route('/')
             diploma = xss(diploma);
             discipline = xss(discipline);
 
-            // Validation
             firstName = helper.checkName(firstName, 'First Name');
             lastName = helper.checkName(lastName, 'Last Name');
             email = helper.checkEmail(email, 'E-mail');
@@ -70,7 +68,6 @@ router.route('/')
             diploma = helper.checkString(diploma, 'Highest Diploma');
             discipline = helper.checkString(discipline, 'Discipline');
 
-            // Check if email already exists in other accounts
             if (await helper.checkIfEmailExistsExceptMe(user.email, email, id)) {
                 errors.push('The email address already exists');
             }
@@ -84,7 +81,6 @@ router.route('/')
                 });
             }
 
-            // Update the user
             const updatedUser = await updateUser(id, {
                 firstName,
                 lastName,
@@ -97,17 +93,14 @@ router.route('/')
                 discipline
             });
 
-            // If the update is successful, update session information
             if (updatedUser) {
                 req.session.user.firstName = firstName;
                 req.session.user.lastName = lastName;
 
-                // Handle email change for session
                 if (req.session.user.email !== email) {
                     req.session.destroy();
                     res.redirect('/login');
                 } else {
-                    // If only names or other non-email fields have changed
                     req.session.save(() => {
                         res.redirect('/profile');
                     });

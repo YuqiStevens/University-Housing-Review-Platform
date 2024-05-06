@@ -15,7 +15,6 @@ const getHousingById = async (id) => {
     const housing = await housingCollection.findOne({_id: new ObjectId(id)});
     if (!housing) throw "Store not found";
 
-    // Ensure amenities is an array
     if (typeof housing.amenities === 'string') {
         housing.amenities = [housing.amenities];
     } else if (!Array.isArray(housing.amenities)) {
@@ -26,7 +25,6 @@ const getHousingById = async (id) => {
 };
 
 const addHousing = async (housing) => {
-    // Make sure amenities and images are arrays
     let amenities = housing.amenities;
     let images = housing.images;
 
@@ -94,7 +92,6 @@ const updateHousing = async (housingId, updatedHousing) => {
     console.log("Starting updateHousing with housingId:", housingId);
     console.log("Starting updateHousing with updatedHousing:", updatedHousing);
 
-    // Make sure amenities and images are arrays
     let amenities = updatedHousing.amenities;
     let images = updatedHousing.images;
 
@@ -168,19 +165,16 @@ const updateHousing = async (housingId, updatedHousing) => {
 };
 
 const addReviewIdToHousing = async (housingId, reviewId) => {
-    // Validate the housingId and reviewId
     housingId = validation.checkId(housingId, 'housing_id');
     reviewId = validation.checkId(reviewId, 'review_id');
 
-    const housingCollection = await housing_collection();  // Assuming housing_collection() returns the housing collection
+    const housingCollection = await housing_collection();
 
-    // Update the housing document to add the reviewId to the reviewIds array
     const updateResult = await housingCollection.updateOne(
         { _id: new ObjectId(housingId) },
-        { $addToSet: { reviewIds: new ObjectId(reviewId) } }  // Use $addToSet to prevent duplicates
+        { $addToSet: { reviewIds: new ObjectId(reviewId) } }
     );
 
-    // Check if the update was successful
     if (updateResult.matchedCount === 0) {
         throw new Error('No housing found with the provided ID.');
     }
@@ -188,24 +182,20 @@ const addReviewIdToHousing = async (housingId, reviewId) => {
         throw new Error('Review ID already exists in the housing document or update failed.');
     }
 
-    // Return a message or the update result
     return updateResult;
 };
 
 const removeReviewIdFromHousing = async (housingId, reviewId) => {
-    // Validate the housingId and reviewId
     housingId = validation.checkId(housingId, 'housing_id');
     reviewId = validation.checkId(reviewId, 'review_id');
 
-    const housingCollection = await housing_collection();  // Assuming housing_collection() returns the housing collection
+    const housingCollection = await housing_collection();
 
-    // Update the housing document to remove the reviewId from the reviewIds array
     const updateResult = await housingCollection.updateOne(
         { _id: new ObjectId(housingId) },
-        { $pull: { reviewIds: new ObjectId(reviewId) } }  // Use $pull to remove the reviewId
+        { $pull: { reviewIds: new ObjectId(reviewId) } }
     );
 
-    // Check if the update was successful
     if (updateResult.matchedCount === 0) {
         throw new Error('No housing found with the provided ID.');
     }
@@ -213,7 +203,6 @@ const removeReviewIdFromHousing = async (housingId, reviewId) => {
         throw new Error('Failed to remove the review ID from the housing document.');
     }
 
-    // Return a message or the update result
     return updateResult;
 };
 
