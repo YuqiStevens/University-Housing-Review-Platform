@@ -55,7 +55,6 @@ const addComment = async (comment) => {
     }
 
     let newComment = {
-        commentId: new ObjectId(),
         reviewId: new ObjectId(review_id),
         userId: new ObjectId(user_id),
         firstName: firstName,

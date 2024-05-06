@@ -41,9 +41,6 @@ const updateHousingRating = async (housingId, newRating) => {
     }
 };
 
-
-
-
 const getAllReviewsByUserId = async (user_id) => {
   // Validate user ID
   user_id = validation.checkId(user_id, 'user_id');
@@ -62,8 +59,6 @@ const getAllReviewsByUserId = async (user_id) => {
   // Return the list of reviews
   return res;
 };
-
-
 
 const getReviewById = async (review_id) => {
     review_id = validation.checkId(review_id, 'review_id');  // Validate review ID

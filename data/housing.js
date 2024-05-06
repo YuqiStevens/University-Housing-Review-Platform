@@ -78,7 +78,6 @@ const addHousing = async (housing) => {
     return newId.toString();
 };
 
-
 const removeHousing = async (id) => {
     const housingsCollection = await housing_collection();
     const deletionInfo = await housingsCollection.findOneAndDelete({
@@ -90,8 +89,6 @@ const removeHousing = async (id) => {
     console.log(deletionInfo);
     return deletionInfo;
 };
-
-
 
 const updateHousing = async (housingId, updatedHousing) => {
     console.log("Starting updateHousing with housingId:", housingId);
@@ -170,10 +167,6 @@ const updateHousing = async (housingId, updatedHousing) => {
     return housingId;
 };
 
-
-
-
-
 const addReviewIdToHousing = async (housingId, reviewId) => {
     // Validate the housingId and reviewId
     housingId = validation.checkId(housingId, 'housing_id');
@@ -223,7 +216,6 @@ const removeReviewIdFromHousing = async (housingId, reviewId) => {
     // Return a message or the update result
     return updateResult;
 };
-
 
 export {
     getAllHousings,

@@ -18,7 +18,7 @@ router.post('/add/:reviewId', async (req, res) => {
     }
 
     try {
-        const newComment = {
+        let newComment = {
             reviewId: reviewId,
             text: comment,
             firstName : req.session.user.firstName,
@@ -84,12 +84,12 @@ router.get('/addComment/:reviewId', async (req, res) => {
     }
 });
 
-router.post('/delete/:commentId', async (req, res) => {
+router.get('/delete/:commentId', async (req, res) => {
     const commentId = req.params.commentId;
 
     // First, find the review that contains the comment
     const comment = await getCommentById(commentId);
-    const reviewId= comment.reviewId;
+    const reviewId= comment.reviewId.toString();
     const review= await getReviewById(reviewId);
     const housingId= review.houseId.toString();
     // Validate the commentId before attempting to delete
@@ -105,20 +105,6 @@ router.post('/delete/:commentId', async (req, res) => {
     } catch (error) {
         console.error('Error deleting comment:', error);
         res.status(500).send('Failed to delete comment due to server error.');
-    }
-});
-
-router.post('/delete/:commentId', async (req, res) => {
-    const commentId = req.params.commentId;
-
-    try {
-        await deleteComment(commentId, reviewId);
-        
-        await removeCommentfromReview(commen)
-        res.send('Comment deleted successfully');
-    } catch (error) {
-        console.error('Failed to delete comment:', error);
-        res.status(500).send('Error deleting comment');
     }
 });
 
