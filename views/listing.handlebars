@@ -11,7 +11,10 @@
     </nav>
 
     <h1 id="listings-header" class="h1-content">Housing Listings</h1>
-    <p class="p-content">Explore housing options near the university. Click on any listing to view more details, including reviews and ratings.</p>
+    <p class="p-content">Explore housing options near the university. Click on any listing to view more details,
+        including reviews and ratings.</p>
+
+    <div id="map" style="width: 100%; height: 400px;"></div>
 
     {{#if housings}}
         {{#if housings.length}}
@@ -32,9 +35,41 @@
                 {{/each}}
             </ul>
         {{else}}
-            <p class="p-content">No listings found. Try broadening your search criteria or check back later for new listings.</p>
+            <p class="p-content">No listings found. Try broadening your search criteria or check back later for new
+                listings.</p>
         {{/if}}
     {{else}}
-        <p class="p-content">No listings found. Try broadening your search criteria or check back later for new listings.</p>
+        <p class="p-content">No listings found. Try broadening your search criteria or check back later for new
+            listings.</p>
     {{/if}}
 </section>
+
+<!-- Include Mapbox CSS -->
+<link href="https://api.mapbox.com/mapbox-gl-js/v2.3.1/mapbox-gl.css" rel="stylesheet">
+<!-- Include Mapbox JS -->
+<script src="https://api.mapbox.com/mapbox-gl-js/v2.3.1/mapbox-gl.js"></script>
+
+<script>
+    mapboxgl.accessToken = 'pk.eyJ1IjoieWRvbmcyOCIsImEiOiJjbHZ1Y2p0Y2ExanlqMnJxaXh0bXQ2YXR5In0.UZmGfNphgFmjxx9n0cPjlg'; // Replace with your Mapbox access token
+    var map = new mapboxgl.Map({
+        container: 'map',
+        style: 'mapbox://styles/mapbox/streets-v11', // Specify the map style
+        center: [-74.032363, 40.743991], // Initial map center coordinates
+        zoom: 10 // Initial zoom level
+    });
+
+    // Add markers for each housing
+    document.addEventListener('DOMContentLoaded', function () {
+        var housings = {{{json housings}}}; // Handlebars helper to pass housings array as JSON
+        housings.forEach(function (housing) {
+            var popup = new mapboxgl.Popup({offset: 25}).setText(
+                    `${housing.address}, ${housing.city}`
+            );
+
+            new mapboxgl.Marker()
+                    .setLngLat([housing.location.longitude, housing.location.latitude])
+                    .setPopup(popup) // sets a popup on this marker
+                    .addTo(map);
+        });
+    });
+</script>
