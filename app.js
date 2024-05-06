@@ -45,7 +45,14 @@ app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 app.use(rewriteUnsupportedBrowserMethods);
 
-app.engine('handlebars', exphbs.engine({defaultLayout: 'main'}));
+app.engine('handlebars', exphbs.engine({
+    defaultLayout: 'main',
+    helpers: {
+        json: function(context) {
+            return JSON.stringify(context);
+        }
+    }
+}));
 app.set('view engine', 'handlebars');
 
 app.use(session({
