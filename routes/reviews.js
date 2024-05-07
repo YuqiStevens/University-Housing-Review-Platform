@@ -193,17 +193,16 @@ router.get('/addReview/:housingId', async (req, res) => {
 
 router.post('/helpful/:reviewId', async (req, res) => {
     try {
-        console.log('req.params', req.params);
         const reviewId = req.params.reviewId;
-        console.log('req.params.reviewId', reviewId);
+        const userId = req.session.user.id; // Assuming user ID is stored in session
 
-        if (!helpers.checkId(reviewId, 'Review ID')) {
-            return res.status(400).send('Invalid Review ID');
+        if (!helpers.checkId(reviewId, 'Review ID') || !helpers.checkId(userId, 'User ID')) {
+            return res.status(400).send('Invalid IDs provided');
         }
 
-        const updatedReview = await updateReviewHelpfulCount(reviewId);
+        const updatedReview = await updateReviewHelpfulCount(reviewId, userId);
         if (!updatedReview) {
-            return res.status(404).send('Review not found or update failed');
+            return res.status(404).send('Review not found, already marked as helpful, or update failed');
         }
 
         res.json({ helpfulCounts: updatedReview.helpfulCounts });
