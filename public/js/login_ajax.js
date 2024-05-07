@@ -4,17 +4,17 @@
         emailTerm = $('#email'),
         passwordTerm = $('#password');
 
-    errorContainer.hide(); // Initially hide the error container.
+    errorContainer.hide();
 
     loginForm.submit(function (event) {
-        event.preventDefault(); // Prevent the form from submitting via the browser's default action.
+        event.preventDefault();
 
         let email = emailTerm.val().trim();
         let password = passwordTerm.val().trim();
-        let errors = validateCredentials(email, password); // Validate inputs and collect errors.
+        let errors = validateCredentials(email, password);
 
         if (errors.length > 0) {
-            displayErrors(errors); // Display errors if validation fails.
+            displayErrors(errors);
             return;
         }
 
@@ -30,7 +30,7 @@
 
         // Perform the AJAX request.
         $.ajax(requestConfig).done(function (response) {
-            handleLoginResponse(response); // Handle the server's response.
+            handleLoginResponse(response);
         }).fail(function (jqXHR, textStatus, errorThrown) {
             console.error("AJAX call failed: ", textStatus, errorThrown);
             errorContainer.empty().append("An error occurred during login. Please try again later.").show();
@@ -67,7 +67,7 @@
     function handleLoginResponse(response) {
         if (response.login) {
             console.log("Login successful, redirecting to home");
-            window.location.href = '/home'; // Redirect to home on successful login.
+            window.location.href = '/home';
         } else {
             console.error("Login failed:", response.error);
             displayErrors(response.error || ["Login failed. Please check your credentials and try again."]);

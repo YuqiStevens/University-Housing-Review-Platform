@@ -1,15 +1,10 @@
 import {user_collection, housing_collection} from "./config/mongoCollections.js";
-//import bcrypt from 'bcrypt';
 import bcrypt from 'bcryptjs';
 import {ObjectId} from "mongodb";
 import validator from "validator";
 
 
 const exportedMethods = {
-    async toHashPassword(password) {
-        return await bcrypt.hash(password, 10);
-    },
-
     async checkIfEmailExists(email) {
         const userCollection = await user_collection();
         const user = await userCollection.findOne({email});
@@ -43,7 +38,6 @@ const exportedMethods = {
         };
     },
 
-
     checkId(id, varName) {
         if (!id) throw `Error: You must provide a ${varName}`;
         if (typeof id !== "string") throw `Error: ${varName} must be a string`;
@@ -54,7 +48,6 @@ const exportedMethods = {
         return id;
     },
 
-
     checkString(strVal, varName) {
         if (!strVal) throw `Error: You must supply a ${varName}!`;
         if (typeof strVal !== "string") throw `Error: ${varName} must be a string!`;
@@ -63,7 +56,6 @@ const exportedMethods = {
             throw `Error: ${varName} cannot be an empty string or just spaces`;
         return strVal;
     },
-
 
     checkIfLocationValid(location) {
         if (typeof location !== "object" || location === null) {
@@ -80,22 +72,6 @@ const exportedMethods = {
         }
     },
 
-
-    // Additional methods integrated here
-    checkUserName(string, varName) {
-        if (!string) throw `You must provide a ${varName}`;
-        if (typeof string !== "string") throw `Error:${varName} must be a string`;
-        string = string.trim();
-        if (string.length === 0)
-            throw `${varName} cannot be an empty string or just spaces`;
-        if (string.length < 2 || string.length > 25)
-            throw `${varName} should be within 2 - 25 characters`;
-        if (!/^[a-zA-Z0-9]+$/.test(string))
-            throw `${varName} must only contain digits and letters`;
-        return string;
-    },
-
-
     checkName(string, varName) {
         if (!string) throw `You must provide a ${varName}`;
         if (typeof string !== "string") throw `Error:${varName} must be a string`;
@@ -109,7 +85,6 @@ const exportedMethods = {
         return string;
     },
 
-
     checkEmail(string, varName) {
         if (!string) throw `You must provide a ${varName}`;
         if (typeof string !== "string") throw `Error:${varName} must be a string`;
@@ -121,7 +96,6 @@ const exportedMethods = {
         }
         return string;
     },
-
 
     checkPassword(password, varName) {
         const passwordRequirements = {
@@ -153,31 +127,6 @@ const exportedMethods = {
         }
         return password;
     },
-    
-
-    async checkIfHousingNameExists(name) {
-        name = name.replace(/\s/g, "").toLowerCase();
-        const housingCollection = await housing_collection();
-        const housingList = await housingCollection.find().toArray();
-        for (let house of housingList) {
-            if (house.name.replace(/\s/g, "").toLowerCase() === name) {
-                return true;
-            }
-        }
-        return false;
-    },
-
-    async checkIfHousingNameExistsForOtherId(name, id) {
-        name = name.replace(/\s/g, "").toLowerCase();
-        const housingCollection = await housing_collection();
-        const housingList = await housingCollection.find().toArray();
-        for (let house of housingList) {
-            if (house._id.toString() !== id.toString() && house.name.replace(/\s/g, "").toLowerCase() === name) {
-                return true;
-            }
-        }
-        return false;
-    },
 
     checkIfHousingNameValid(housingName) {
         const housingNameRegex = /^[a-zA-Z0-9\s\-&',.()]{3,25}$/;
@@ -185,6 +134,7 @@ const exportedMethods = {
             throw "Invalid housing name (the housing name should be 3 to 25 characters)";
         }
     },
+
     checkSearchValid(searchTerm) {
         if (!searchTerm || typeof searchTerm !== 'string') {
             return '';
