@@ -6,8 +6,7 @@
   "type": "module",
   "scripts": {
     "seed": "node ./test/seed.js",
-    "start": "node app.js",
-    "dev": "nodemon app.js"
+    "start": "node app.js"
   },
   "repository": {
     "type": "git",
@@ -35,8 +34,5 @@
     "validator": "^13.11.0",
     "winston": "^3.13.0",
     "xss": "^1.0.14"
-  },
-  "devDependencies": {
-    "@types/node": "^20.10.4"
   }
 }

@@ -140,28 +140,37 @@ const updateReview = async (review_id, updates) => {
     return {success: true, message: 'Review successfully updated.'};
 };
 
-const updateReviewHelpfulCount = async (review_id) => {
+const updateReviewHelpfulCount = async (review_id, user_id) => {
     review_id = validation.checkId(review_id, 'review_id');
+    user_id = validation.checkId(user_id, 'user_id'); // Validate user ID as well
     const reviewsCollection = await review_collection();
+
+    const existingReview = await reviewsCollection.findOne({
+        _id: new ObjectId(review_id),
+        helpfulUsers: { $ne: user_id }
+    });
+
+    if (!existingReview) {
+        console.log("User has already marked this review as helpful or review does not exist.");
+        return null;
+    }
 
     const updateResult = await reviewsCollection.updateOne(
         { _id: new ObjectId(review_id) },
-        { $inc: { helpfulCounts: 1 } }
+        {
+            $inc: { helpfulCounts: 1 },
+            $push: { helpfulUsers: user_id }
+        }
     );
-
-    if (!updateResult.matchedCount) {
-        console.log("No review found with ID:", review_id);
-        return null;
-    }
 
     if (!updateResult.modifiedCount) {
         console.log("The helpful count was not updated.");
         return null;
     }
 
-    const updatedReview = await reviewsCollection.findOne({ _id: new ObjectId(review_id) });
-    return updatedReview;
+    return await reviewsCollection.findOne({ _id: new ObjectId(review_id) });
 };
+
 
 export {
     getAllReviewsByUserId,
