@@ -48,7 +48,8 @@ router.route('/')
         }
     });
 
-router.route('/search')
+    
+    router.route('/search')
     .post(async (req, res) => {
         const title = "Home Page";
         let isAdmin = false;
@@ -64,37 +65,47 @@ router.route('/search')
                 isAdmin = req.session.user.role === 'admin';
             }
 
-            let searchType = xss(req.body.homeType || '');
             let searchTerm = xss(req.body.searchTerm || '');
-            let rentalCostMin = parseFloat(xss(req.body.rentalCostMin || '0'));
-            let rentalCostMax = parseFloat(xss(req.body.rentalCostMax || 'Infinity'));
+            let searchType = xss(req.body.homeType || '');
+            let rentalCostMin = parseFloat(xss(req.body.rentalCostMin || 'NaN'));
+            let rentalCostMax = parseFloat(xss(req.body.rentalCostMax || 'NaN'));
             let amenities = xss(req.body.amenities || '');
             let garage = xss(req.body.garage || '');
             let petPolicy = xss(req.body.petPolicy || '');
 
             const filters = {};
-
             if (searchType) filters.homeType = searchType;
-            if (!isNaN(rentalCostMin) && rentalCostMin > 0 || !isNaN(rentalCostMax) && rentalCostMax < Infinity) {
-                filters.rentalCost = {};
-                if (!isNaN(rentalCostMin) && rentalCostMin > 0) {
-                    filters.rentalCost.$gte = rentalCostMin;
-                }
-                if (!isNaN(rentalCostMax) && rentalCostMax < Infinity) {
-                    filters.rentalCost.$lte = rentalCostMax;
-                }
-            }
-            if (amenities) filters.amenities = { $regex: new RegExp(amenities, 'i') };
+            if (!isNaN(rentalCostMin)) filters.rentalCostMin = rentalCostMin;
+            if (!isNaN(rentalCostMax)) filters.rentalCostMax = rentalCostMax;
+            if (amenities) filters.amenities = amenities.split(',').map(x => x.trim());
             if (garage === 'true') filters.garage = true;
             if (garage === 'false') filters.garage = false;
             if (petPolicy) filters.petPolicy = petPolicy;
 
-            console.log("Filters:", filters);
+            const allFieldsEmpty = !searchTerm && !searchType && 
+                                    isNaN(rentalCostMin) && isNaN(rentalCostMax) && 
+                                    !amenities && !garage && !petPolicy;
+
+            if (allFieldsEmpty) {
+                return res.status(200).render('home', {
+                    title: title,
+                    firstName: firstName,
+                    lastName: lastName,
+                    searchResults: [],
+                    noResultsMessage: "No housings matched your search.",
+                    isAdmin: isAdmin,
+                    searchPerformed: true
+                });
+            }
 
             try {
-                searchTerm = validation.checkSearchValid(searchTerm);
+                if (searchTerm) {
+                    searchTerm = validation.checkSearchValid(searchTerm);
+                } else {
+                    searchTerm = "";
+                }
             } catch (e) {
-                return res.status(400).render('error', { title: "Error", message: e.message });
+                searchTerm = '';
             }
 
             try {
@@ -107,15 +118,12 @@ router.route('/search')
                 return res.status(500).render('error', { title: "Error", message: e.message });
             }
 
-            console.log("Search Results:", searchResults);
-
-            res.status(200).render('home', {
+            return res.status(200).render('home', {
                 title: title,
                 firstName: firstName,
                 lastName: lastName,
                 searchResults: searchResults,
                 noResultsMessage: noResultsMessage,
-                searchTerm: searchTerm,
                 isAdmin: isAdmin,
                 searchPerformed: true
             });
@@ -125,5 +133,11 @@ router.route('/search')
             return res.status(500).render('error', { title: "Error", message: "Internal server error." });
         }
     });
+
+
+
+    
+
+
 
 export default router;
