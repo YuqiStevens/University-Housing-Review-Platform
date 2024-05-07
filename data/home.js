@@ -51,24 +51,20 @@ export async function getHousingSearchResults(searchTerm = '', filters = {}) {
 
         console.log("Matched Housings:", matchedHousings);
 
-        if (!matchedHousings || matchedHousings.length === 0) {
-            return [];
-        }
-
-        const formattedHousings = matchedHousings.map(housing => ({
-            name: housing.address,
-            housingID: housing._id,
-            address: housing.address,
-            city: housing.city,
-            state: housing.state,
-            zipCode: housing.zipCode,
-            homeType: housing.homeType,
-            rentalCostMin: housing.rentalCostMin,
-            rentalCostMax: housing.rentalCostMax,
-            amenities: Array.isArray(housing.amenities) ? housing.amenities : [housing.amenities],
-            photo_id: housing.photo_id || '',
-            isHousing: true
-        }));
+    const formattedHousings = matchedHousings.map(housing => ({
+        name: housing.address,
+        housingID: housing._id,
+        address: housing.address,
+        city: housing.city,
+        state: housing.state,
+        zipCode: housing.zipCode,
+        homeType: housing.homeType,
+        rentalCostMin: housing.rentalCostMin,
+        rentalCostMax: housing.rentalCostMax,
+        amenities: Array.isArray(housing.amenities) ? housing.amenities : [housing.amenities],
+        photo_id: housing.photo_id || '',
+        isHousing: true
+    }));
 
         return formattedHousings;
     } catch (error) {

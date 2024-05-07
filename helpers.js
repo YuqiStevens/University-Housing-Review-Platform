@@ -123,27 +123,6 @@ const exportedMethods = {
     },
 
 
-   /* checkPassword(password, varName) {
-        const passwordRequirements = {
-            minLength: 8,
-            minLowercase: 1,
-            minUppercase: 1,
-            minNumbers: 1,
-            minSymbols: 1
-        };
-        let isValidPassword = validator.isStrongPassword(password, passwordRequirements);
-        if (password.includes(' '))
-            throw `${password} should not contain any space`;
-        if (!isValidPassword) {
-            throw `${varName} must have ${passwordRequirements.minLength} characters, 
-            with at least ${passwordRequirements.minLowercase} lowercase letters, 
-            ${passwordRequirements.minUppercase} uppercase letters,
-            ${passwordRequirements.minNumbers} numbers,
-            and ${passwordRequirements.minSymbols} symbols`;
-        }
-        return password;
-    },*/
-
     checkPassword(password, varName) {
         const passwordRequirements = {
             minLength: 8,

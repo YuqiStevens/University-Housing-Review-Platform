@@ -2,14 +2,44 @@
     let loginForm = $('#login-form'),
         errorContainer = $('#errorContainer'),
         emailTerm = $('#email'),
-        passwordTerm = $('#password')
+        passwordTerm = $('#password');
 
-    errorContainer.hide();
-    loginForm.submit(async function (event) {
-        event.preventDefault();
+    errorContainer.hide(); // Initially hide the error container.
+
+    loginForm.submit(function (event) {
+        event.preventDefault(); // Prevent the form from submitting via the browser's default action.
+
         let email = emailTerm.val().trim();
         let password = passwordTerm.val().trim();
+        let errors = validateCredentials(email, password); // Validate inputs and collect errors.
+
+        if (errors.length > 0) {
+            displayErrors(errors); // Display errors if validation fails.
+            return;
+        }
+
+        let requestConfig = {
+            method: 'POST',
+            url: '/apiForLogin',
+            contentType: 'application/json',
+            data: JSON.stringify({
+                email: email,
+                password: password
+            })
+        };
+
+        // Perform the AJAX request.
+        $.ajax(requestConfig).done(function (response) {
+            handleLoginResponse(response); // Handle the server's response.
+        }).fail(function (jqXHR, textStatus, errorThrown) {
+            console.error("AJAX call failed: ", textStatus, errorThrown);
+            errorContainer.empty().append("An error occurred during login. Please try again later.").show();
+        });
+    });
+
+    function validateCredentials(email, password) {
         let errors = [];
+
         if (!/\S+@\S+\.\S+/.test(email)) {
             errors.push("Email address should be a valid email address format. example@example.com");
         }
@@ -23,52 +53,25 @@
             }
         }
 
-        if (errors.length > 0) {
-            errorContainer.empty();
-            for (let error of errors) {
-                errorContainer.append(error);
-            }
-            errorContainer.show();
-            return;
-        }
+        return errors;
+    }
 
-        let requestConfig = {
-            method: 'POST',
-            url: '/apiForLogin',
-            data: {
-                email: email,
-                password: password
-            }
-        }
-
-        await $.ajax(requestConfig).then(function(responseMessage) {
-            console.log(responseMessage);
-            errorContainer.empty();
-            errorContainer.hide();
-            if (!responseMessage.login) {
-                for (let error of responseMessage.error) {
-                    errorContainer.append(error);
-                }
-                errorContainer.show();
-                return;
-            }
-            if (responseMessage.login) {
-                window.location.href = '/home';
-            }
-        })
-
-        await $.ajax(requestConfig).done(function(responseMessage) {
-            if (responseMessage.login) {
-                console.log("Login successful, redirecting to home");
-                window.location.href = '/home';
-            } else {
-                errorContainer.empty().append("Login failed. Please check your credentials and try again.").show();
-            }
-        }).fail(function(jqXHR, textStatus, errorThrown) {
-            console.error("AJAX call failed: ", textStatus, errorThrown);
-            errorContainer.empty().append("An error occurred during login. Please try again later.").show();
+    function displayErrors(errors) {
+        errorContainer.empty();
+        errors.forEach(function (error) {
+            errorContainer.append($('<div>').text(error));
         });
+        errorContainer.show();
+    }
 
-    })
+    function handleLoginResponse(response) {
+        if (response.login) {
+            console.log("Login successful, redirecting to home");
+            window.location.href = '/home'; // Redirect to home on successful login.
+        } else {
+            console.error("Login failed:", response.error);
+            displayErrors(response.error || ["Login failed. Please check your credentials and try again."]);
+        }
+    }
 
 })(window.jQuery);

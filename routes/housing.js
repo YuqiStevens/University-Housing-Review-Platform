@@ -1,6 +1,4 @@
 import express from 'express';
-import multer from 'multer';
-import path from 'path';
 import { ObjectId } from 'mongodb';
 import { addHousing, getHousingById, updateHousing, getAllHousings } from '../data/housing.js';
 import helpers from '../helpers.js';
@@ -9,16 +7,7 @@ import xss from 'xss';
 import { getAllReviewsByHouseId } from '../data/reviewsForHousing.js';
 
 const router = express.Router();
-const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-        cb(null, path.join(process.cwd(), 'public/images/housing'));
-    },
-    filename: function (req, file, cb) {
-        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-        cb(null, file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname));
-    }
-});
-const upload = multer({ storage: storage });
+
 
 router.get('/list', async (req, res) => {
     try {
@@ -54,18 +43,15 @@ router.post('/add', async (req, res) => {
             return;
         }
 
-        // Basic details
         const address = xss(req.body.address);
         const zipCode = xss(req.body.zipCode);
         const city = xss(req.body.city);
         const state = xss(req.body.state);
         const homeType = xss(req.body.homeType);
 
-        // Cost details
         const rentalCostMin = xss(req.body.rentalCostMin);
         const rentalCostMax = xss(req.body.rentalCostMax);
 
-        // Unit details
         const studios = xss(req.body.studios);
         const oneBed = xss(req.body['1beds']);
         const twoBed = xss(req.body['2beds']);
@@ -80,11 +66,9 @@ router.post('/add', async (req, res) => {
         const latitude = xss(req.body.latitude);
         const longitude = xss(req.body.longitude);
 
-        // Image handling
         const imagesInput = xss(req.body.images);
         const images = imagesInput ? imagesInput.split(',').map(url => url.trim()) : [];
 
-        // Validations
         helpers.checkString(address, 'Address');
         helpers.checkString(zipCode, 'Zip Code');
         helpers.checkString(city, 'City');
@@ -100,7 +84,6 @@ router.post('/add', async (req, res) => {
         if (latitude && !validator.isFloat(latitude)) throw new Error('Invalid latitude');
         if (longitude && !validator.isFloat(longitude)) throw new Error('Invalid longitude');
 
-        // Prepare the housing data object
         const housingData = {
             address,
             zipCode,
@@ -124,7 +107,6 @@ router.post('/add', async (req, res) => {
             images
         };
 
-        // Add the new housing entry to the database
         const newHousing = await addHousing(housingData);
         res.redirect('/housing/list');
     } catch (error) {
@@ -171,8 +153,6 @@ router.get('/:id', async (req, res) => {
                 canEdit: reviewUserId === currentUserId
             };
         });
-
-        // console.log('processedReviews: ', processedReviews);
 
         res.render('housing', {
             title: `Details of ${cleanAddress}`,
@@ -237,38 +217,31 @@ router.post('/edit/:id', async (req, res) => {
             return res.status(400).send('Invalid Housing ID');
         }
 
-        // Get the old housing data
         const oldHousing = await getHousingById(housingId);
 
-        // Basic details
         const address = req.body.address ? xss(req.body.address) : oldHousing.address;
         const zipCode = req.body.zipCode ? xss(req.body.zipCode) : oldHousing.zipCode;
         const city = req.body.city ? xss(req.body.city) : oldHousing.city;
         const state = req.body.state ? xss(req.body.state) : oldHousing.state;
         const homeType = req.body.homeType ? xss(req.body.homeType) : oldHousing.homeType;
 
-        // Cost details
         const rentalCostMin = req.body.rentalCostMin ? parseInt(xss(req.body.rentalCostMin), 10) : oldHousing.rentalCostMin;
         const rentalCostMax = req.body.rentalCostMax ? parseInt(xss(req.body.rentalCostMax), 10) : oldHousing.rentalCostMax;
 
-        // Unit details
         const studios = req.body.studios ? parseInt(xss(req.body.studios), 10) : oldHousing.studios;
         const oneBed = req.body['1beds'] ? parseInt(xss(req.body['1beds']), 10) : oldHousing.oneBed;
         const twoBed = req.body['2beds'] ? parseInt(xss(req.body['2beds']), 10) : oldHousing.twoBed;
         const threeBed = req.body['3beds'] ? parseInt(xss(req.body['3beds']), 10) : oldHousing.threeBed;
         const fourBed = req.body['4beds'] ? parseInt(xss(req.body['4beds']), 10) : oldHousing.fourBed;
 
-        // Additional details
         const amenities = req.body.amenities ? xss(req.body.amenities).split(',').map(item => item.trim()) : oldHousing.amenities;
         const petPolicy = req.body.petPolicy ? xss(req.body.petPolicy) : oldHousing.petPolicy;
         const garage = req.body.garage !== undefined ? xss(req.body.garage) === 'on' : oldHousing.garage;
         const latitude = req.body.latitude ? parseFloat(xss(req.body.latitude)) : oldHousing.location.latitude;
         const longitude = req.body.longitude ? parseFloat(xss(req.body.longitude)) : oldHousing.location.longitude;
 
-        // Image handling
         const images = req.body.images ? xss(req.body.images).split(',').map(url => url.trim()) : oldHousing.images;
 
-        // Prepare the update data object
         const updateData = {
             address,
             zipCode,
@@ -292,7 +265,6 @@ router.post('/edit/:id', async (req, res) => {
             images
         };
 
-        // Perform the update operation
         await updateHousing(housingId, updateData);
         res.redirect(`/housing/${housingId}`);
     } catch (error) {
