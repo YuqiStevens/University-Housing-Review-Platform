@@ -111,6 +111,16 @@ const getCommentById = async (comment_id) => {
     return comment;
 };
 
+const checkUserCommentExists = async (reviewId, userId) => {
+    const commentsCollection = await comment_collection();
+    const existingComment = await commentsCollection.findOne({
+        reviewId: new ObjectId(reviewId),
+        userId: new ObjectId(userId)
+    });
+    return existingComment;
+};
+
+
 const addCommentToReview = async (reviewId, comment) => {
     reviewId = validation.checkId(reviewId, 'review_id');
 
@@ -160,5 +170,6 @@ export {
     updateComment,
     getCommentById,
     addCommentToReview,
-    removeCommentFromReview
+    removeCommentFromReview,
+    checkUserCommentExists
 };

@@ -1,5 +1,5 @@
 import express from 'express';
-import {addComment, addCommentToReview, getCommentById, removeComment, removeCommentFromReview} from '../data/commentsForReviews.js';
+import {addComment, addCommentToReview, getCommentById, removeComment, removeCommentFromReview, checkUserCommentExists} from '../data/commentsForReviews.js';
 const router = express.Router();
 import helpers from '../helpers.js';
 import xss from 'xss';
@@ -7,12 +7,22 @@ import { getReviewById } from '../data/reviewsForHousing.js';
 
 router.post('/add/:reviewId', async (req, res) => {
     const reviewId = req.params.reviewId;
-    const comment = xss(req.body.comment);
-    const review= await getReviewById(reviewId);
     if (!helpers.checkId(reviewId, 'Review ID')) {
         return res.status(400).send('Invalid Review ID');
     }
 
+    const userId = req.session.user.id;
+
+    // Check if the user has already commented on this review
+    const existingComment = await checkUserCommentExists(reviewId, userId);
+    if (existingComment) {
+        return res.status(400).render('error', {
+            title: "Error",
+            error: "You have already commented on this review."
+        });
+    }
+
+    const comment = xss(req.body.comment);
     if (!comment) {
         return res.status(400).send("Comment field is required.");
     }
@@ -21,14 +31,15 @@ router.post('/add/:reviewId', async (req, res) => {
         let newComment = {
             reviewId: reviewId,
             text: comment,
-            firstName : req.session.user.firstName,
-            lastName : req.session.user.lastName,
-            userId: req.session.user.id,
+            firstName: req.session.user.firstName,
+            lastName: req.session.user.lastName,
+            userId: userId,
             createdAt: new Date()
         };
         newComment = await addComment(newComment);
-        const updatedReview = await addCommentToReview(reviewId, newComment);
-        const housingId= review.houseId.toString();
+        await addCommentToReview(reviewId, newComment);
+        const review = await getReviewById(reviewId);
+        const housingId = review.houseId.toString();
         res.redirect(`/housing/${housingId}`);
     } catch (error) {
         console.error('Error adding comment:', error);
