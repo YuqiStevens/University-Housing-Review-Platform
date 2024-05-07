@@ -1,16 +1,14 @@
 (function () {
-    // Helper function to add error messages to the error container
     function displayErrors(errors, errorContainer) {
-        errorContainer.innerHTML = '';  // Clear previous errors
+        errorContainer.innerHTML = '';
         errors.forEach(function (error) {
             let li = document.createElement('li');
             li.textContent = error;
             errorContainer.appendChild(li);
         });
-        errorContainer.style.display = 'block';  // Make sure to show the container
+        errorContainer.style.display = 'block';
     }
 
-    // General form validation function
     function validateForm(event, fields, validations, errorContainer) {
         let errors = [];
         validations.forEach(function(validation) {
@@ -22,7 +20,7 @@
         });
 
         if (errors.length > 0) {
-            event.preventDefault();  // Stop form submission
+            event.preventDefault();
             displayErrors(errors, errorContainer);
         }
     }
@@ -50,9 +48,6 @@
         });
     }
 
-    // Add other form setups similar to the register form above
-
-    // Example for login form
     const loginForm = document.getElementById('login-form');
     if (loginForm) {
         const fields = {
@@ -68,7 +63,5 @@
             ], errorContainer);
         });
     }
-
-    // Continue adding setups for other forms like profile update, password change, etc.
 
 })();

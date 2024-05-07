@@ -11,7 +11,6 @@ router.post('/', async (req, res) => {
     let cleanEmail = xss(req.body.email).trim();
     let cleanPassword = xss(req.body.password).trim();
 
-    // Validate email and password inputs
     if (!cleanEmail) {
         errors.push("Please enter your email address.");
     } else if (!validator.isEmail(cleanEmail)) {
@@ -28,12 +27,10 @@ router.post('/', async (req, res) => {
         }
     }
 
-    // If there are validation errors, send a 400 response
     if (errors.length > 0) {
         return res.status(400).json({ login: false, errors });
     }
 
-    // Attempt to log in the user
     try {
         const user = await loginUser(cleanEmail, cleanPassword);
         if (!user) {
@@ -41,7 +38,6 @@ router.post('/', async (req, res) => {
             return res.status(401).json({ login: false, error: ["Invalid credentials."] });
         }
 
-        // Set user info in the session
         console.log("User login successful, setting session", user);
         req.session.user = user;
         req.session.save(err => {
