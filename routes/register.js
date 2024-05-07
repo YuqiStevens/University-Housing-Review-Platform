@@ -6,12 +6,14 @@ import xss from 'xss';
 
 const router = express.Router();
 
-router.route('/').get(async (req, res) => {
+router.route('/')
+    .get(async (req, res) => {
     const title = "Register";
     res.render('register', {title: title});
 });
 
-router.route('/').post(async (req, res) => {
+router.route('/')
+    .post(async (req, res) => {
     const title = "Register";
     let cleanFirstName = xss(req.body.firstName);
     let cleanLastName = xss(req.body.lastName);

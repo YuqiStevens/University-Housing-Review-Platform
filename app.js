@@ -149,10 +149,8 @@ app.use('/logout', (req, res, next) => {
     });
 });
 
-// Configure routes
 configRoutes(app);
 
-// Start the server
 app.listen(3000, () => {
     logger.info("Server is running on http://localhost:3000");
 });

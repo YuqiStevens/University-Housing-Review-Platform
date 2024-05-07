@@ -48,8 +48,7 @@ router.route('/')
         }
     });
 
-    
-    router.route('/search')
+router.route('/search')
     .post(async (req, res) => {
         const title = "Home Page";
         let isAdmin = false;
@@ -133,11 +132,5 @@ router.route('/')
             return res.status(500).render('error', { title: "Error", message: "Internal server error." });
         }
     });
-
-
-
-    
-
-
 
 export default router;
