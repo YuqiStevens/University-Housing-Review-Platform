@@ -31,10 +31,10 @@ const updateHousingRating = async (housingId, newRating) => {
         {_id: new ObjectId(housingId)},
         {$set: {rating: newRating}}
     );
-
-    if (updateInfo.modifiedCount === 0) {
-        throw new Error("Failed to update the housing rating.");
-    }
+    
+    // if (updateInfo.modifiedCount === 0) {
+    //     throw new Error("Failed to update the housing rating.");
+    // }
 };
 
 const getAllReviewsByUserId = async (user_id) => {

@@ -1,8 +1,8 @@
 import { addComment, addCommentToReview } from "../data/commentsForReviews.js";
 import { addHousing, addReviewIdToHousing } from "../data/housing.js";
-import { updateAverageRating} from "../data/reviewsForHousing.js";
+import { updateAverageRating, addReview} from "../data/reviewsForHousing.js";
 import { ObjectId } from "mongodb";
-import { addUser } from "../data/users.js";
+import { addUser, getUserById } from "../data/users.js";
 
 //--------------------admin1 and user1-----------------------
 let user1_user = await addUser(
@@ -33,8 +33,8 @@ let user1_user = await addUser(
     'CS'
   );
 
-let user1_id_user= user1_user.user_id;
-let user1_id_admin= user1_admin.user_id;
+let user1_id_user= await getUserById(user1_user.user_id.toString());
+let user1_id_admin= await getUserById(user1_admin.user_id.toString());
 
   let housingInput1 = {
     address: "770 Jackson St",
@@ -64,7 +64,7 @@ let housingId1 = await addHousing(housingInput1);
 
 let review1 = {
     houseId: housingId1,
-    userId: user1_id_user,
+    userId: user1_user.user_id.toString(),
     rating: 4,
     title: 'Great place',
     body: 'Really enjoyed our stay.',
@@ -73,7 +73,8 @@ let review1 = {
     comments: []
 };
 
-await addReviewIdToHousing(housingId1, review1._id.toString());
+const newReview1 = await addReview(review1);
+await addReviewIdToHousing(housingId1, newReview1._id.toString());
 await updateAverageRating(housingId1);
 
 let housingInput2 = {
@@ -104,7 +105,7 @@ let housingId2 = await addHousing(housingInput2);
 
 let review2 = {
     houseId: housingId2,
-    userId: user1_id_admin,
+    userId: user1_admin.user_id.toString(),
     rating: 5,
     title: 'Paradise Found',
     body: 'The views from this home are simply breathtaking. Can\'t wait to come back!',
@@ -113,32 +114,33 @@ let review2 = {
     comments: []
 };
 
-await addReviewIdToHousing(housingId2, review2._id.toString());
+const newReview2 = await addReview(review2);
+await addReviewIdToHousing(housingId2, newReview2._id.toString());
 await updateAverageRating(housingId2);
 
 let newComment1 = {
-    reviewId: new ObjectId(review1._id.toString()),
-    userId: new ObjectId(user1_id_user),
-    firstName: user1_user.firstName,
-    lastName: user1_user.lastName,
-    comment: "Really good place!!!",
+    reviewId: newReview1._id.toString(),
+    userId: user1_user.user_id.toString(),
+    firstName: user1_id_user.firstName,
+    lastName: user1_id_user.lastName,
+    text: "Really good place!!!",
     createdAt: new Date()
 };
 
 newComment1 = await addComment(newComment1);
-await addCommentToReview(review1._id.toString(), newComment1);
+await addCommentToReview(newReview1._id.toString(), newComment1);
 
 let newComment2 = {
-    reviewId: new ObjectId(review2._id.toString()),
-    userId: new ObjectId(user1_id_admin),
-    firstName: user1_admin.firstName,
-    lastName: user1_admin.lastName,
-    comment: "Really fantastic place!!!",
+    reviewId: newReview2._id.toString(),
+    userId: user1_admin.user_id.toString(),
+    firstName: user1_id_admin.firstName,
+    lastName: user1_id_admin.lastName,
+    text: "Really fantastic place!!!",
     createdAt: new Date()
 };
 
 newComment2 = await addComment(newComment2);
-await addCommentToReview(review2._id.toString(), newComment2);
+await addCommentToReview(newReview2._id.toString(), newComment2);
 
 //--------------------admin2 and user2-----------------------
 
@@ -170,8 +172,8 @@ let user2_admin = await addUser(
     'Computer Science'
 );
 
-let user2_id_user= user2_user.user_id;
-let user2_id_admin= user2_admin.user_id;
+let user2_id_user= await getUserById(user2_user.user_id.toString());
+let user2_id_admin= await getUserById(user2_admin.user_id.toString());
 
 let housingInput3 = {
     address: "270 Tenth St",
@@ -201,7 +203,7 @@ let housingId3 = await addHousing(housingInput3);
 
 let review3 = {
     houseId: housingId3,
-    userId: user2_id_user,
+    userId: user2_user.user_id.toString(),
     rating: 3,
     title: 'Fair place but really expensive',
     body: 'Not bad, enough quite to live',
@@ -210,7 +212,8 @@ let review3 = {
     comments: []
 };
 
-await addReviewIdToHousing(housingId3, review3._id.toString());
+const newReview3 = await addReview(review3);
+await addReviewIdToHousing(housingId3, newReview3._id.toString());
 await updateAverageRating(housingId3);
 
 let housingInput4 = {
@@ -241,7 +244,7 @@ let housingId4 = await addHousing(housingInput4);
 
 let review4 = {
     houseId: housingId4,
-    userId: user2_id_admin,
+    userId: user2_admin.user_id.toString(),
     rating: 5,
     title: 'Fantastic Apartment Near Hudson River',
     body: 'The views from this home are simply breathtaking. Can\'t wait to come back!',
@@ -250,29 +253,30 @@ let review4 = {
     comments: []
 };
 
-await addReviewIdToHousing(housingId4, review4._id.toString());
+const newReview4 = await addReview(review4);
+await addReviewIdToHousing(housingId4, newReview4._id.toString());
 await updateAverageRating(housingId4);
 
 let newComment3 = {
-    reviewId: new ObjectId(review3._id.toString()),
-    userId: new ObjectId(user2_id_user),
-    firstName: user1_user.firstName,
-    lastName: user1_user.lastName,
-    comment: "Really good place!!!",
+    reviewId: newReview3._id.toString(),
+    userId: user2_user.user_id.toString(),
+    firstName: user2_id_user.firstName,
+    lastName: user2_id_user.lastName,
+    text: "Really good place!!!",
     createdAt: new Date()
 };
 
 newComment3 = await addComment(newComment3);
-await addCommentToReview(review3._id.toString(), newComment3);
+await addCommentToReview(newReview3._id.toString(), newComment3);
 
 let newComment4 = {
-    reviewId: new ObjectId(review4._id.toString()),
-    userId: new ObjectId(user2_id_admin),
-    firstName: user1_admin.firstName,
-    lastName: user1_admin.lastName,
-    comment: "Really fantastic place!!!",
+    reviewId: newReview4._id.toString(),
+    userId: user2_admin.user_id.toString(),
+    firstName: user2_id_admin.firstName,
+    lastName: user2_id_admin.lastName,
+    text: "Really fantastic place!!!",
     createdAt: new Date()
 };
 
 newComment4 = await addComment(newComment4);
-await addCommentToReview(review4._id.toString(), newComment4);
+await addCommentToReview(newReview4._id.toString(), newComment4);
