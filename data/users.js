@@ -87,8 +87,6 @@ const addUser = async (
     };
 }
 
-
-
 const loginUser = async (email, password) => {
     if (!email) throw "Please provide your email address";
     if (!password) throw "Please provide your password";
@@ -112,8 +110,6 @@ const loginUser = async (email, password) => {
     }
 };
 
-
-
 const removeUser = async (id) => {
     const usersCollection = await user_collection();
     const deletionInfo = await usersCollection.findOneAndDelete({
@@ -126,14 +122,9 @@ const removeUser = async (id) => {
     return deletionInfo;
 }
 
-
-
-
 const updateUser = async (id, updatedUser) => {
-    // Extract fields from updatedUser and sanitize inputs
     let { userName, firstName, lastName, email, city, state, country, age, diploma, discipline } = updatedUser;
 
-    // Validation
     if (!firstName) throw "Please provide your first name";
     if (!lastName) throw "Please provide your last name";
     if (!email) throw "Please provide your email address";
@@ -144,7 +135,6 @@ const updateUser = async (id, updatedUser) => {
     if (!diploma) throw "Please provide your highest diploma";
     if (!discipline) throw "Please provide your discipline";
 
-    // Trim inputs and check with regex where applicable
     const regex = /^[a-zA-Z\s]+$/;  // Allows letters and spaces
     firstName = firstName.trim();
     lastName = lastName.trim();
@@ -167,7 +157,6 @@ const updateUser = async (id, updatedUser) => {
         throw "Email address should be a valid email address format, e.g., example@example.com";
     }
 
-    // Further validation might be required for other fields as per business logic
     age = parseInt(age, 10);
     if (isNaN(age) || age < 18) {
         throw "Age must be a valid number and at least 18";
@@ -203,8 +192,6 @@ const updateUser = async (id, updatedUser) => {
     return { updatedUser: true };
 }
 
-
-
 const getAllUsers = async () => {
     const usersCollection = await user_collection();
     const allUsers = await usersCollection.find({}).toArray();
@@ -226,11 +213,6 @@ const updatePassword = async (id, password) => {
         },
         {returnDocument: 'after'});
 }
-
-
-
-
-
 
 export {
     getUserById,

@@ -6,7 +6,6 @@ import helpers from '../helpers.js';
 import validation from '../helpers.js';
 import {updatePassword} from '../data/users.js';
 
-
 router.route('/')
     .get(async (req, res) => {
         try {

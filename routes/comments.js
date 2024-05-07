@@ -85,18 +85,15 @@ router.get('/addComment/:reviewId', async (req, res) => {
 router.get('/delete/:commentId', async (req, res) => {
     const commentId = req.params.commentId;
 
-    // First, find the review that contains the comment
     const comment = await getCommentById(commentId);
     const reviewId= comment.reviewId.toString();
     const review= await getReviewById(reviewId);
     const housingId= review.houseId.toString();
-    // Validate the commentId before attempting to delete
     if (!helpers.checkId(commentId, 'Comment ID')) {
         return res.status(400).send('Invalid Comment ID');
     }
 
     try {
-        // Proceed to delete the comment from the review
         const updatedReview = await removeCommentFromReview(reviewId, commentId);
         await removeComment(commentId);
         res.redirect(`/housing/${housingId}`);  // Redirecting back to the review page or to another appropriate page

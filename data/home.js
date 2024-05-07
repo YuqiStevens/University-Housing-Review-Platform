@@ -8,6 +8,7 @@ export async function getHousingSearchResults(searchTerm = '', filters = {}) {
 
     const query = {};
 
+
     if (searchTerm) {
         const regex = new RegExp(searchTerm, 'i');
         query.$or = [
@@ -18,6 +19,7 @@ export async function getHousingSearchResults(searchTerm = '', filters = {}) {
             { amenities: regex }
         ];
     }
+
 
     if (filters.homeType) {
         query.homeType = filters.homeType;
