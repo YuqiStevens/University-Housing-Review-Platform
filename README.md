@@ -77,10 +77,10 @@ Follow these steps to effectively use the features of our project:
 
 3. **Review and Comment System**:
     - **Check All Reviews Created by the User:** Access all reviews you've created directly on your profile page.
-    - **Add Review:** Provide feedback by adding reviews on individual housing pages.
+    - **Add Review:** (One User only Once) Provide feedback by adding reviews on individual housing pages.
     - **Edit Review:** Modify your existing reviews through each housing's page (limited to reviews you've created).
     - **Delete Review:** (Admins only) Remove user reviews as needed on each housing's page.
-    - **Add Comment:** Engage with other users by adding comments to their reviews on housing pages.
+    - **Add Comment:** (One User only Once) Engage with other users by adding comments to their reviews on housing pages.
     - **Delete Comment:** (Admins only) Remove comments from reviews as necessary on each housing's page.
 
 4. **Housing Management (Admins Only)**:
