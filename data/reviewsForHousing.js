@@ -140,6 +140,15 @@ const updateReview = async (review_id, updates) => {
     return {success: true, message: 'Review successfully updated.'};
 };
 
+const checkUserReviewExists = async (housingId, userId) => {
+    const reviewsCollection = await review_collection();
+    const existingReview = await reviewsCollection.findOne({
+        houseId: new ObjectId(housingId),
+        userId: new ObjectId(userId)
+    });
+    return existingReview;
+};
+
 const updateReviewHelpfulCount = async (review_id, user_id) => {
     review_id = validation.checkId(review_id, 'review_id');
     user_id = validation.checkId(user_id, 'user_id'); // Validate user ID as well
@@ -180,5 +189,6 @@ export {
     removeReviewById,
     updateReview,
     updateReviewHelpfulCount,
-    updateAverageRating
+    updateAverageRating,
+    checkUserReviewExists
 };

@@ -1,14 +1,9 @@
 <section aria-labelledby="error-header">
     <h1 id="error-header" class="h1-content">Oops! Something Went Wrong</h1>
     <img src="/public/error-icon.png" alt="Error Icon" class="error-icon">
-    <p class="p-content">We're sorry for the inconvenience. There seems to be an issue with the page you are trying to reach.</p>
+    <p class="p-content">We're sorry for the inconvenience. Here's what went wrong:</p>
 
-    <h2>Possible Reasons:</h2>
-    <ul>
-        <li>The page does not exist or has been moved.</li>
-        <li>There was an error processing your request.</li>
-        <li>You do not have the necessary permissions to view this page.</li>
-    </ul>
+    <p class="error-message">{{error}}</p>
 
     <div class="error-actions">
         <a href="javascript:history.back()" class="btn btn-secondary">Go Back</a>

@@ -272,3 +272,10 @@ form {
 .user-info-table tr:last-child td {
     border-bottom: none; /* Removes the border from the last row for cleaner look */
 }
+
+.error-message {
+    color: red;        /* Sets the text color to red */
+    font-size: 50px;   /* Sets the font size to be larger, adjust as needed */
+    font-weight: bold; /* Optional: makes the font bold for added emphasis */
+    margin-top: 50px;  /* Adds space above the error message */
+}

@@ -1,5 +1,5 @@
 import express from 'express';
-import {addReview, updateReview, updateReviewHelpfulCount, updateAverageRating, getReviewById, removeReviewById} from '../data/reviewsForHousing.js';
+import {addReview, updateReview, updateReviewHelpfulCount, updateAverageRating, getReviewById, removeReviewById, checkUserReviewExists} from '../data/reviewsForHousing.js';
 import {getHousingById, addReviewIdToHousing, removeReviewIdFromHousing} from '../data/housing.js';
 const router = express.Router();
 import helpers from '../helpers.js';
@@ -44,6 +44,15 @@ router.post('/add/:housingId', async (req, res) => {
         return res.status(400).send('Invalid Housing ID');
     }
 
+    const userId = req.session.user.id;
+
+    // Check if the user has already reviewed this housing
+    const existingReview = await checkUserReviewExists(housingId, userId);
+    if (existingReview) {
+        res.status(400).render('error', {title: "Error", error: "You have already reviewed this housing."});
+        return;
+    }
+
     const title = xss(req.body.title);
     const rating = xss(req.body.rating);
     const body = xss(req.body.body);
@@ -58,12 +67,8 @@ router.post('/add/:housingId', async (req, res) => {
         return res.status(400).send("Rating must be an integer between 1 and 5.");
     }
 
-    const userId = req.session.user.id;
     const imageUrls = images.split(',').map(url => xss(url.trim()));
 
-
-    const firstName = req.session.user.firstName;
-    const lastName = req.session.user.lastName;
     const review = {
         houseId: housingId,
         userId: userId,
@@ -72,9 +77,7 @@ router.post('/add/:housingId', async (req, res) => {
         body: body,
         images: imageUrls,
         helpfulCounts: 0,
-        comments: [],
-        firstName: firstName,
-        lastName: lastName
+        comments: []
     };
 
     try {
